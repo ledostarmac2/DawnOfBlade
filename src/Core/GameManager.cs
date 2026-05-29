@@ -46,11 +46,8 @@ public partial class GameManager : Node
     {
         _hasSpokenToAri = true;
         EnsureDialoguePanel();
-        _dialogueContent!.Free();
-
-        _dialogueContent = new VBoxContainer();
-        _dialogueContent.AddThemeConstantOverride("separation", 8);
-        _dialoguePanel!.AddChild(_dialogueContent);
+        ReplaceDialogueContent();
+        var content = _dialogueContent!;
 
         AddDialogueLabel($"{speakerName}: Dawn favors those who practice. Answer this and I'll give you a coin.");
         AddDialogueLabel(_firstPrompt.PromptText);
@@ -58,11 +55,11 @@ public partial class GameManager : Node
         foreach (var choice in _firstPrompt.Choices)
         {
             var button = new Button { Text = choice };
-            button.Pressed += () => AnswerPrompt(choice);
-            _dialogueContent.AddChild(button);
+            button.Pressed += () => CallDeferred(MethodName.AnswerPrompt, choice);
+            content.AddChild(button);
         }
 
-        _dialoguePanel.Visible = true;
+        _dialoguePanel!.Visible = true;
     }
 
     private void AnswerPrompt(string answer)
@@ -75,10 +72,8 @@ public partial class GameManager : Node
         }
 
         EnsureDialoguePanel();
-        _dialogueContent!.Free();
-        _dialogueContent = new VBoxContainer();
-        _dialogueContent.AddThemeConstantOverride("separation", 8);
-        _dialoguePanel!.AddChild(_dialogueContent);
+        ReplaceDialogueContent();
+        var content = _dialogueContent!;
 
         AddDialogueLabel(correct
             ? "Ari: Correct. A steady mind makes a steady blade."
@@ -86,7 +81,7 @@ public partial class GameManager : Node
 
         var closeButton = new Button { Text = "Continue" };
         closeButton.Pressed += () => _dialoguePanel!.Visible = false;
-        _dialogueContent.AddChild(closeButton);
+        content.AddChild(closeButton);
         RefreshStatus();
     }
 
@@ -193,15 +188,31 @@ public partial class GameManager : Node
     private void ShowNotice(string text)
     {
         EnsureDialoguePanel();
-        _dialogueContent!.Free();
-        _dialogueContent = new VBoxContainer();
-        _dialogueContent.AddThemeConstantOverride("separation", 8);
-        _dialoguePanel!.AddChild(_dialogueContent);
+        ReplaceDialogueContent();
+        var content = _dialogueContent!;
         AddDialogueLabel(text);
 
         var closeButton = new Button { Text = "Close" };
         closeButton.Pressed += () => _dialoguePanel!.Visible = false;
-        _dialogueContent.AddChild(closeButton);
-        _dialoguePanel.Visible = true;
+        content.AddChild(closeButton);
+        _dialoguePanel!.Visible = true;
+    }
+
+    private void ReplaceDialogueContent()
+    {
+        if (_dialoguePanel is null)
+        {
+            return;
+        }
+
+        if (_dialogueContent is not null)
+        {
+            _dialoguePanel.RemoveChild(_dialogueContent);
+            _dialogueContent.QueueFree();
+        }
+
+        _dialogueContent = new VBoxContainer();
+        _dialogueContent.AddThemeConstantOverride("separation", 8);
+        _dialoguePanel.AddChild(_dialogueContent);
     }
 }
