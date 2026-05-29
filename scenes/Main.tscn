@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://src/Core/GameManager.cs" id="1_game_manager"]
 [ext_resource type="Script" path="res://src/Player/PlayerController.cs" id="2_player_controller"]
@@ -8,8 +8,26 @@
 [ext_resource type="Material" path="res://assets/materials/player.tres" id="6_player_mat"]
 [ext_resource type="Material" path="res://assets/materials/move_target.tres" id="7_target_mat"]
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+size = Vector2(24, 24)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
 size = Vector3(24, 0.1, 24)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_actor"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_actor"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_move_target"]
+top_radius = 0.55
+bottom_radius = 0.55
+height = 0.04
+radial_segments = 32
+rings = 1
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_game_manager")
@@ -17,9 +35,7 @@ script = ExtResource("1_game_manager")
 [node name="World" type="Node3D" parent="."]
 
 [node name="Ground" type="MeshInstance3D" parent="World"]
-mesh = PlaneMesh {
-size = Vector2(24, 24)
-}
+mesh = SubResource("PlaneMesh_ground")
 surface_material_override/0 = ExtResource("4_ground_mat")
 
 [node name="GroundBody" type="StaticBody3D" parent="World"]
@@ -32,44 +48,26 @@ shape = SubResource("BoxShape3D_ground")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.9, -3)
 
 [node name="Mesh" type="MeshInstance3D" parent="World/Npc"]
-mesh = CapsuleMesh {
-radius = 0.35
-height = 1.8
-}
+mesh = SubResource("CapsuleMesh_actor")
 surface_material_override/0 = ExtResource("5_npc_mat")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="World/Npc"]
-shape = CapsuleShape3D {
-radius = 0.35
-height = 1.8
-}
+shape = SubResource("CapsuleShape3D_actor")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("2_player_controller")
 MoveTargetMarkerPath = NodePath("../MoveTarget")
 
 [node name="Mesh" type="MeshInstance3D" parent="Player"]
-mesh = CapsuleMesh {
-radius = 0.35
-height = 1.8
-}
+mesh = SubResource("CapsuleMesh_actor")
 surface_material_override/0 = ExtResource("6_player_mat")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
-shape = CapsuleShape3D {
-radius = 0.35
-height = 1.8
-}
+shape = SubResource("CapsuleShape3D_actor")
 
 [node name="MoveTarget" type="MeshInstance3D" parent="."]
 visible = false
-mesh = CylinderMesh {
-top_radius = 0.55
-bottom_radius = 0.55
-height = 0.04
-radial_segments = 32
-rings = 1
-}
+mesh = SubResource("CylinderMesh_move_target")
 surface_material_override/0 = ExtResource("7_target_mat")
 
 [node name="CameraRig" type="Node3D" parent="."]
