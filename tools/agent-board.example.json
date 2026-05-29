@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "project": "Dawn of Blade",
+  "tasks": [
+    {
+      "id": "LQ-001",
+      "title": "Wire click-to-move raycast",
+      "state": "open",
+      "owner": null,
+      "delegateTo": null,
+      "filesTouched": [],
+      "notes": "Replace temporary forward movement with camera raycast to ground.",
+      "verification": []
+    }
+  ]
+}
+

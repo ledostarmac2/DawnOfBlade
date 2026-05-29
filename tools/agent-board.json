@@ -1,0 +1,58 @@
+{
+  "version": 2,
+  "project": "Dawn of Blade",
+  "schema": {
+    "states": ["open", "claimed", "blocked", "review", "done"],
+    "agents": ["claude", "codex", "human"],
+    "taskFields": {
+      "id": "stable string id, e.g. LQ-001",
+      "title": "short imperative summary",
+      "state": "one of schema.states",
+      "owner": "agent currently responsible, or null",
+      "delegateTo": "agent this task is being handed to, or null",
+      "depends": "array of task ids that must be done first",
+      "filesTouched": "array of repo-relative paths",
+      "notes": "factual context for the next agent (no secrets)",
+      "verification": "array of checks performed, e.g. 'dotnet build ok'",
+      "updated": "ISO date of last change"
+    }
+  },
+  "tasks": [
+    {
+      "id": "LQ-001",
+      "title": "Wire click-to-move raycast",
+      "state": "open",
+      "owner": null,
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": ["src/Movement/ClickToMoveController.cs"],
+      "notes": "Replace temporary forward movement with a camera raycast to the ground plane and move the player toward the hit point.",
+      "verification": [],
+      "updated": "2026-05-29"
+    },
+    {
+      "id": "LQ-002",
+      "title": "Make NPC clickable and open a dialogue popup",
+      "state": "open",
+      "owner": null,
+      "delegateTo": null,
+      "depends": ["LQ-001"],
+      "filesTouched": ["src/Interaction/Interactable.cs", "scenes/Main.tscn"],
+      "notes": "The placeholder NPC capsule already exists in scenes/Main.tscn (World/Npc). Attach an Interactable, raise an interaction event, and show a minimal dialogue Control.",
+      "verification": [],
+      "updated": "2026-05-29"
+    },
+    {
+      "id": "LQ-003",
+      "title": "Show one vocabulary prompt on NPC interact",
+      "state": "open",
+      "owner": null,
+      "delegateTo": null,
+      "depends": ["LQ-002"],
+      "filesTouched": ["src/Learning/LearningPrompt.cs", "data/vocabulary/vocabulary.example.json"],
+      "notes": "Load a LearningPrompt from example data and present it after dialogue. No language hard-coded yet.",
+      "verification": [],
+      "updated": "2026-05-29"
+    }
+  ]
+}

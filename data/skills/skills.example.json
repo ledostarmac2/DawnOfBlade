@@ -1,0 +1,15 @@
+[
+  {
+    "id": "foraging",
+    "displayName": "Foraging",
+    "description": "Gather useful plants, fibers, and natural materials.",
+    "maxLevel": 99
+  },
+  {
+    "id": "crafting",
+    "displayName": "Crafting",
+    "description": "Turn raw materials into tools and trade goods.",
+    "maxLevel": 99
+  }
+]
+

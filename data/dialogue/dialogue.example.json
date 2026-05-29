@@ -1,0 +1,24 @@
+[
+  {
+    "id": "mira_intro",
+    "speakerId": "mira_tutor",
+    "text": "Welcome to the crossroads. Practice a few words, then gather what you need.",
+    "choices": [
+      {
+        "text": "I am ready to learn.",
+        "nextNodeId": "mira_lesson"
+      },
+      {
+        "text": "Goodbye.",
+        "nextNodeId": null
+      }
+    ]
+  },
+  {
+    "id": "mira_lesson",
+    "speakerId": "mira_tutor",
+    "text": "Start with greetings. A small word can open a large road.",
+    "choices": []
+  }
+]
+

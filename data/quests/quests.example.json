@@ -1,0 +1,24 @@
+[
+  {
+    "id": "first_words",
+    "title": "First Words",
+    "description": "Help Mira prepare a beginner lesson for travelers.",
+    "objectives": [
+      {
+        "id": "collect_sunleaf",
+        "description": "Collect three Sunleaf near the village path.",
+        "requiredCount": 3
+      },
+      {
+        "id": "answer_prompt",
+        "description": "Answer one vocabulary prompt correctly.",
+        "requiredCount": 1
+      }
+    ],
+    "rewards": [
+      "xp:foraging:25",
+      "item:practice_chisel:1"
+    ]
+  }
+]
+

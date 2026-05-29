@@ -1,0 +1,39 @@
+# Dawn of Blade
+
+Dawn of Blade is an original Godot 4 + C# low-poly 3D RPG sandbox. It is inspired by classic tile/grid-aware fantasy RPG controls and progression loops: click-to-move navigation, skills, XP progression, inventory, NPC dialogue, quests, shops, basic combat, and language-learning mechanics.
+
+This project is not a RuneScape private server and is not a clone using Jagex content. Do not use RuneScape/Jagex assets, cache files, names, maps, music, models, item data, NPC data, client code, server code, protocol code, or extracted data. All art, names, maps, systems, and content should be original or properly licensed from clean sources.
+
+## Setup
+
+1. Install Godot 4 with .NET/C# support.
+2. Install a compatible .NET SDK for your Godot version.
+3. Open this folder in Godot.
+4. If Godot prompts to regenerate C# project files, allow it.
+5. Open `scenes/Main.tscn` and confirm script paths are valid.
+6. Build the C# solution from Godot before running the scene.
+
+## Baseline Status
+
+The repository currently contains the first architecture baseline:
+
+- Godot project metadata and placeholder main scene.
+- C# scripts for core game state, player movement, orbit camera, interaction, inventory, skills, combat, dialogue, quests, shops, learning prompts, saves, and debug command routing.
+- Example JSON data definitions using fake original content.
+- Design, technical, roadmap, data schema, contribution, asset sourcing, and agent handoff documentation.
+
+## First Milestone
+
+The first playable prototype should support:
+
+- A simple 3D plane/map.
+- A placeholder player capsule.
+- Orbit camera follow, rotate, and zoom.
+- Click-to-move target movement.
+- One clickable NPC.
+- One dialogue popup.
+- One vocabulary prompt.
+- Simple inventory and XP data models.
+
+See `docs/ROADMAP.md` for phase planning.
+

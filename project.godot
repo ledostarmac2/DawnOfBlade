@@ -1,0 +1,16 @@
+; Engine configuration file.
+; Open this project with Godot 4 .NET/C# and let the editor regenerate any solution files it needs.
+
+config_version=5
+
+[application]
+
+config/name="Dawn of Blade"
+run/main_scene="res://scenes/Main.tscn"
+config/features=PackedStringArray("4.2", "C#", "Forward Plus")
+config/icon="res://icon.svg"
+
+[dotnet]
+
+project/assembly_name="DawnOfBlade"
+

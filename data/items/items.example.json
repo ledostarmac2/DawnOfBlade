@@ -1,0 +1,17 @@
+[
+  {
+    "id": "sunleaf",
+    "displayName": "Sunleaf",
+    "description": "A bright herb used in simple village remedies.",
+    "stackable": true,
+    "value": 3
+  },
+  {
+    "id": "practice_chisel",
+    "displayName": "Practice Chisel",
+    "description": "A blunt starter tool for shaping soft stone.",
+    "stackable": false,
+    "value": 12
+  }
+]
+

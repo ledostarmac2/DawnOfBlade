@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+; Original DawnOfBlade placeholder material: player capsule.
+[resource]
+albedo_color = Color(0.18, 0.43, 0.69, 1)
+roughness = 0.6
+metallic = 0.0

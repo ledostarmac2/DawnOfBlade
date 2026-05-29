@@ -1,0 +1,19 @@
+[
+  {
+    "term": "hello",
+    "translation": "hello",
+    "transliteration": "",
+    "partOfSpeech": "interjection",
+    "exampleSentence": "Hello, traveler.",
+    "difficulty": 1
+  },
+  {
+    "term": "path",
+    "translation": "path",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "The path leads to the market.",
+    "difficulty": 1
+  }
+]
+

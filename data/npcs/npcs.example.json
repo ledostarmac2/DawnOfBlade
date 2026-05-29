@@ -1,0 +1,9 @@
+[
+  {
+    "id": "mira_tutor",
+    "displayName": "Mira",
+    "role": "Village Tutor",
+    "dialogueRootId": "mira_intro"
+  }
+]
+

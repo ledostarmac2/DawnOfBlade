@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Original DawnOfBlade placeholder: generic currency/item icon -->
+  <circle cx="32" cy="32" r="26" fill="#e3b23c" stroke="#9c7416" stroke-width="3"/>
+  <circle cx="32" cy="32" r="18" fill="none" stroke="#9c7416" stroke-width="2"/>
+  <text x="32" y="40" font-family="serif" font-size="22" fill="#6b4f0f" text-anchor="middle">L</text>
+</svg>
