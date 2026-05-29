@@ -1,4 +1,5 @@
 using Godot;
+using DawnOfBlade.Interaction;
 using DawnOfBlade.Movement;
 
 namespace DawnOfBlade.Player;
@@ -51,6 +52,11 @@ public partial class PlayerController : CharacterBody3D
         var query = PhysicsRayQueryParameters3D.Create(rayOrigin, rayEnd);
         var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
 
+        if (TryInteract(hit))
+        {
+            return;
+        }
+
         if (!hit.TryGetValue("position", out var positionVariant))
         {
             return;
@@ -64,5 +70,24 @@ public partial class PlayerController : CharacterBody3D
             _moveTargetMarker.GlobalPosition = targetPosition + Vector3.Up * 0.03f;
             _moveTargetMarker.Visible = true;
         }
+    }
+
+    private bool TryInteract(Godot.Collections.Dictionary hit)
+    {
+        if (!hit.TryGetValue("collider", out var colliderVariant))
+        {
+            return false;
+        }
+
+        var collider = colliderVariant.AsGodotObject() as Node;
+        var interactable = collider as Interactable ?? collider?.GetParentOrNull<Interactable>();
+        if (interactable is null || !interactable.CanInteract(this))
+        {
+            return false;
+        }
+
+        _movement.ClearTarget();
+        interactable.Interact(this);
+        return true;
     }
 }

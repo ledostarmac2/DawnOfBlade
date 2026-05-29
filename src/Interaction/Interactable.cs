@@ -2,7 +2,7 @@ using Godot;
 
 namespace DawnOfBlade.Interaction;
 
-public abstract partial class Interactable : Node3D
+public abstract partial class Interactable : StaticBody3D
 {
     [Export] public string DisplayName { get; set; } = "Interactable";
 
@@ -17,4 +17,3 @@ public abstract partial class Interactable : Node3D
         GD.Print($"{interactor.Name} interacted with {DisplayName}.");
     }
 }
-

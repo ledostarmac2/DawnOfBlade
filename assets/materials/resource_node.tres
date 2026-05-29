@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+; Original DawnOfBlade placeholder material: gatherable sun shard node.
+[resource]
+albedo_color = Color(0.98, 0.68, 0.16, 1)
+roughness = 0.55
+metallic = 0.15

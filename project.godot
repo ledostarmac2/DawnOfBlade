@@ -8,9 +8,11 @@ config_version=5
 config/name="Dawn of Blade"
 run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="res://assets/branding/dawn_of_blade_logo.png"
+boot_splash/image="res://assets/branding/dawn_of_blade_logo.png"
+boot_splash/fullsize=false
+boot_splash/bg_color=Color(0.0156863, 0.0156863, 0.0156863, 1)
 
 [dotnet]
 
 project/assembly_name="DawnOfBlade"
-

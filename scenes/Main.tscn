@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://src/Core/GameManager.cs" id="1_game_manager"]
 [ext_resource type="Script" path="res://src/Player/PlayerController.cs" id="2_player_controller"]
@@ -7,6 +7,9 @@
 [ext_resource type="Material" path="res://assets/materials/npc.tres" id="5_npc_mat"]
 [ext_resource type="Material" path="res://assets/materials/player.tres" id="6_player_mat"]
 [ext_resource type="Material" path="res://assets/materials/move_target.tres" id="7_target_mat"]
+[ext_resource type="Script" path="res://src/Interaction/PrototypeNpc.cs" id="8_prototype_npc"]
+[ext_resource type="Script" path="res://src/Interaction/ResourceNode.cs" id="9_resource_node"]
+[ext_resource type="Material" path="res://assets/materials/resource_node.tres" id="10_resource_mat"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(24, 24)
@@ -29,6 +32,12 @@ height = 0.04
 radial_segments = 32
 rings = 1
 
+[sub_resource type="BoxMesh" id="BoxMesh_resource"]
+size = Vector3(0.8, 0.8, 0.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_resource"]
+size = Vector3(0.8, 0.8, 0.8)
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_game_manager")
 
@@ -46,6 +55,9 @@ shape = SubResource("BoxShape3D_ground")
 
 [node name="Npc" type="StaticBody3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.9, -3)
+script = ExtResource("8_prototype_npc")
+DisplayName = "Ari"
+SpeakerName = "Ari"
 
 [node name="Mesh" type="MeshInstance3D" parent="World/Npc"]
 mesh = SubResource("CapsuleMesh_actor")
@@ -53,6 +65,18 @@ surface_material_override/0 = ExtResource("5_npc_mat")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="World/Npc"]
 shape = SubResource("CapsuleShape3D_actor")
+
+[node name="SunShardNode" type="StaticBody3D" parent="World"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -4, 0.4, 3)
+script = ExtResource("9_resource_node")
+DisplayName = "Sun Shard"
+
+[node name="Mesh" type="MeshInstance3D" parent="World/SunShardNode"]
+mesh = SubResource("BoxMesh_resource")
+surface_material_override/0 = ExtResource("10_resource_mat")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/SunShardNode"]
+shape = SubResource("BoxShape3D_resource")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("2_player_controller")
