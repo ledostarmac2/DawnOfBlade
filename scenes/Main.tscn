@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://src/Core/GameManager.cs" id="1_game_manager"]
 [ext_resource type="Script" path="res://src/Player/PlayerController.cs" id="2_player_controller"]
 [ext_resource type="Script" path="res://src/Camera/OrbitCameraController.cs" id="3_orbit_camera"]
 [ext_resource type="Material" path="res://assets/materials/ground.tres" id="4_ground_mat"]
 [ext_resource type="Material" path="res://assets/materials/npc.tres" id="5_npc_mat"]
+[ext_resource type="Material" path="res://assets/materials/player.tres" id="6_player_mat"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_game_manager")
@@ -35,6 +36,13 @@ height = 1.8
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("2_player_controller")
+
+[node name="Mesh" type="MeshInstance3D" parent="Player"]
+mesh = CapsuleMesh {
+radius = 0.35
+height = 1.8
+}
+surface_material_override/0 = ExtResource("6_player_mat")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 shape = CapsuleShape3D {

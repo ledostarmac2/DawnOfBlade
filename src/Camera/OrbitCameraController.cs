@@ -4,7 +4,7 @@ namespace DawnOfBlade.Camera;
 
 public partial class OrbitCameraController : Node3D
 {
-    [Export] public NodePath? FollowTargetPath { get; set; }
+    [Export] public NodePath FollowTargetPath { get; set; } = new("");
     [Export] public float FollowSmoothing { get; set; } = 12.0f;
     [Export] public float RotationSpeed { get; set; } = 0.01f;
     [Export] public float ZoomSpeed { get; set; } = 0.5f;
@@ -17,7 +17,7 @@ public partial class OrbitCameraController : Node3D
 
     public override void _Ready()
     {
-        _followTarget = FollowTargetPath is null || FollowTargetPath.IsEmpty ? GetParent()?.GetNodeOrNull<Node3D>("Player") : GetNodeOrNull<Node3D>(FollowTargetPath);
+        _followTarget = FollowTargetPath.IsEmpty ? GetParent()?.GetNodeOrNull<Node3D>("Player") : GetNodeOrNull<Node3D>(FollowTargetPath);
         _camera = GetNodeOrNull<Camera3D>("Camera3D");
         ApplyZoom();
     }
@@ -66,4 +66,3 @@ public partial class OrbitCameraController : Node3D
         _camera.LookAt(GlobalPosition, Vector3.Up);
     }
 }
-

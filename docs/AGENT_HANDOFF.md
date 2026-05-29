@@ -4,7 +4,16 @@ This project can use local files for coordination between coding agents such as 
 
 ## Shared Board
 
-Use `tools/agent-board.example.json` as the template for a working `tools/agent-board.local.json` file. The local file is ignored by git if it ever includes temporary notes, credentials, private URLs, or work-in-progress context.
+Use `tools/agent-board.json` for shared, committed tasks. Use `tools/agent-board.local.json` for private work-in-progress notes; the local file is ignored by git.
+
+The helper CLI in `tools/agentboard.py` can list, claim, delegate, update, and annotate tasks without hand-editing JSON:
+
+```powershell
+python tools/agentboard.py list
+python tools/agentboard.py claim LQ-001 --owner codex
+python tools/agentboard.py delegate LQ-001 --to claude --note "Needs scene wiring review."
+python tools/agentboard.py state LQ-001 --to review --verify "JSON validation ok"
+```
 
 ## Task States
 
@@ -26,4 +35,3 @@ Each handoff should include:
 - Remaining questions.
 
 Agents should keep handoff notes factual and concise. Do not store secrets, API keys, personal data, or proprietary source material in handoff files.
-

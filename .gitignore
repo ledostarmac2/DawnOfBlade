@@ -19,6 +19,7 @@ crash/
 *.log
 .env
 tools/agent-board.local.json
+assets/textures/tmp/
 *.db
 *.sqlite
 *.sqlite3
