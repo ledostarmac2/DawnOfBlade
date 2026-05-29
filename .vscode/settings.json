@@ -1,0 +1,8 @@
+{
+  "dotnet.defaultSolution": "DawnOfBlade.sln",
+  "terminal.integrated.env.windows": {
+    "DOTNET_ROOT": "${workspaceFolder}\\.tools\\dotnet",
+    "PATH": "${workspaceFolder}\\.tools\\dotnet;${env:PATH}"
+  },
+  "omnisharp.sdkPath": "${workspaceFolder}\\.tools\\dotnet\\sdk\\6.0.428"
+}

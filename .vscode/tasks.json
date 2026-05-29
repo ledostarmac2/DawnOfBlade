@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "restore",
+      "type": "shell",
+      "command": "${workspaceFolder}\\.tools\\dotnet\\dotnet.exe",
+      "args": ["restore", "DawnOfBlade.sln"],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "${workspaceFolder}\\.tools\\dotnet\\dotnet.exe",
+      "args": ["build", "DawnOfBlade.sln", "--configuration", "Debug"],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": "restore"
+    },
+    {
+      "label": "run godot",
+      "type": "shell",
+      "command": "${workspaceFolder}\\.tools\\godot\\Godot_v4.2.2-stable_mono_win64\\Godot_v4.2.2-stable_mono_win64.exe",
+      "args": ["--path", "${workspaceFolder}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "export windows exe",
+      "type": "shell",
+      "command": "${workspaceFolder}\\.tools\\godot\\Godot_v4.2.2-stable_mono_win64\\Godot_v4.2.2-stable_mono_win64_console.exe",
+      "args": ["--headless", "--path", "${workspaceFolder}", "--export-release", "Windows Desktop", "exports/windows/DawnOfBlade.exe"],
+      "problemMatcher": [],
+      "dependsOn": "build"
+    }
+  ]
+}
