@@ -10,6 +10,35 @@
     "displayName": "Crafting",
     "description": "Turn raw materials into tools and trade goods.",
     "maxLevel": 99
+  },
+  {
+    "id": "language",
+    "displayName": "Language",
+    "description": "Learn vocabulary through dialogue, quests, and practice.",
+    "maxLevel": 99
+  },
+  {
+    "id": "attack",
+    "displayName": "Attack",
+    "description": "Improves melee accuracy.",
+    "maxLevel": 99
+  },
+  {
+    "id": "strength",
+    "displayName": "Strength",
+    "description": "Increases melee damage.",
+    "maxLevel": 99
+  },
+  {
+    "id": "defense",
+    "displayName": "Defense",
+    "description": "Reduces the chance of being hit.",
+    "maxLevel": 99
+  },
+  {
+    "id": "hitpoints",
+    "displayName": "Hitpoints",
+    "description": "Determines how much damage you can take.",
+    "maxLevel": 99
   }
 ]
-

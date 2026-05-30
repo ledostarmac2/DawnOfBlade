@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://src/Core/GameManager.cs" id="1_game_manager"]
 [ext_resource type="Script" path="res://src/Player/PlayerController.cs" id="2_player_controller"]
@@ -10,6 +10,8 @@
 [ext_resource type="Script" path="res://src/Interaction/PrototypeNpc.cs" id="8_prototype_npc"]
 [ext_resource type="Script" path="res://src/Interaction/ResourceNode.cs" id="9_resource_node"]
 [ext_resource type="Material" path="res://assets/materials/resource_node.tres" id="10_resource_mat"]
+[ext_resource type="Script" path="res://src/Interaction/HostileActor.cs" id="11_hostile"]
+[ext_resource type="Script" path="res://src/Interaction/Shopkeeper.cs" id="12_shopkeeper"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(24, 24)
@@ -58,6 +60,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.9, -3)
 script = ExtResource("8_prototype_npc")
 DisplayName = "Ari"
 SpeakerName = "Ari"
+Seed = 7
 
 [node name="Mesh" type="MeshInstance3D" parent="World/Npc"]
 mesh = SubResource("CapsuleMesh_actor")
@@ -66,17 +69,46 @@ surface_material_override/0 = ExtResource("5_npc_mat")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="World/Npc"]
 shape = SubResource("CapsuleShape3D_actor")
 
-[node name="SunShardNode" type="StaticBody3D" parent="World"]
+[node name="SunleafNode" type="StaticBody3D" parent="World"]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -4, 0.4, 3)
 script = ExtResource("9_resource_node")
-DisplayName = "Sun Shard"
+DisplayName = "Sunleaf"
 
-[node name="Mesh" type="MeshInstance3D" parent="World/SunShardNode"]
+[node name="Mesh" type="MeshInstance3D" parent="World/SunleafNode"]
 mesh = SubResource("BoxMesh_resource")
 surface_material_override/0 = ExtResource("10_resource_mat")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="World/SunShardNode"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/SunleafNode"]
 shape = SubResource("BoxShape3D_resource")
+
+[node name="TrainingDummy" type="StaticBody3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.9, -4)
+script = ExtResource("11_hostile")
+DisplayName = "Training Dummy"
+MaxHitpoints = 12
+AttackLevel = 2
+StrengthLevel = 3
+DefenseLevel = 1
+
+[node name="Mesh" type="MeshInstance3D" parent="World/TrainingDummy"]
+mesh = SubResource("CapsuleMesh_actor")
+surface_material_override/0 = ExtResource("5_npc_mat")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/TrainingDummy"]
+shape = SubResource("CapsuleShape3D_actor")
+
+[node name="Shopkeeper" type="StaticBody3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.9, 3)
+script = ExtResource("12_shopkeeper")
+DisplayName = "Crossroads Supplies"
+ShopId = "village_general"
+
+[node name="Mesh" type="MeshInstance3D" parent="World/Shopkeeper"]
+mesh = SubResource("CapsuleMesh_actor")
+surface_material_override/0 = ExtResource("10_resource_mat")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Shopkeeper"]
+shape = SubResource("CapsuleShape3D_actor")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("2_player_controller")

@@ -1,5 +1,12 @@
 [
   {
+    "id": "coins",
+    "displayName": "Coins",
+    "description": "The common currency of the realm.",
+    "stackable": true,
+    "value": 1
+  },
+  {
     "id": "sunleaf",
     "displayName": "Sunleaf",
     "description": "A bright herb used in simple village remedies.",
@@ -12,6 +19,33 @@
     "description": "A blunt starter tool for shaping soft stone.",
     "stackable": false,
     "value": 12
+  },
+  {
+    "id": "bronze_dagger",
+    "displayName": "Bronze Dagger",
+    "description": "A light, fast starter blade.",
+    "stackable": false,
+    "value": 25
+  },
+  {
+    "id": "iron_shortblade",
+    "displayName": "Iron Shortblade",
+    "description": "A sturdier blade for a trained arm.",
+    "stackable": false,
+    "value": 80
+  },
+  {
+    "id": "oak_buckler",
+    "displayName": "Oak Buckler",
+    "description": "A simple round shield of banded oak.",
+    "stackable": false,
+    "value": 35
+  },
+  {
+    "id": "travelers_tunic",
+    "displayName": "Traveler's Tunic",
+    "description": "Padded cloth that turns a glancing blow.",
+    "stackable": false,
+    "value": 20
   }
 ]
-

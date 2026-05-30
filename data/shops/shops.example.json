@@ -1,0 +1,14 @@
+[
+  {
+    "id": "village_general",
+    "displayName": "Crossroads Supplies",
+    "stock": [
+      { "itemId": "sunleaf", "quantity": 50, "price": 4 },
+      { "itemId": "practice_chisel", "quantity": 5, "price": 15 },
+      { "itemId": "travelers_tunic", "quantity": 10, "price": 20 },
+      { "itemId": "oak_buckler", "quantity": 5, "price": 35 },
+      { "itemId": "bronze_dagger", "quantity": 10, "price": 25 },
+      { "itemId": "iron_shortblade", "quantity": 2, "price": 80 }
+    ]
+  }
+]

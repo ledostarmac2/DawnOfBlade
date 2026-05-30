@@ -1,0 +1,38 @@
+[
+  {
+    "itemId": "bronze_dagger",
+    "slot": "Weapon",
+    "attackBonus": 4,
+    "strengthBonus": 3,
+    "defenseBonus": 0,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "iron_shortblade",
+    "slot": "Weapon",
+    "attackBonus": 7,
+    "strengthBonus": 6,
+    "defenseBonus": 0,
+    "requiredAttack": 5,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "oak_buckler",
+    "slot": "Shield",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 5,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "travelers_tunic",
+    "slot": "Body",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 3,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  }
+]

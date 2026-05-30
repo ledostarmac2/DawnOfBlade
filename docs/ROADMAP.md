@@ -1,42 +1,43 @@
 # Roadmap
 
-## Phase 0: Repo Baseline
+Status legend: ✅ done · 🔧 in progress · ⬜ not started
+
+## Phase 0: Repo Baseline ✅
 
 Create the project structure, docs, Godot placeholders, data examples, and initial C# systems.
 
-## Phase 1: Player Movement, Camera, Prototype Map
+## Phase 1: Player Movement, Camera, Prototype Map ✅
 
 Wire a playable scene with a placeholder map, player capsule, orbit camera, click-to-move target movement, and navigation TODOs.
 
-## Phase 2: Interaction System and NPC Dialogue
+## Phase 2: Interaction System and NPC Dialogue ✅
 
-Add click detection, interactable NPCs, dialogue state, and a simple dialogue popup.
+Add click detection, interactable NPCs, dialogue state, and a simple dialogue popup. Dialogue now reads from `data/dialogue/dialogue.example.json`.
 
-## Phase 3: Inventory and Skills
+## Phase 3: Inventory and Skills ✅
 
-Load item and skill definitions, track inventory, add XP, and expose basic debug UI for testing.
+Load item and skill definitions via `DefinitionDatabase`, track inventory, add XP, and expose debug UI (status/quest readout, craft/save/load buttons) for testing.
 
-## Phase 4: One Gathering Skill and One Crafting Skill
+## Phase 4: One Gathering Skill and One Crafting Skill ✅
 
-Implement one resource node, one gathered item, one recipe, and XP rewards.
+Gather Sunleaf (foraging XP) from a resource node and craft a Practice Chisel (crafting XP) from 2 Sunleaf.
 
-## Phase 5: Language-Learning Prompt System
+## Phase 5: Language-Learning Prompt System ✅
 
-Load vocabulary data and present prompts through dialogue, quests, or world interactions.
+Vocabulary is loaded from `data/vocabulary/vocabulary.example.json` and presented as multiple-choice prompts through NPC dialogue; correct answers grant language XP and unlock terms.
 
-## Phase 6: Quest System
+## Phase 6: Quest System ✅
 
-Track quest states, objectives, progress, rewards, and dialogue integration.
+`QuestLog`/`QuestState` track objectives and progress; rewards (`xp:` / `item:` tokens) are granted on completion and shown in the HUD. The "First Words" quest is wired to gathering and prompts.
 
-## Phase 7: Save/Load
+## Phase 7: Save/Load ✅
 
-Persist player position, inventory, skill XP, quest progress, and unlocked vocabulary locally.
+`SaveService` + `SaveSerializer` persist player position, inventory, skill XP, quest progress, and unlocked vocabulary to `user://savegame.json`; the save loads automatically on entering the game.
 
-## Phase 8: Combat Prototype
+## Phase 8: Combat Prototype ✅
 
-Add simple combat stats, one hostile test actor, damage, defeat state, and recovery.
+`CombatStats` plus a clickable `HostileActor` (Training Dummy): trading blows, defeat state, timed enemy revival, and player knock-out recovery.
 
-## Phase 9: Polish and Content Tools
+## Phase 9: Polish and Content Tools ✅
 
-Improve content workflows, editor validation, placeholder art direction, UI polish, and testing.
-
+Branded login/account-creation screen, data-driven content workflow, and a runnable xUnit test suite (`tests/`) including data-schema validation. Further art direction remains an ongoing effort.
