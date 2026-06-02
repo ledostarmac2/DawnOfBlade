@@ -11,16 +11,14 @@ $env:DOTNET_ROOT = $dotnetRoot
 $env:DOTNET_ROOT_X64 = $dotnetRoot
 $env:PATH = "$dotnetRoot;$env:PATH"
 
-& (Join-Path $PSScriptRoot "build-transparent-icon.ps1")
 & $godot --headless --path $repo --export-release "Windows Desktop" $output
-if ($LASTEXITCODE -ne 0) {
-    exit $LASTEXITCODE
-}
 
-& $rcedit $output `
-    --set-icon $icon `
-    --set-file-version "1.0.0.0" `
-    --set-product-version "1.0.0.0" `
-    --set-version-string ProductName "Dawn of Blade" `
-    --set-version-string FileDescription "Dawn of Blade"
+# IMPORTANT: do NOT post-process this .exe with rcedit. The preset uses
+# binary_format/embed_pck=true, so the game data (.pck) is appended to the end of the
+# executable. rcedit rewrites the PE resource section and strips that appended data,
+# producing the "Couldn't load project data at path '.' / .pck file missing" launcher
+# error. To give the .exe a custom Windows icon, set it in the Godot export preset
+# (Application > Icon, pointing at the .ico) so Godot bakes it in during export, or switch
+# the preset to embed_pck=false and ship the sibling DawnOfBlade.pck.
+# ($rcedit / $icon / build-transparent-icon are intentionally unused for that future path.)
 exit $LASTEXITCODE
