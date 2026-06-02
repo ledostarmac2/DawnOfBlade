@@ -245,22 +245,23 @@
       "delegateTo": null,
       "depends": [],
       "filesTouched": [
-        "src/GameSystems/ItemCatalog.cs",
-        "src/GameSystems/PersistenceModels.cs",
-        "src/GameSystems/LootTable.cs",
-        "src/GameSystems/LootRoller.cs",
-        "src/GameSystems/ResourceSpawnerPool.cs",
-        "src/GameSystems/TransactionLog.cs",
-        "src/GameSystems/MarketOrder.cs",
-        "src/GameSystems/MarketEngine.cs",
         "src/GameSystems/CharacterInitializer.cs",
         "src/GameSystems/DisconnectPolicy.cs",
+        "src/GameSystems/ItemCatalog.cs",
+        "src/GameSystems/LootRoller.cs",
+        "src/GameSystems/LootTable.cs",
+        "src/GameSystems/MarketEngine.cs",
+        "src/GameSystems/MarketOrder.cs",
+        "src/GameSystems/PersistenceModels.cs",
+        "src/GameSystems/ResourceSpawnerPool.cs",
+        "src/GameSystems/TransactionLog.cs",
         "tests/GameSystemsTests.cs"
       ],
-      "notes": "Take the isolated pure-C# game systems package from Parts 17-20. Keep changes in NEW src/GameSystems paths and focused tests so Codex can build River Valley concurrently. [claude done] Engine-independent Parts 17-20 in src/GameSystems/: item/recipe schemas + persistence row models (17); weighted multi-tier LootTable/LootRoller + ResourceSpawnerPool deplete/respawn (18); MarketEngine escrow + ascending-price matching with partial fills/spread refund + TransactionLogger audit bus (19); CharacterInitializer fresh-spawn matrix + DisconnectPolicy combat-logging state machine (20). Pure C#; reuses IRandomSource/GridCoordinate/WorldZone/ICommunicationService. No scenes/UI/GameManager touched.",
+      "notes": "Claude deliverable reconciled: isolated pure-C# game systems foundations landed, including persistence models, character initialization, catalog, weighted loot, market matching, transaction logging, resource spawner pools, disconnect policy, and tests.",
       "verification": [
         "dotnet build 0/0",
-        "15 GameSystems tests pass; full suite 107 passed"
+        "15 GameSystems tests pass; full suite 107 passed",
+        "dotnet build passed; full repo-local test suite passed 107/107 including GameSystemsTests."
       ],
       "updated": "2026-06-02"
     },
@@ -342,13 +343,68 @@
     {
       "id": "LQ-016",
       "title": "Add facing and procedural character animations",
-      "state": "claimed",
+      "state": "done",
       "owner": "codex",
       "delegateTo": null,
       "depends": [],
-      "filesTouched": [],
-      "notes": "Codex: orient player toward movement and interactions; add procedural idle/walk states and weapon-category attack animations on HumanoidVisual; trigger attacks from combat; verify and rebuild EXE.",
-      "verification": [],
+      "filesTouched": [
+        "data/equipment/equipment.example.json",
+        "data/items/items.example.json",
+        "data/shops/shops.example.json",
+        "exports/windows/DawnOfBlade.exe",
+        "src/Characters/HumanoidVisual.cs",
+        "src/Core/GameManager.cs",
+        "src/Player/PlayerController.cs"
+      ],
+      "notes": "Implemented movement-facing orientation and procedural animation states. HumanoidVisual now breathes and shifts at idle, swings limbs while walking/running, and plays weapon-category attacks for unarmed, blade, bow, staff, axe, and pickaxe. Combat faces targets and triggers equipped attack pose. Added representative village-shop items for every weapon family and rebuilt EXE.",
+      "verification": [
+        "dotnet build DawnOfBlade.csproj passed 0 warnings; repo-local DOTNET_ROOT dotnet test tests/DawnOfBlade.Tests.csproj passed 107/107; export release completed; packaged EXE stayed running for 5-second launch check."
+      ],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-017",
+      "title": "Expand world scale buildings interiors NPCs and transparent icon",
+      "state": "done",
+      "owner": "codex",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [
+        "assets/branding/dawn_of_blade_icon_transparent.ico",
+        "assets/branding/dawn_of_blade_icon_transparent.png",
+        "export_presets.cfg",
+        "exports/windows/DawnOfBlade.exe",
+        "project.godot",
+        "scenes/Main.tscn",
+        "src/World/OpenWorldBuilder.cs",
+        "src/World/WorldBuilding.cs",
+        "tests/ExpandedWorldTests.cs",
+        "tools/build-transparent-icon.ps1",
+        "tools/export-windows.ps1"
+      ],
+      "notes": "Implemented transparent desktop icon and expansive world pass: transparent PNG plus multi-resolution ICO, project-local official rcedit export stamping, 3.6km traversable world (>12 minutes normal walk edge-to-edge), broad districts, road network, river extension, 84 hills, 360 background trees, 180 rocks, ten major landmark buildings with automatic roof fade while inside, and 60 deterministic contextually clustered NPCs.",
+      "verification": [
+        "dotnet build DawnOfBlade.csproj passed 0 warnings; repo-local dotnet test passed 109/109; Godot headless Main scene initialized; exported EXE embedded icon extracted with corner alpha 0; packaged EXE stayed running for 7-second launch check."
+      ],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-018",
+      "title": "Add engine-independent River Valley content (loot, recipe, node map)",
+      "state": "done",
+      "owner": "claude",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [
+        "src/GameSystems/Content/RegionContent.cs",
+        "src/GameSystems/Content/MonsterLoot.cs",
+        "tests/StartingRegionContentTests.cs"
+      ],
+      "notes": "Engine-independent gameplay content for the River Valley starting region (Parts 22-25), kept out of Godot/scene so it does not overlap Codex's world-scale visual expansion (LQ-017). RegionContent: Part 25 interaction-node map (ore/tree/cooking/spinning coords + skill + level + yield + respawn), respawn point (35,35), bridge tiles, bronze smelting RecipeData, and a pre-seeded ResourceSpawnerPool. MonsterLoot: chicken/skeleton/goblin/rat archetypes with LootTable drops rolled through the GameSystems LootRoller.",
+      "verification": [
+        "dotnet build 0/0",
+        "8 StartingRegionContent tests pass; full suite 117 passed"
+      ],
       "updated": "2026-06-02"
     }
   ]
