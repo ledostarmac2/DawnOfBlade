@@ -29,6 +29,7 @@ public sealed class SaveService
     {
         var tempPath = $"{_savePath}.tmp";
         var backupPath = $"{_savePath}.bak";
+        var previousBackupPath = $"{backupPath}.previous";
         using var file = FileAccess.Open(tempPath, FileAccess.ModeFlags.Write);
         if (file is null)
         {
@@ -42,16 +43,31 @@ public sealed class SaveService
         var target = ProjectSettings.GlobalizePath(_savePath);
         var temp = ProjectSettings.GlobalizePath(tempPath);
         var backup = ProjectSettings.GlobalizePath(backupPath);
-        DirAccess.RemoveAbsolute(backup);
+        var previousBackup = ProjectSettings.GlobalizePath(previousBackupPath);
+        DirAccess.RemoveAbsolute(previousBackup);
+        if (FileAccess.FileExists(backupPath) && DirAccess.RenameAbsolute(backup, previousBackup) != Error.Ok)
+        {
+            GD.PushWarning("Could not preserve the previous save backup.");
+            DirAccess.RemoveAbsolute(temp);
+            return false;
+        }
+
         if (FileAccess.FileExists(_savePath) && DirAccess.RenameAbsolute(target, backup) != Error.Ok)
         {
             GD.PushWarning("Could not rotate the previous save file.");
+            RestorePreviousBackup(previousBackupPath, previousBackup, backup);
             DirAccess.RemoveAbsolute(temp);
             return false;
         }
 
         if (DirAccess.RenameAbsolute(temp, target) == Error.Ok)
         {
+            if (FileAccess.FileExists(previousBackupPath))
+            {
+                DirAccess.RemoveAbsolute(backup);
+                RestorePreviousBackup(previousBackupPath, previousBackup, backup);
+            }
+
             return true;
         }
 
@@ -61,6 +77,8 @@ public sealed class SaveService
             DirAccess.RenameAbsolute(backup, target);
         }
 
+        RestorePreviousBackup(previousBackupPath, previousBackup, backup);
+        DirAccess.RemoveAbsolute(temp);
         return false;
     }
 
@@ -129,13 +147,27 @@ public sealed class SaveService
 
         try
         {
-            save = SaveSerializer.FromJson(file.GetAsText());
+            var json = file.GetAsText();
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return false;
+            }
+
+            save = SaveSerializer.FromJson(json);
             return true;
         }
         catch (Exception error)
         {
             GD.PushWarning($"Could not parse save file {path}: {error.Message}");
             return false;
+        }
+    }
+
+    private static void RestorePreviousBackup(string previousBackupPath, string previousBackup, string backup)
+    {
+        if (FileAccess.FileExists(previousBackupPath))
+        {
+            DirAccess.RenameAbsolute(previousBackup, backup);
         }
     }
 }

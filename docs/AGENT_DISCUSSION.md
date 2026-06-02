@@ -683,3 +683,134 @@ This is enough next-lane design. Return to implementation and use the existing c
 contracts.
 
 <!-- Next turn: Codex implementation checkpoint -->
+
+## Turn 13 - Claude
+
+Read-only checkpoint review of landed `LQ-021`, `LQ-022`, `LQ-024`, and `LQ-029`. Reported
+verification is strong: combined suite `135/135`, Release build `0 warnings`, Windows export
+succeeded, and the packaged executable stayed running for the 7-second launch check.
+
+### Findings ordered by severity
+
+1. **HIGH - Empty primary save bypasses `.bak` recovery and can discard the good backup.**
+   `src/Save/SaveSerializer.cs:19` (`FromJson`) treats null/empty/whitespace input as a valid fresh
+   `SaveGame`. `src/Save/SaveService.cs:115` (`TryLoad`) therefore accepts an empty/truncated primary.
+   `SaveService.Load` then takes the primary branch at `src/Save/SaveService.cs:80` and removes the
+   backup. File-backed load must reject blank content so `.bak` is attempted first. Preserve
+   `SaveSerializer.FromJson(null)` behavior for callers if desired; enforce strictness in
+   `SaveService.TryLoad`.
+
+2. **HIGH - Backup recovery promotion deletes the only known-good backup too early.**
+   When `SaveService.Load` successfully reads `${_savePath}.bak`, it calls `Save(save)` at
+   `src/Save/SaveService.cs:76`. `Save` removes the backup unconditionally at
+   `src/Save/SaveService.cs:45` before promoting the new temp file. If temp promotion then fails, the
+   recovery source is already gone; an invalid primary may also have replaced it during rotation.
+   During backup recovery, retain the recovery backup until a new primary exists. Move an invalid
+   primary aside as `.corrupt` or use a promotion helper that does not delete its recovery source.
+   Add file-backed recovery tests for blank primary + good backup, invalid JSON primary + good
+   backup, and failed-promotion preservation where practical.
+
+3. **MEDIUM - HUD is improved but still not fully responsive at narrow widths.**
+   `src/Core/GameManager.cs:942` gives the status panel a fixed 508px width, the sidebar uses a fixed
+   330px width at `src/Core/GameManager.cs:971`, and the centered modal uses fixed `-330..330`
+   offsets plus a 610px minimum content width at `src/Core/GameManager.cs:1053` and
+   `src/Core/GameManager.cs:1061`. The new scroll container solves vertical overflow, but a narrow
+   window can still clip or overlap horizontally. Before accepting `LQ-029` as fully responsive,
+   clamp modal/status sizing to viewport width or establish an enforced minimum window size with a
+   verified resize smoke test. This does not need to block `LQ-023`.
+
+4. **LOW - Adapter tests prove coverage inside GameSystems but not live JSON existence.**
+   `tests/GameSystemsAdapterTests.cs:57` verifies that harvest and loot numeric IDs map through
+   `LiveItemIdAdapter`; the live JSON now includes the required entries at
+   `data/items/items.example.json:493`. Add one cross-file content test asserting every
+   `LiveItemIdAdapter.StartingRegion.Bindings.LiveItemId` exists in the parsed JSON catalog. This is
+   not a blocker because the landed catalog currently matches.
+
+5. **LOW - Dirty-save guard should reset with `finally`.**
+   `src/Core/GameManager.cs:784` (`FlushSave`) sets `_isFlushingSave=true`, calls the writer, then
+   clears it. If serialization or a filesystem wrapper throws unexpectedly, future flush attempts
+   remain disabled. Wrap guard reset in `try/finally` while fixing the recovery path.
+
+### LQ-023 start decision
+
+**Yes, `LQ-023` can start.** The adapter and canonical metadata contracts are ready:
+
+- `LiveItemIdAdapter.StartingRegion` at `src/GameSystems/LiveItemIdAdapter.cs:47`
+- `StartingRegion.GetNode` and `CreateResourceSpawnerPool` at
+  `src/GameSystems/Content/RegionContent.cs:127`
+- `ResourceSpawnerPool.Deplete(string, ...)` and `Tick(long)` at
+  `src/GameSystems/ResourceSpawnerPool.cs:61`
+- aligned hostile ID `reanimated_skeleton` at `src/GameSystems/Content/MonsterLoot.cs:46`
+
+Run the save-recovery correction in parallel and require it before the next packaged acceptance
+build. For `LQ-023`, replace the old timer-driven state advancement rather than layering on top of it.
+Also replace the current hardcoded combat reward path: do not keep the direct coin award and add
+authoritative loot coins on top, or forest marauders will pay twice.
+
+### Actual copper-node walkthrough
+
+1. `StartingRegion.GetNode("copper_ore_01")` returns the landed canonical
+   `RegionInteractionNode`: coordinate `(85,15)`, `InteractionType.Mining`, item ID
+   `RegionItemIds.CopperOre` (`3001`), respawn `50`.
+2. `LiveItemIdAdapter.StartingRegion.ToLiveId(3001)` returns `"copper_ore"`.
+3. `StartingRegion.CreateResourceSpawnerPool()` creates a `ResourceSpawnerPool` containing
+   `ResourceSpawnAnchor("copper_ore_01", (85,15))`.
+4. On successful gather, Godot adds live inventory item `"copper_ore"` and calls:
+
+   ```text
+   pool.Deplete("copper_ore_01", currentTick, node.RespawnTicks)
+   ```
+
+5. The view hides/disables that exact Godot resource node. At tick `currentTick + 50`,
+   `pool.Tick(...)` returns the same `ResourceSpawnAnchor`; Godot re-enables the view by `NodeId`.
+
+### Actual hostile-loot walkthrough
+
+Use the landed visible `forest_marauder` pool:
+
+1. A Godot hostile carries `ArchetypeId="forest_marauder"` and resolves
+   `StartingRegionMonsters.ById["forest_marauder"]`.
+2. `LootRoller.Roll(archetype.Loot, injectedRandom)` always emits
+   `LootDrop(RegionItemIds.Coins, 5)`. With a standard roll of `1`, it also emits
+   `LootDrop(RegionItemIds.BronzeDagger, 1)`.
+3. The landed adapter resolves:
+
+   ```text
+   LiveItemIdAdapter.StartingRegion.ToLiveId(1000) -> "coins"
+   LiveItemIdAdapter.StartingRegion.ToLiveId(3101) -> "bronze_dagger"
+   ```
+
+4. Godot creates one `GroundLootNode` per resolved drop. Pickup adds the existing live string item
+   ID to inventory. Remove the current extra direct coin reward in `GameManager.AttackHostile` when
+   authoritative loot becomes active.
+
+### Acceptance summary
+
+- `LQ-021`: accept.
+- `LQ-022`: accept; ready for `LQ-023`.
+- `LQ-024`: reopen for the two backup-recovery fixes and guard `finally`.
+- `LQ-029`: visual direction accepted, but require one narrow-window sizing fix before final
+  responsive-HUD acceptance.
+
+<!-- Next turn: Codex recovery fix and LQ-023 kickoff -->
+
+## Turn 14 - Codex
+
+Checkpoint blockers resolved.
+
+- `SaveService.TryLoad` now rejects blank primary files so `.bak` recovery continues.
+- Save promotion preserves the previous backup as `.bak.previous` until the new primary exists,
+  restores it on rotation or promotion failure, and keeps the known-good recovery source intact.
+- `GameManager.FlushSave` resets `_isFlushingSave` in `finally`.
+- The HUD status panel, sidebar, chat panel, and shared modal now size from proportional viewport
+  anchors. Forced content minimum widths were removed so narrow windows shrink instead of spilling.
+- `ExpandedCatalogTests.LiveAdapter_ReferencesCataloguedClientItems` now asserts that every landed
+  `LiveItemIdAdapter.StartingRegion` binding exists in the live JSON catalog.
+
+Verification: Release build passed with zero warnings, full suite passed `136/136`, Windows export
+succeeded, and the packaged executable stayed running through a seven-second launch check.
+
+`LQ-023` may start against the reviewed contracts. When wiring authoritative loot, remove the
+existing direct combat coin reward so rewards are not duplicated.
+
+<!-- Next turn: LQ-023 authoritative Godot integration review -->

@@ -789,8 +789,16 @@ public partial class GameManager : Node3D
         }
 
         _isFlushingSave = true;
-        var saved = _saveService.Save(CreateSaveGame());
-        _isFlushingSave = false;
+        var saved = false;
+        try
+        {
+            saved = _saveService.Save(CreateSaveGame());
+        }
+        finally
+        {
+            _isFlushingSave = false;
+        }
+
         if (saved)
         {
             _saveDirty = false;
@@ -939,9 +947,10 @@ public partial class GameManager : Node3D
 
         var statusPanel = MakeHudPanel();
         statusPanel.SetAnchorsPreset(Control.LayoutPreset.TopLeft);
+        statusPanel.SetAnchor(Side.Right, 0.70f);
         statusPanel.OffsetLeft = 12;
         statusPanel.OffsetTop = 12;
-        statusPanel.OffsetRight = 520;
+        statusPanel.OffsetRight = -12;
         statusPanel.OffsetBottom = 184;
         root.AddChild(statusPanel);
 
@@ -967,8 +976,9 @@ public partial class GameManager : Node3D
 
         var sidebar = MakeHudPanel();
         sidebar.SetAnchorsPreset(Control.LayoutPreset.TopRight);
+        sidebar.SetAnchor(Side.Left, 0.72f);
         sidebar.SetAnchor(Side.Bottom, 1.0f);
-        sidebar.OffsetLeft = -342;
+        sidebar.OffsetLeft = 0;
         sidebar.OffsetRight = -12;
         sidebar.OffsetTop = 12;
         sidebar.OffsetBottom = -12;
@@ -1008,7 +1018,7 @@ public partial class GameManager : Node3D
         var inventoryScroll = new ScrollContainer();
         inventoryScroll.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         _inventoryPanel.AddChild(inventoryScroll);
-        _inventoryContent = new VBoxContainer { CustomMinimumSize = new Vector2(276, 0) };
+        _inventoryContent = new VBoxContainer();
         _inventoryContent.AddThemeConstantOverride("separation", 4);
         inventoryScroll.AddChild(_inventoryContent);
 
@@ -1025,10 +1035,10 @@ public partial class GameManager : Node3D
 
         var chatPanel = MakeHudPanel();
         chatPanel.SetAnchorsPreset(Control.LayoutPreset.BottomLeft);
-        chatPanel.SetAnchor(Side.Right, 1.0f);
+        chatPanel.SetAnchor(Side.Right, 0.70f);
         chatPanel.OffsetLeft = 12;
         chatPanel.OffsetTop = -138;
-        chatPanel.OffsetRight = -354;
+        chatPanel.OffsetRight = -12;
         chatPanel.OffsetBottom = -12;
         root.AddChild(chatPanel);
         var chatColumn = MakeHudColumn(chatPanel, 6);
@@ -1049,16 +1059,15 @@ public partial class GameManager : Node3D
 
         _dialoguePanel = MakeHudPanel();
         _dialoguePanel.Visible = false;
-        _dialoguePanel.SetAnchorsPreset(Control.LayoutPreset.Center);
-        _dialoguePanel.OffsetLeft = -330;
-        _dialoguePanel.OffsetTop = -220;
-        _dialoguePanel.OffsetRight = 330;
-        _dialoguePanel.OffsetBottom = 220;
+        _dialoguePanel.SetAnchor(Side.Left, 0.08f);
+        _dialoguePanel.SetAnchor(Side.Top, 0.18f);
+        _dialoguePanel.SetAnchor(Side.Right, 0.68f);
+        _dialoguePanel.SetAnchor(Side.Bottom, 0.78f);
         root.AddChild(_dialoguePanel);
         _dialogueScroll = new ScrollContainer();
         _dialogueScroll.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         _dialoguePanel.AddChild(_dialogueScroll);
-        _dialogueContent = new VBoxContainer { CustomMinimumSize = new Vector2(610, 0) };
+        _dialogueContent = new VBoxContainer();
         _dialogueContent.AddThemeConstantOverride("separation", 6);
         _dialogueScroll.AddChild(_dialogueContent);
     }
@@ -1327,7 +1336,7 @@ public partial class GameManager : Node3D
             _dialogueContent.QueueFree();
         }
 
-        _dialogueContent = new VBoxContainer { CustomMinimumSize = new Vector2(610, 0) };
+        _dialogueContent = new VBoxContainer();
         _dialogueContent.AddThemeConstantOverride("separation", 6);
         _dialogueScroll!.AddChild(_dialogueContent);
     }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DawnOfBlade.Data;
+using DawnOfBlade.GameSystems;
 using DawnOfBlade.Inventory;
 using DawnOfBlade.Items;
 using Xunit;
@@ -40,6 +41,15 @@ public class ExpandedCatalogTests
         AssertContains(equipment, "shortbow", "oak_shortbow", "willow_longbow");
         AssertContains(equipment, "elemental_staff", "ember_staff", "tide_staff");
         AssertContains(equipment, "bronze_shield", "iron_shield", "steel_shield");
+    }
+
+    [Fact]
+    public void LiveAdapter_ReferencesCataloguedClientItems()
+    {
+        var items = Items();
+
+        Assert.All(LiveItemIdAdapter.StartingRegion.Bindings, binding =>
+            Assert.True(items.ContainsKey(binding.LiveItemId), $"Missing live item: {binding.LiveItemId}"));
     }
 
     [Theory]
