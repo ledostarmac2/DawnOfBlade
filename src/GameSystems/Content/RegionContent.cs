@@ -79,25 +79,61 @@ public static class StartingRegion
             [RegionItemIds.TinOre] = 1,
         });
 
-    /// <summary>The Part 25 starting gameplay-loop interaction map.</summary>
+    /// <summary>
+    /// Canonical gameplay metadata for the 26 live harvestable River Valley nodes and its two
+    /// processing stations. Node ids and coordinates intentionally match the live world index.
+    /// </summary>
     public static readonly IReadOnlyList<RegionInteractionNode> InteractionNodes = new[]
     {
         new RegionInteractionNode("copper_ore_01", new GridCoordinate(85, 15), InteractionType.Mining, 1, RegionItemIds.CopperOre, OreRespawnTicks),
         new RegionInteractionNode("copper_ore_02", new GridCoordinate(87, 14), InteractionType.Mining, 1, RegionItemIds.CopperOre, OreRespawnTicks),
+        new RegionInteractionNode("copper_ore_03", new GridCoordinate(89, 17), InteractionType.Mining, 1, RegionItemIds.CopperOre, OreRespawnTicks),
+        new RegionInteractionNode("copper_ore_04", new GridCoordinate(91, 13), InteractionType.Mining, 1, RegionItemIds.CopperOre, OreRespawnTicks),
+        new RegionInteractionNode("copper_ore_05", new GridCoordinate(93, 18), InteractionType.Mining, 1, RegionItemIds.CopperOre, OreRespawnTicks),
+        new RegionInteractionNode("copper_ore_06", new GridCoordinate(84, 20), InteractionType.Mining, 1, RegionItemIds.CopperOre, OreRespawnTicks),
         new RegionInteractionNode("tin_ore_01", new GridCoordinate(95, 16), InteractionType.Mining, 1, RegionItemIds.TinOre, OreRespawnTicks),
         new RegionInteractionNode("tin_ore_02", new GridCoordinate(97, 15), InteractionType.Mining, 1, RegionItemIds.TinOre, OreRespawnTicks),
+        new RegionInteractionNode("tin_ore_03", new GridCoordinate(99, 18), InteractionType.Mining, 1, RegionItemIds.TinOre, OreRespawnTicks),
+        new RegionInteractionNode("tin_ore_04", new GridCoordinate(101, 14), InteractionType.Mining, 1, RegionItemIds.TinOre, OreRespawnTicks),
+        new RegionInteractionNode("tin_ore_05", new GridCoordinate(103, 20), InteractionType.Mining, 1, RegionItemIds.TinOre, OreRespawnTicks),
+        new RegionInteractionNode("tin_ore_06", new GridCoordinate(105, 17), InteractionType.Mining, 1, RegionItemIds.TinOre, OreRespawnTicks),
         new RegionInteractionNode("softwood_tree_01", new GridCoordinate(70, 60), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
         new RegionInteractionNode("softwood_tree_02", new GridCoordinate(74, 63), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_03", new GridCoordinate(78, 58), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_04", new GridCoordinate(82, 66), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_05", new GridCoordinate(87, 62), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_06", new GridCoordinate(91, 70), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_07", new GridCoordinate(96, 55), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_08", new GridCoordinate(100, 74), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_09", new GridCoordinate(105, 64), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_10", new GridCoordinate(109, 79), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_11", new GridCoordinate(114, 58), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_12", new GridCoordinate(116, 85), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_13", new GridCoordinate(72, 82), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
+        new RegionInteractionNode("softwood_tree_14", new GridCoordinate(88, 87), InteractionType.Woodcutting, 1, RegionItemIds.SoftwoodLogs, TreeRespawnTicks),
         new RegionInteractionNode("castle_cooking_hearth", new GridCoordinate(45, 35), InteractionType.Cooking, 1, 0, 0),
         new RegionInteractionNode("castle_spinning_wheel", new GridCoordinate(25, 40), InteractionType.Crafting, 1, 0, 0),
     };
 
+    public static readonly IReadOnlyDictionary<string, RegionInteractionNode> InteractionNodesById =
+        InteractionNodes.ToDictionary(node => node.NodeId, System.StringComparer.Ordinal);
+
     public static IEnumerable<RegionInteractionNode> NodesOfType(InteractionType type) =>
         InteractionNodes.Where(node => node.Interaction == type);
 
+    public static bool TryGetNode(string nodeId, out RegionInteractionNode node) =>
+        InteractionNodesById.TryGetValue(nodeId, out node!);
+
+    public static RegionInteractionNode GetNode(string nodeId) =>
+        TryGetNode(nodeId, out var node)
+            ? node
+            : throw new KeyNotFoundException($"No starting-region interaction node is registered for '{nodeId}'.");
+
     /// <summary>A spawner pool pre-seeded with every harvestable (non-processing) node tile.</summary>
     public static ResourceSpawnerPool CreateResourceSpawnerPool() =>
-        new(InteractionNodes.Where(n => !n.IsProcessingStation).Select(n => n.Coordinate));
+        new(InteractionNodes
+            .Where(node => !node.IsProcessingStation)
+            .Select(node => new ResourceSpawnAnchor(node.NodeId, node.Coordinate)));
 
     /// <summary>True for tiles west of the river channel — the hard safe zone (Part 23.1).</summary>
     public static bool IsWesternSafeSector(GridCoordinate tile) => tile.X < BridgeWest.X;

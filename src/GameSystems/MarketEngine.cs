@@ -85,12 +85,24 @@ public sealed class MarketEngine
 
         while (true)
         {
-            var bestSell = _sells.Where(o => !o.IsFilled)
-                .OrderBy(o => o.UnitPrice).ThenBy(o => o.OrderId).FirstOrDefault();
-            var bestBuy = _buys.Where(o => !o.IsFilled)
-                .OrderByDescending(o => o.UnitPrice).ThenBy(o => o.OrderId).FirstOrDefault();
+            var bestSell = _sells.Where(sell => !sell.IsFilled)
+                .OrderBy(sell => sell.UnitPrice)
+                .ThenBy(sell => sell.OrderId)
+                .FirstOrDefault(sell => _buys.Any(buy =>
+                    !buy.IsFilled &&
+                    buy.ItemId == sell.ItemId &&
+                    buy.UnitPrice >= sell.UnitPrice));
+            var bestBuy = bestSell is null
+                ? null
+                : _buys.Where(buy =>
+                        !buy.IsFilled &&
+                        buy.ItemId == bestSell.ItemId &&
+                        buy.UnitPrice >= bestSell.UnitPrice)
+                    .OrderByDescending(buy => buy.UnitPrice)
+                    .ThenBy(buy => buy.OrderId)
+                    .FirstOrDefault();
 
-            if (bestSell is null || bestBuy is null || bestSell.ItemId != bestBuy.ItemId || bestSell.UnitPrice > bestBuy.UnitPrice)
+            if (bestSell is null || bestBuy is null)
             {
                 break;
             }

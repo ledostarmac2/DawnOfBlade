@@ -1,4 +1,5 @@
 using Godot;
+using DawnOfBlade.Characters;
 using DawnOfBlade.Interaction;
 using DawnOfBlade.Movement;
 
@@ -56,8 +57,24 @@ public partial class PlayerController : CharacterBody3D
         TryCompletePendingInteraction();
         _movement.MoveSpeed = IsRunning ? RunSpeed : MoveSpeed;
         Velocity = _movement.GetVelocity(GlobalPosition);
+        UpdateFacingAndAnimation();
         MoveAndSlide();
         TryCompletePendingInteraction();
+    }
+
+    public void FaceTowards(Vector3 target)
+    {
+        var direction = target - GlobalPosition;
+        direction.Y = 0.0f;
+        if (direction.LengthSquared() > 0.001f)
+        {
+            Rotation = new Vector3(Rotation.X, Mathf.Atan2(-direction.X, -direction.Z), Rotation.Z);
+        }
+    }
+
+    public void PlayAttack(string? weaponItemId)
+    {
+        GetNodeOrNull<HumanoidVisual>("Humanoid")?.PlayAttack(weaponItemId);
     }
 
     public void ToggleRun()
@@ -243,5 +260,18 @@ public partial class PlayerController : CharacterBody3D
         {
             _moveTargetMarker.Visible = false;
         }
+    }
+
+    private void UpdateFacingAndAnimation()
+    {
+        var horizontalVelocity = new Vector3(Velocity.X, 0.0f, Velocity.Z);
+        if (horizontalVelocity.LengthSquared() > 0.001f)
+        {
+            FaceTowards(GlobalPosition + horizontalVelocity);
+        }
+
+        GetNodeOrNull<HumanoidVisual>("Humanoid")?.SetLocomotion(
+            horizontalVelocity.LengthSquared() > 0.001f,
+            horizontalVelocity.Length());
     }
 }

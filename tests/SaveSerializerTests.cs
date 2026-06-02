@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DawnOfBlade.Auth;
 using DawnOfBlade.Save;
 using Xunit;
 
@@ -46,11 +47,29 @@ public class SaveSerializerTests
     }
 
     [Theory]
-    [InlineData("Ledostar", "user://savegame_ledostar.json")]
-    [InlineData("A Name!", "user://savegame_a_name_.json")]
-    [InlineData(null, "user://savegame_guest.json")]
+    [InlineData("Ledostar", "user://savegame_ledostar_f3d5ebb2403eeb7e.json")]
+    [InlineData(null, "user://savegame_guest_84983c60f7daadc1.json")]
     public void BuildSavePath_IsAccountScopedAndFilesystemSafe(string? username, string expected)
     {
         Assert.Equal(expected, SaveService.BuildSavePath(username));
+    }
+
+    [Fact]
+    public void AccountIdentity_NormalizesConsistentlyAndAvoidsSanitizedPathCollisions()
+    {
+        Assert.Equal("ledostar", AccountIdentity.NormalizeUsername("  Ledostar "));
+        Assert.NotEqual(SaveService.BuildSavePath("a!b"), SaveService.BuildSavePath("a?b"));
+        Assert.Equal("user://savegame_a_b.json", SaveService.BuildLegacyAccountSavePath("A!B"));
+    }
+
+    [Fact]
+    public void SaveService_LoadCandidatesPreferNewThenBackupThenLegacyPaths()
+    {
+        var service = new SaveService("Ledostar");
+
+        Assert.Equal(service.SavePath, service.LoadCandidates()[0]);
+        Assert.Equal($"{service.SavePath}.bak", service.LoadCandidates()[1]);
+        Assert.Equal("user://savegame_ledostar.json", service.LoadCandidates()[2]);
+        Assert.Equal("user://savegame.json", service.LoadCandidates()[3]);
     }
 }

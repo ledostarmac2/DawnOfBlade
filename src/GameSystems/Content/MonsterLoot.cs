@@ -43,7 +43,7 @@ public static class StartingRegionMonsters
 
     /// <summary>Graveyard skeleton: passive-hostile melee, guaranteed brittle bones (Part 23.1).</summary>
     public static readonly MonsterArchetype Skeleton = new(
-        "skeleton", "Reanimated Skeleton", Level: 2, MaxHitpoints: 8, CombatStyle.Melee,
+        "reanimated_skeleton", "Reanimated Skeleton", Level: 2, MaxHitpoints: 8, CombatStyle.Melee,
         Aggressive: false, AggroRadius: 0,
         new LootTable(guaranteed: new[] { new LootDrop(RegionItemIds.BrittleBones, 1) }));
 

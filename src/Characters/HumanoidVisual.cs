@@ -11,6 +11,23 @@ public partial class HumanoidVisual : Node3D
     [Export] public string LegColor { get; set; } = "#3b3b46";
     [Export] public string BodyType { get; set; } = "slim";
 
+    private const float AttackDuration = 0.52f;
+
+    private float _animationTime;
+    private float _movementBlend;
+    private float _attackRemaining;
+    private WeaponAnimationType _weaponAnimation = WeaponAnimationType.Unarmed;
+
+    public enum WeaponAnimationType
+    {
+        Unarmed,
+        Blade,
+        Bow,
+        Staff,
+        Axe,
+        Pickaxe,
+    }
+
     public override void _Ready() => Apply(new Appearance
     {
         SkinTone = SkinTone,
@@ -30,6 +47,7 @@ public partial class HumanoidVisual : Node3D
 
         foreach (var child in GetChildren())
         {
+            RemoveChild(child);
             child.QueueFree();
         }
 
@@ -55,13 +73,120 @@ public partial class HumanoidVisual : Node3D
 
     public void ApplyEquipment(string? weaponItemId)
     {
-        GetNodeOrNull<Node3D>("Weapon")?.QueueFree();
+        if (GetNodeOrNull<Node3D>("Weapon") is { } oldWeapon)
+        {
+            RemoveChild(oldWeapon);
+            oldWeapon.QueueFree();
+        }
+        _weaponAnimation = WeaponTypeFor(weaponItemId);
         if (string.IsNullOrWhiteSpace(weaponItemId))
         {
             return;
         }
 
-        AddPart("Weapon", new BoxMesh { Size = new Vector3(0.12f, 1.05f, 0.12f) }, new Vector3(0.62f, 1.05f, 0), "#c6a45a");
+        var mesh = _weaponAnimation switch
+        {
+            WeaponAnimationType.Bow => new BoxMesh { Size = new Vector3(0.08f, 1.15f, 0.34f) },
+            WeaponAnimationType.Staff => new BoxMesh { Size = new Vector3(0.10f, 1.5f, 0.10f) },
+            WeaponAnimationType.Axe => new BoxMesh { Size = new Vector3(0.38f, 1.1f, 0.12f) },
+            WeaponAnimationType.Pickaxe => new BoxMesh { Size = new Vector3(0.52f, 1.1f, 0.12f) },
+            _ => new BoxMesh { Size = new Vector3(0.12f, 1.05f, 0.12f) },
+        };
+        AddPart("Weapon", mesh, new Vector3(0.62f, 1.05f, 0), "#c6a45a");
+    }
+
+    public override void _Process(double delta)
+    {
+        _animationTime += (float)delta;
+        _attackRemaining = Mathf.Max(0.0f, _attackRemaining - (float)delta);
+        ApplyProceduralPose();
+    }
+
+    public void SetLocomotion(bool isMoving, float speed)
+    {
+        _movementBlend = isMoving ? Mathf.Clamp(speed / 5.0f, 0.75f, 1.55f) : 0.0f;
+    }
+
+    public void PlayAttack(string? weaponItemId)
+    {
+        _weaponAnimation = WeaponTypeFor(weaponItemId);
+        _attackRemaining = AttackDuration;
+    }
+
+    private void ApplyProceduralPose()
+    {
+        var walk = Mathf.Sin(_animationTime * 8.0f * Mathf.Max(1.0f, _movementBlend));
+        var idle = Mathf.Sin(_animationTime * 2.1f);
+        var attackProgress = _attackRemaining > 0.0f ? 1.0f - _attackRemaining / AttackDuration : 0.0f;
+        var attackArc = _attackRemaining > 0.0f ? Mathf.Sin(attackProgress * Mathf.Pi) : 0.0f;
+
+        SetRotation("LeftArm", new Vector3(walk * 0.55f * _movementBlend, 0, 0));
+        SetRotation("RightArm", new Vector3(-walk * 0.55f * _movementBlend, 0, 0));
+        SetRotation("LeftLeg", new Vector3(-walk * 0.5f * _movementBlend, 0, 0));
+        SetRotation("RightLeg", new Vector3(walk * 0.5f * _movementBlend, 0, 0));
+        SetPositionY("Torso", 1.25f + idle * 0.018f + Mathf.Abs(walk) * 0.025f * _movementBlend);
+        SetPositionY("Head", 2.02f + idle * 0.014f);
+
+        if (_attackRemaining <= 0.0f)
+        {
+            return;
+        }
+
+        switch (_weaponAnimation)
+        {
+            case WeaponAnimationType.Bow:
+                SetRotation("LeftArm", new Vector3(-1.05f, 0.18f, -0.18f));
+                SetRotation("RightArm", new Vector3(-0.92f, -0.52f * attackArc, 0.24f));
+                SetRotation("Weapon", new Vector3(0, 0, -0.3f));
+                break;
+            case WeaponAnimationType.Staff:
+                SetRotation("RightArm", new Vector3(-1.25f + attackArc * 0.55f, 0, -0.16f));
+                SetRotation("Weapon", new Vector3(-0.35f - attackArc * 0.5f, 0, 0));
+                break;
+            case WeaponAnimationType.Axe:
+            case WeaponAnimationType.Pickaxe:
+                SetRotation("RightArm", new Vector3(-2.0f + attackArc * 2.65f, 0, -0.2f));
+                SetRotation("Weapon", new Vector3(-0.8f + attackArc * 1.8f, 0, 0));
+                break;
+            case WeaponAnimationType.Blade:
+                SetRotation("RightArm", new Vector3(-0.5f, 0, -0.4f + attackArc * 1.5f));
+                SetRotation("Weapon", new Vector3(0, 0, -0.3f + attackArc * 1.6f));
+                break;
+            default:
+                SetRotation("RightArm", new Vector3(-0.45f - attackArc * 1.0f, 0, 0));
+                break;
+        }
+    }
+
+    private static WeaponAnimationType WeaponTypeFor(string? itemId)
+    {
+        if (string.IsNullOrWhiteSpace(itemId))
+        {
+            return WeaponAnimationType.Unarmed;
+        }
+
+        var normalized = itemId.ToLowerInvariant();
+        if (normalized.Contains("bow")) return WeaponAnimationType.Bow;
+        if (normalized.Contains("staff") || normalized.Contains("catalyst")) return WeaponAnimationType.Staff;
+        if (normalized.Contains("hatchet") || normalized.Contains("axe")) return WeaponAnimationType.Axe;
+        if (normalized.Contains("pickaxe")) return WeaponAnimationType.Pickaxe;
+        return WeaponAnimationType.Blade;
+    }
+
+    private void SetRotation(string nodeName, Vector3 rotation)
+    {
+        if (GetNodeOrNull<Node3D>(nodeName) is { } node)
+        {
+            node.Rotation = rotation;
+        }
+    }
+
+    private void SetPositionY(string nodeName, float y)
+    {
+        if (GetNodeOrNull<Node3D>(nodeName) is { } node)
+        {
+            node.Position = new Vector3(node.Position.X, y, node.Position.Z);
+        }
     }
 
     private void AddHair(Appearance appearance)

@@ -35,6 +35,34 @@
     "value": 80
   },
   {
+    "id": "shortbow",
+    "displayName": "Shortbow",
+    "description": "A flexible starter bow for ranged practice.",
+    "stackable": false,
+    "value": 30
+  },
+  {
+    "id": "elemental_staff",
+    "displayName": "Elemental Staff",
+    "description": "A simple focus for introductory arcane combat.",
+    "stackable": false,
+    "value": 38
+  },
+  {
+    "id": "bronze_hatchet",
+    "displayName": "Bronze Hatchet",
+    "description": "A basic chopping tool that can serve as a rough weapon.",
+    "stackable": false,
+    "value": 15
+  },
+  {
+    "id": "bronze_pickaxe",
+    "displayName": "Bronze Pickaxe",
+    "description": "A basic mining tool that can be swung in a pinch.",
+    "stackable": false,
+    "value": 15
+  },
+  {
     "id": "oak_buckler",
     "displayName": "Oak Buckler",
     "description": "A simple round shield of banded oak.",
@@ -82,5 +110,411 @@
     "description": "A fresh river trout. Best cooked before eating.",
     "stackable": true,
     "value": 6
+  },
+  {
+    "id": "oak_logs",
+    "displayName": "Oak Logs",
+    "description": "Dense oak timber used for stronger bows and shields.",
+    "stackable": true,
+    "value": 12
+  },
+  {
+    "id": "willow_logs",
+    "displayName": "Willow Logs",
+    "description": "Flexible willow timber prized by novice fletchers.",
+    "stackable": true,
+    "value": 18
+  },
+  {
+    "id": "iron_ore",
+    "displayName": "Iron Ore",
+    "description": "A dependable ore used for practical equipment.",
+    "stackable": true,
+    "value": 16
+  },
+  {
+    "id": "coal",
+    "displayName": "Coal",
+    "description": "Fuel for smelting higher-quality metals.",
+    "stackable": true,
+    "value": 18
+  },
+  {
+    "id": "silver_ore",
+    "displayName": "Silver Ore",
+    "description": "A pale precious ore used by crafters and enchanters.",
+    "stackable": true,
+    "value": 28
+  },
+  {
+    "id": "gold_ore",
+    "displayName": "Gold Ore",
+    "description": "A valuable ore with a warm metallic sheen.",
+    "stackable": true,
+    "value": 48
+  },
+  {
+    "id": "iron_bar",
+    "displayName": "Iron Bar",
+    "description": "A sturdy iron ingot ready for smithing.",
+    "stackable": true,
+    "value": 34
+  },
+  {
+    "id": "steel_bar",
+    "displayName": "Steel Bar",
+    "description": "A resilient alloy for experienced smiths.",
+    "stackable": true,
+    "value": 72
+  },
+  {
+    "id": "raw_shrimp",
+    "displayName": "Raw Shrimp",
+    "description": "Small shellfish gathered near calm water.",
+    "stackable": true,
+    "value": 4
+  },
+  {
+    "id": "raw_salmon",
+    "displayName": "Raw Salmon",
+    "description": "A rich river fish that restores more health when cooked.",
+    "stackable": true,
+    "value": 14
+  },
+  {
+    "id": "raw_lobster",
+    "displayName": "Raw Lobster",
+    "description": "A prized coastal catch.",
+    "stackable": true,
+    "value": 34
+  },
+  {
+    "id": "bread",
+    "displayName": "Bread",
+    "description": "A simple loaf that restores a small amount of health.",
+    "stackable": true,
+    "value": 5
+  },
+  {
+    "id": "cooked_shrimp",
+    "displayName": "Cooked Shrimp",
+    "description": "A light cooked meal.",
+    "stackable": true,
+    "value": 7
+  },
+  {
+    "id": "cooked_trout",
+    "displayName": "Cooked Trout",
+    "description": "A flaky river fish meal.",
+    "stackable": true,
+    "value": 11
+  },
+  {
+    "id": "cooked_salmon",
+    "displayName": "Cooked Salmon",
+    "description": "A filling cooked fish meal.",
+    "stackable": true,
+    "value": 24
+  },
+  {
+    "id": "cooked_lobster",
+    "displayName": "Cooked Lobster",
+    "description": "A substantial coastal meal.",
+    "stackable": true,
+    "value": 55
+  },
+  {
+    "id": "bronze_arrows",
+    "displayName": "Bronze Arrows",
+    "description": "A bundle of bronze-tipped arrows.",
+    "stackable": true,
+    "value": 2
+  },
+  {
+    "id": "iron_arrows",
+    "displayName": "Iron Arrows",
+    "description": "A bundle of iron-tipped arrows.",
+    "stackable": true,
+    "value": 4
+  },
+  {
+    "id": "steel_arrows",
+    "displayName": "Steel Arrows",
+    "description": "A bundle of hardened steel arrows.",
+    "stackable": true,
+    "value": 8
+  },
+  {
+    "id": "oak_shortbow",
+    "displayName": "Oak Shortbow",
+    "description": "A stronger bow fashioned from oak timber.",
+    "stackable": false,
+    "value": 78
+  },
+  {
+    "id": "willow_longbow",
+    "displayName": "Willow Longbow",
+    "description": "A longbow with a smooth and forgiving draw.",
+    "stackable": false,
+    "value": 145
+  },
+  {
+    "id": "ember_staff",
+    "displayName": "Ember Staff",
+    "description": "A staff capped with a warm ember crystal.",
+    "stackable": false,
+    "value": 95
+  },
+  {
+    "id": "tide_staff",
+    "displayName": "Tide Staff",
+    "description": "A staff attuned to flowing water.",
+    "stackable": false,
+    "value": 145
+  },
+  {
+    "id": "bronze_sword",
+    "displayName": "Bronze Sword",
+    "description": "A balanced novice sword.",
+    "stackable": false,
+    "value": 36
+  },
+  {
+    "id": "iron_sword",
+    "displayName": "Iron Sword",
+    "description": "A reliable iron sword for trained fighters.",
+    "stackable": false,
+    "value": 92
+  },
+  {
+    "id": "steel_sword",
+    "displayName": "Steel Sword",
+    "description": "A hardened blade for seasoned adventurers.",
+    "stackable": false,
+    "value": 185
+  },
+  {
+    "id": "bronze_shield",
+    "displayName": "Bronze Shield",
+    "description": "A modest bronze shield.",
+    "stackable": false,
+    "value": 44
+  },
+  {
+    "id": "iron_shield",
+    "displayName": "Iron Shield",
+    "description": "A dependable iron shield.",
+    "stackable": false,
+    "value": 108
+  },
+  {
+    "id": "steel_shield",
+    "displayName": "Steel Shield",
+    "description": "A strong steel shield for dangerous expeditions.",
+    "stackable": false,
+    "value": 220
+  },
+  {
+    "id": "bronze_helm",
+    "displayName": "Bronze Helm",
+    "description": "A simple bronze headpiece.",
+    "stackable": false,
+    "value": 32
+  },
+  {
+    "id": "bronze_chestplate",
+    "displayName": "Bronze Chestplate",
+    "description": "A bronze torso plate for novice fighters.",
+    "stackable": false,
+    "value": 58
+  },
+  {
+    "id": "bronze_legplates",
+    "displayName": "Bronze Legplates",
+    "description": "Bronze plates protecting the legs.",
+    "stackable": false,
+    "value": 48
+  },
+  {
+    "id": "bronze_gloves",
+    "displayName": "Bronze Gloves",
+    "description": "Bronze-backed protective gloves.",
+    "stackable": false,
+    "value": 24
+  },
+  {
+    "id": "bronze_boots",
+    "displayName": "Bronze Boots",
+    "description": "Bronze-plated adventuring boots.",
+    "stackable": false,
+    "value": 26
+  },
+  {
+    "id": "iron_helm",
+    "displayName": "Iron Helm",
+    "description": "A practical iron helm.",
+    "stackable": false,
+    "value": 72
+  },
+  {
+    "id": "iron_chestplate",
+    "displayName": "Iron Chestplate",
+    "description": "A sturdy iron chestplate.",
+    "stackable": false,
+    "value": 138
+  },
+  {
+    "id": "iron_legplates",
+    "displayName": "Iron Legplates",
+    "description": "Iron plates protecting the legs.",
+    "stackable": false,
+    "value": 112
+  },
+  {
+    "id": "iron_gloves",
+    "displayName": "Iron Gloves",
+    "description": "Iron-backed protective gloves.",
+    "stackable": false,
+    "value": 54
+  },
+  {
+    "id": "iron_boots",
+    "displayName": "Iron Boots",
+    "description": "Heavy iron adventuring boots.",
+    "stackable": false,
+    "value": 60
+  },
+  {
+    "id": "steel_helm",
+    "displayName": "Steel Helm",
+    "description": "A hardened steel helm.",
+    "stackable": false,
+    "value": 150
+  },
+  {
+    "id": "steel_chestplate",
+    "displayName": "Steel Chestplate",
+    "description": "A durable steel chestplate.",
+    "stackable": false,
+    "value": 285
+  },
+  {
+    "id": "steel_legplates",
+    "displayName": "Steel Legplates",
+    "description": "Hardened steel leg protection.",
+    "stackable": false,
+    "value": 232
+  },
+  {
+    "id": "steel_gloves",
+    "displayName": "Steel Gloves",
+    "description": "Steel-backed protective gloves.",
+    "stackable": false,
+    "value": 108
+  },
+  {
+    "id": "steel_boots",
+    "displayName": "Steel Boots",
+    "description": "Hardened steel adventuring boots.",
+    "stackable": false,
+    "value": 118
+  },
+  {
+    "id": "leather_cowl",
+    "displayName": "Leather Cowl",
+    "description": "A light hood favored by archers.",
+    "stackable": false,
+    "value": 28
+  },
+  {
+    "id": "leather_jerkin",
+    "displayName": "Leather Jerkin",
+    "description": "A flexible leather torso guard.",
+    "stackable": false,
+    "value": 52
+  },
+  {
+    "id": "leather_chaps",
+    "displayName": "Leather Chaps",
+    "description": "Flexible leather leg protection.",
+    "stackable": false,
+    "value": 44
+  },
+  {
+    "id": "leather_gloves",
+    "displayName": "Leather Gloves",
+    "description": "Supple gloves for precise bow handling.",
+    "stackable": false,
+    "value": 20
+  },
+  {
+    "id": "leather_boots",
+    "displayName": "Leather Boots",
+    "description": "Light boots for mobile adventurers.",
+    "stackable": false,
+    "value": 22
+  },
+  {
+    "id": "mind_hood",
+    "displayName": "Mind Hood",
+    "description": "A cloth hood worn by apprentice spellcasters.",
+    "stackable": false,
+    "value": 30
+  },
+  {
+    "id": "mind_robes",
+    "displayName": "Mind Robes",
+    "description": "Simple robes stitched for arcane practice.",
+    "stackable": false,
+    "value": 58
+  },
+  {
+    "id": "mind_leggings",
+    "displayName": "Mind Leggings",
+    "description": "Comfortable leggings for apprentice spellcasters.",
+    "stackable": false,
+    "value": 46
+  },
+  {
+    "id": "mind_gloves",
+    "displayName": "Mind Gloves",
+    "description": "Fine gloves that keep a caster's hands free.",
+    "stackable": false,
+    "value": 22
+  },
+  {
+    "id": "mind_boots",
+    "displayName": "Mind Boots",
+    "description": "Soft boots used by apprentice spellcasters.",
+    "stackable": false,
+    "value": 24
+  },
+  {
+    "id": "feathers",
+    "displayName": "Feathers",
+    "description": "Light crafting material used by fletchers.",
+    "stackable": true,
+    "value": 2
+  },
+  {
+    "id": "raw_poultry",
+    "displayName": "Raw Poultry",
+    "description": "Uncooked poultry suitable for a simple meal.",
+    "stackable": true,
+    "value": 6
+  },
+  {
+    "id": "brittle_bones",
+    "displayName": "Brittle Bones",
+    "description": "Old bones gathered from defeated undead.",
+    "stackable": true,
+    "value": 4
+  },
+  {
+    "id": "raw_wool",
+    "displayName": "Raw Wool",
+    "description": "Soft fleece ready to be spun into cloth.",
+    "stackable": true,
+    "value": 8
   }
 ]

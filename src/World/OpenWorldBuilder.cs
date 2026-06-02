@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Godot;
+using DawnOfBlade.Characters;
 using DawnOfBlade.Interaction;
 using DawnOfBlade.World.Grid;
 using DawnOfBlade.World.RiverValley;
@@ -13,29 +14,39 @@ namespace DawnOfBlade.World;
 /// </summary>
 public partial class OpenWorldBuilder : Node3D
 {
+    public const float WorldSizeMeters = 3600.0f;
+    public const float HalfWorldMeters = WorldSizeMeters * 0.5f;
+    public const int LandmarkBuildingCount = 10;
+    public const int ContextualNpcCount = 60;
+
     [Export] public int Seed { get; set; } = 2026;
-    [Export] public int BackgroundTreeCount { get; set; } = 56;
-    [Export] public int BackgroundRockCount { get; set; } = 32;
+    [Export] public int BackgroundTreeCount { get; set; } = 360;
+    [Export] public int BackgroundRockCount { get; set; } = 180;
+    [Export] public int HillCount { get; set; } = 84;
 
     private RiverValleyRegion _region = new();
+    private Node3D? _player;
 
     public override void _Ready()
     {
+        _player = GetParent()?.GetNodeOrNull<Node3D>("Player");
+        AddLandscapeDistricts();
         AddRiver();
         AddBridge();
         AddCastlePerimeter();
         AddMarketSquare();
+        AddRoadNetwork();
+        AddLandmarkBuildings();
         AddIndexedResources();
         AddMonsterPools();
         AddBackgroundScenery();
+        AddContextualNpcs();
     }
 
     private void AddRiver()
     {
-        var south = _region.TileToWorld(new GridCoordinate(57, 0));
-        var north = _region.TileToWorld(new GridCoordinate(57, RiverValleyRegion.Size - 1));
-        var length = north.Z - south.Z + RiverValleyRegion.TileSizeMeters;
-        AddChild(Box(new Vector3(10, 0.08f, length), new Vector3(south.X, 0.03f, (south.Z + north.Z) / 2), "#287b9f"));
+        var x = _region.TileToWorld(new GridCoordinate(57, 35)).X;
+        AddChild(Box(new Vector3(16, 0.08f, WorldSizeMeters), new Vector3(x, 0.03f, 0), "#287b9f"));
     }
 
     private void AddBridge()
@@ -77,6 +88,47 @@ public partial class OpenWorldBuilder : Node3D
         AddChild(Box(new Vector3(26, 0.08f, 14), position, "#b69b70"));
     }
 
+    private void AddLandscapeDistricts()
+    {
+        AddChild(Box(new Vector3(980, 0.05f, 760), new Vector3(-940, 0.02f, 860), "#607f42"));
+        AddChild(Box(new Vector3(900, 0.05f, 680), new Vector3(1020, 0.02f, 980), "#88784a"));
+        AddChild(Box(new Vector3(880, 0.05f, 680), new Vector3(-1100, 0.02f, -1040), "#566f56"));
+        AddChild(Box(new Vector3(940, 0.05f, 720), new Vector3(1080, 0.02f, -980), "#8b7654"));
+    }
+
+    private void AddRoadNetwork()
+    {
+        var road = "#9b8661";
+        AddChild(Box(new Vector3(22, 0.06f, 3100), new Vector3(-120, 0.07f, 0), road));
+        AddChild(Box(new Vector3(2800, 0.06f, 22), new Vector3(-160, 0.075f, 80), road));
+        AddChild(Box(new Vector3(1700, 0.06f, 18), new Vector3(-720, 0.08f, -940), road));
+        AddChild(Box(new Vector3(1450, 0.06f, 18), new Vector3(780, 0.08f, 980), road));
+    }
+
+    private void AddLandmarkBuildings()
+    {
+        AddBuilding("Citadel Great Hall", new Vector3(0, 0, 0), new Vector2(38, 32), 9.0f, "#9da4a5", "#4d5960");
+        AddBuilding("River Valley Bank", new Vector3(-130, 0, -165), new Vector2(30, 24), 7.0f, "#ad9972", "#593f35");
+        AddBuilding("Crafting Guild", new Vector3(-210, 0, 155), new Vector2(34, 26), 7.5f, "#8e785e", "#536049");
+        AddBuilding("Market Hall", new Vector3(180, 0, 95), new Vector2(42, 28), 8.0f, "#a89069", "#664633");
+        AddBuilding("Frontier Inn", new Vector3(520, 0, 160), new Vector2(32, 24), 7.0f, "#907251", "#543b2c");
+        AddBuilding("Western Farmstead", new Vector3(-720, 0, 450), new Vector2(40, 30), 7.0f, "#997a56", "#5b402d");
+        AddBuilding("Highland Monastery", new Vector3(-1180, 0, 1080), new Vector2(68, 46), 13.0f, "#9b9a91", "#495765");
+        AddBuilding("Badlands Fortress", new Vector3(1260, 0, 980), new Vector2(88, 64), 16.0f, "#857661", "#4d433c");
+        AddBuilding("Mirewatch Lodge", new Vector3(-1260, 0, -1110), new Vector2(52, 38), 10.0f, "#657460", "#3e493f");
+        AddBuilding("Coastal Trade House", new Vector3(1180, 0, -1080), new Vector2(72, 44), 12.0f, "#a38b6c", "#4d6170");
+    }
+
+    private void AddBuilding(string name, Vector3 position, Vector2 footprint, float height, string walls, string roof)
+    {
+        var building = new WorldBuilding(name, footprint, height, new Color(walls), new Color(roof)) { Position = position };
+        if (_player is not null)
+        {
+            building.Follow(_player);
+        }
+        AddChild(building);
+    }
+
     private void AddIndexedResources()
     {
         foreach (var anchor in _region.AnchorsOfType(RegionAnchorType.Resource))
@@ -96,22 +148,62 @@ public partial class OpenWorldBuilder : Node3D
     private void AddBackgroundScenery()
     {
         var random = new Random(Seed);
+        for (var i = 0; i < HillCount; i++)
+        {
+            var position = NextWorldPosition(random);
+            var hill = Part(new SphereMesh { Radius = 10.0f, Height = 13.0f, RadialSegments = 7, Rings = 4 }, position + Vector3.Up * 2.4f, "#526d43");
+            hill.Scale = new Vector3(1.6f + (float)random.NextDouble() * 2.5f, 0.45f + (float)random.NextDouble() * 0.8f, 1.4f + (float)random.NextDouble() * 2.0f);
+            AddChild(hill);
+        }
+
         for (var i = 0; i < BackgroundTreeCount; i++)
         {
-            var tile = NextTile(random);
-            if (_region.IsWalkable(tile) && !NearCourtyard(tile))
+            var position = NextWorldPosition(random);
+            if (position.Length() > 90)
             {
-                AddTree(_region.TileToWorld(tile), 0.7f + (float)random.NextDouble() * 0.75f);
+                AddTree(position, 0.7f + (float)random.NextDouble() * 1.15f);
             }
         }
 
         for (var i = 0; i < BackgroundRockCount; i++)
         {
-            var tile = NextTile(random);
-            if (_region.IsWalkable(tile) && !NearCourtyard(tile))
+            var position = NextWorldPosition(random);
+            if (position.Length() > 76)
             {
-                AddRock(_region.TileToWorld(tile), 0.35f + (float)random.NextDouble() * 0.55f);
+                AddRock(position, 0.35f + (float)random.NextDouble() * 0.8f);
             }
+        }
+    }
+
+    private void AddContextualNpcs()
+    {
+        var random = new Random(Seed + 41);
+        AddNpcCluster(random, "citadel", Vector3.Zero, new Vector2(120, 110), 12);
+        AddNpcCluster(random, "market", new Vector3(180, 0, 95), new Vector2(170, 120), 12);
+        AddNpcCluster(random, "farm", new Vector3(-720, 0, 450), new Vector2(220, 170), 8);
+        AddNpcCluster(random, "monastery", new Vector3(-1180, 0, 1080), new Vector2(190, 150), 6);
+        AddNpcCluster(random, "fortress", new Vector3(1260, 0, 980), new Vector2(210, 170), 8);
+        AddNpcCluster(random, "lodge", new Vector3(-1260, 0, -1110), new Vector2(180, 140), 6);
+        AddNpcCluster(random, "port", new Vector3(1180, 0, -1080), new Vector2(230, 170), 8);
+    }
+
+    private void AddNpcCluster(Random random, string district, Vector3 center, Vector2 spread, int count)
+    {
+        for (var i = 0; i < count; i++)
+        {
+            var position = center + new Vector3(
+                ((float)random.NextDouble() - 0.5f) * spread.X,
+                0.9f,
+                ((float)random.NextDouble() - 0.5f) * spread.Y);
+            var npc = new PrototypeNpc
+            {
+                Name = $"{district}_npc_{i + 1:00}",
+                Position = position,
+                Seed = Seed + StableHash(district) + i,
+            };
+            npc.AddChild(new HumanoidVisual { Name = "Humanoid", Position = new Vector3(0, -0.9f, 0) });
+            npc.AddChild(new CollisionShape3D { Shape = new CapsuleShape3D { Radius = 0.35f, Height = 1.8f } });
+            AddChild(npc);
         }
     }
 
@@ -156,6 +248,23 @@ public partial class OpenWorldBuilder : Node3D
 
     private static GridCoordinate NextTile(Random random) =>
         new(random.Next(RiverValleyRegion.Size), random.Next(RiverValleyRegion.Size));
+
+    private static Vector3 NextWorldPosition(Random random) =>
+        new(((float)random.NextDouble() * 2.0f - 1.0f) * HalfWorldMeters, 0, ((float)random.NextDouble() * 2.0f - 1.0f) * HalfWorldMeters);
+
+    private static int StableHash(string value)
+    {
+        unchecked
+        {
+            var hash = 17;
+            foreach (var character in value)
+            {
+                hash = hash * 31 + character;
+            }
+
+            return hash;
+        }
+    }
 
     private static GridCoordinate NextTile(Random random, GridBounds bounds) =>
         new(random.Next(bounds.Minimum.X, bounds.Maximum.X + 1), random.Next(bounds.Minimum.Z, bounds.Maximum.Z + 1));

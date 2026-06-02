@@ -80,6 +80,7 @@ public partial class GameManager : Node3D
     private Button? _styleButton;
     private PanelContainer? _dialoguePanel;
     private VBoxContainer? _dialogueContent;
+    private ScrollContainer? _dialogueScroll;
     private ProgressBar? _healthBar;
     private ProgressBar? _runEnergyBar;
     private Label? _healthLabel;
@@ -92,6 +93,8 @@ public partial class GameManager : Node3D
     private VBoxContainer? _inventoryContent;
     private FeedbackManager? _feedbackManager;
     private long _localTick;
+    private bool _saveDirty;
+    private bool _isFlushingSave;
 
     public override void _Ready()
     {
@@ -115,8 +118,8 @@ public partial class GameManager : Node3D
         RefreshStatus();
         SaveProgress(showNotice: false);
 
-        var autosave = new Timer { WaitTime = 10.0, Autostart = true };
-        autosave.Timeout += () => SaveProgress(showNotice: false);
+        var autosave = new Timer { WaitTime = 3.0, Autostart = true };
+        autosave.Timeout += FlushSaveIfDirty;
         AddChild(autosave);
 
         var localHeartbeat = new Timer { WaitTime = 0.6, Autostart = true };
@@ -133,11 +136,12 @@ public partial class GameManager : Node3D
     {
         if (what == NotificationWMCloseRequest && IsInitialized)
         {
-            SaveProgress(showNotice: false);
+            FlushSave(force: true);
         }
 
         if (what == NotificationPredelete)
         {
+            FlushSave(force: true);
             foreach (var subscription in _subscriptions)
             {
                 subscription.Dispose();
@@ -145,6 +149,11 @@ public partial class GameManager : Node3D
 
             _subscriptions.Clear();
         }
+    }
+
+    public override void _ExitTree()
+    {
+        FlushSave(force: true);
     }
 
     private void InitializeSystems()
@@ -555,6 +564,12 @@ public partial class GameManager : Node3D
 
         var resolver = new CombatResolver(_combatRandom);
         var playerGear = PlayerGear();
+        if (GetNodeOrNull<PlayerController>("Player") is { } attackingPlayer)
+        {
+            attackingPlayer.FaceTowards(hostile.GlobalPosition);
+            attackingPlayer.PlayAttack(_equipment.ItemInSlot(EquipmentSlot.Weapon));
+        }
+
         var hit = resolver.Resolve(_playerProfile, playerGear, _attackStyle, hostile.Profile, EquipmentBonuses.Zero);
 
         var playerLine = hit.Landed
@@ -757,6 +772,38 @@ public partial class GameManager : Node3D
 
     private void SaveProgress(bool showNotice = true)
     {
+        _saveDirty = true;
+        if (showNotice)
+        {
+            FlushSave(force: true, showNotice: true);
+        }
+    }
+
+    private void FlushSaveIfDirty() => FlushSave(force: false);
+
+    private void FlushSave(bool force, bool showNotice = false)
+    {
+        if (_isFlushingSave || (!force && !_saveDirty) || !IsInitialized)
+        {
+            return;
+        }
+
+        _isFlushingSave = true;
+        var saved = _saveService.Save(CreateSaveGame());
+        _isFlushingSave = false;
+        if (saved)
+        {
+            _saveDirty = false;
+        }
+
+        if (showNotice)
+        {
+            ShowNotice(saved ? "Progress saved." : "Could not save progress.");
+        }
+    }
+
+    private SaveGame CreateSaveGame()
+    {
         var save = new SaveGame
         {
             PlayerName = Session.Username ?? "Player",
@@ -780,11 +827,7 @@ public partial class GameManager : Node3D
                 _mainQuest.Progress.ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
-        var saved = _saveService.Save(save);
-        if (showNotice)
-        {
-            ShowNotice(saved ? "Progress saved." : "Could not save progress.");
-        }
+        return save;
     }
 
     private void ApplySave(SaveGame save)
@@ -887,49 +930,113 @@ public partial class GameManager : Node3D
 
     private void BuildPrototypeHud()
     {
-        var ui = new CanvasLayer { Name = "PrototypeHud" };
+        var ui = new CanvasLayer { Name = "RealmHud" };
         AddChild(ui);
 
-        _statusLabel = new Label { Position = new Vector2(16, 10) };
-        ui.AddChild(_statusLabel);
+        var root = new Control { MouseFilter = Control.MouseFilterEnum.Ignore };
+        root.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        ui.AddChild(root);
 
-        _questLabel = new Label { Position = new Vector2(16, 74) };
-        ui.AddChild(_questLabel);
+        var statusPanel = MakeHudPanel();
+        statusPanel.SetAnchorsPreset(Control.LayoutPreset.TopLeft);
+        statusPanel.OffsetLeft = 12;
+        statusPanel.OffsetTop = 12;
+        statusPanel.OffsetRight = 520;
+        statusPanel.OffsetBottom = 184;
+        root.AddChild(statusPanel);
 
-        AddHudButton(ui, "Craft Practice Chisel", new Vector2(16, 138), new Vector2(190, 32), CraftPracticeChisel);
-        AddHudButton(ui, "Save", new Vector2(214, 138), new Vector2(80, 32), () => SaveProgress());
-        AddHudButton(ui, "Load", new Vector2(302, 138), new Vector2(80, 32), () => GetTree().ReloadCurrentScene());
-        AddHudButton(ui, "Smelt Bronze", new Vector2(390, 138), new Vector2(120, 32), SmeltBronzeBar);
+        var statusColumn = MakeHudColumn(statusPanel, 8);
+        _statusLabel = MakeHudLabel(string.Empty, 15);
+        statusColumn.AddChild(_statusLabel);
+        _questLabel = MakeHudLabel(string.Empty, 13);
+        _questLabel.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+        statusColumn.AddChild(_questLabel);
 
-        _styleButton = AddHudButton(ui, $"Style: {_attackStyle}", new Vector2(16, 176), new Vector2(150, 32), CycleAttackStyle);
-        AddHudButton(ui, "Random Look", new Vector2(174, 176), new Vector2(112, 32), RandomizeLook);
-        AddHudButton(ui, "Body", new Vector2(294, 176), new Vector2(68, 32), CycleBodyType);
-        AddHudButton(ui, "Skin", new Vector2(370, 176), new Vector2(68, 32), CycleSkinTone);
-        AddHudButton(ui, "Hair", new Vector2(446, 176), new Vector2(68, 32), CycleHairColor);
-        AddHudButton(ui, "Shirt", new Vector2(522, 176), new Vector2(68, 32), CycleShirtColor);
-        AddHudButton(ui, "Toggle Run", new Vector2(598, 176), new Vector2(96, 32), ToggleRun);
+        var vitals = new GridContainer { Columns = 2 };
+        vitals.AddThemeConstantOverride("h_separation", 8);
+        vitals.AddThemeConstantOverride("v_separation", 4);
+        statusColumn.AddChild(vitals);
+        _healthLabel = MakeHudLabel("Health", 12);
+        _healthBar = MakeHudBar();
+        _runEnergyLabel = MakeHudLabel("Run energy", 12);
+        _runEnergyBar = MakeHudBar();
+        vitals.AddChild(_healthLabel);
+        vitals.AddChild(_healthBar);
+        vitals.AddChild(_runEnergyLabel);
+        vitals.AddChild(_runEnergyBar);
 
-        _heartbeatLabel = AddCornerLabel(ui, "Local Tick: 0", 16);
-        _coordinateLabel = AddCornerLabel(ui, "Tile: 0, 0", 42);
-        AddCornerButton(ui, "Inventory", 72, ToggleInventory);
-        AddCornerButton(ui, "Bank", 110, ShowBankView);
-        AddCornerButton(ui, "Skills", 148, ShowSkillsView);
-        AddCornerButton(ui, "Quests", 186, ShowQuestsView);
-        AddCornerButton(ui, "Social", 224, ShowSocialView);
-        _minimapLabel = AddCornerLabel(ui, "Minimap: River Valley", 264);
+        var sidebar = MakeHudPanel();
+        sidebar.SetAnchorsPreset(Control.LayoutPreset.TopRight);
+        sidebar.SetAnchor(Side.Bottom, 1.0f);
+        sidebar.OffsetLeft = -342;
+        sidebar.OffsetRight = -12;
+        sidebar.OffsetTop = 12;
+        sidebar.OffsetBottom = -12;
+        root.AddChild(sidebar);
 
-        _healthLabel = AddBottomLabel(ui, "Health", -76);
-        _healthBar = AddBottomBar(ui, -50);
-        _runEnergyLabel = AddBottomLabel(ui, "Run energy", -124);
-        _runEnergyBar = AddBottomBar(ui, -98);
+        var sidebarColumn = MakeHudColumn(sidebar, 8);
+        var minimap = MakeHudPanel();
+        minimap.CustomMinimumSize = new Vector2(0, 176);
+        sidebarColumn.AddChild(minimap);
+        _minimapLabel = MakeHudLabel("RIVER VALLEY", 15, HorizontalAlignment.Center);
+        _minimapLabel.VerticalAlignment = VerticalAlignment.Center;
+        _minimapLabel.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+        minimap.AddChild(_minimapLabel);
 
-        _chatLog = AddBottomLabel(ui, "Local chat ready.", -174);
-        var chatInput = new LineEdit { PlaceholderText = "Say something..." };
-        chatInput.SetAnchorsPreset(Control.LayoutPreset.BottomRight);
-        chatInput.OffsetLeft = -340;
-        chatInput.OffsetRight = -16;
-        chatInput.OffsetTop = -48;
-        chatInput.OffsetBottom = -16;
+        var locationRow = new HBoxContainer();
+        sidebarColumn.AddChild(locationRow);
+        _coordinateLabel = MakeHudLabel("Tile: 0, 0", 12);
+        _coordinateLabel.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        locationRow.AddChild(_coordinateLabel);
+        _heartbeatLabel = MakeHudLabel("Tick: 0", 12, HorizontalAlignment.Right);
+        locationRow.AddChild(_heartbeatLabel);
+
+        var tabs = new GridContainer { Columns = 3 };
+        tabs.AddThemeConstantOverride("h_separation", 4);
+        tabs.AddThemeConstantOverride("v_separation", 4);
+        sidebarColumn.AddChild(tabs);
+        AddHudButton(tabs, "Pack", ToggleInventory);
+        AddHudButton(tabs, "Bank", ShowBankView);
+        AddHudButton(tabs, "Skills", ShowSkillsView);
+        AddHudButton(tabs, "Quests", ShowQuestsView);
+        AddHudButton(tabs, "Social", ShowSocialView);
+        AddHudButton(tabs, "Settings", ShowSettingsView);
+
+        _inventoryPanel = MakeHudPanel();
+        _inventoryPanel.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
+        sidebarColumn.AddChild(_inventoryPanel);
+        var inventoryScroll = new ScrollContainer();
+        inventoryScroll.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        _inventoryPanel.AddChild(inventoryScroll);
+        _inventoryContent = new VBoxContainer { CustomMinimumSize = new Vector2(276, 0) };
+        _inventoryContent.AddThemeConstantOverride("separation", 4);
+        inventoryScroll.AddChild(_inventoryContent);
+
+        var quickActions = new GridContainer { Columns = 3 };
+        quickActions.AddThemeConstantOverride("h_separation", 4);
+        quickActions.AddThemeConstantOverride("v_separation", 4);
+        sidebarColumn.AddChild(quickActions);
+        AddHudButton(quickActions, "Craft", CraftPracticeChisel);
+        AddHudButton(quickActions, "Smelt", SmeltBronzeBar);
+        AddHudButton(quickActions, "Run", ToggleRun);
+        _styleButton = AddHudButton(quickActions, $"Style: {_attackStyle}", CycleAttackStyle);
+        AddHudButton(quickActions, "Customize", ShowCharacterCreator);
+        AddHudButton(quickActions, "Save", () => SaveProgress());
+
+        var chatPanel = MakeHudPanel();
+        chatPanel.SetAnchorsPreset(Control.LayoutPreset.BottomLeft);
+        chatPanel.SetAnchor(Side.Right, 1.0f);
+        chatPanel.OffsetLeft = 12;
+        chatPanel.OffsetTop = -138;
+        chatPanel.OffsetRight = -354;
+        chatPanel.OffsetBottom = -12;
+        root.AddChild(chatPanel);
+        var chatColumn = MakeHudColumn(chatPanel, 6);
+        _chatLog = MakeHudLabel("Welcome to River Valley. Click the ground to travel and select nearby people or resources to interact.", 13);
+        _chatLog.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+        _chatLog.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
+        chatColumn.AddChild(_chatLog);
+        var chatInput = new LineEdit { PlaceholderText = "Press Enter to chat locally..." };
         chatInput.TextSubmitted += text =>
         {
             if (!string.IsNullOrWhiteSpace(text))
@@ -938,97 +1045,80 @@ public partial class GameManager : Node3D
                 chatInput.Clear();
             }
         };
-        ui.AddChild(chatInput);
+        chatColumn.AddChild(chatInput);
 
-        _inventoryPanel = new PanelContainer { Visible = false };
-        _inventoryPanel.SetAnchorsPreset(Control.LayoutPreset.TopRight);
-        _inventoryPanel.SetAnchor(Side.Bottom, 1.0f);
-        _inventoryPanel.OffsetLeft = -300;
-        _inventoryPanel.OffsetRight = -16;
-        _inventoryPanel.OffsetTop = 112;
-        _inventoryPanel.OffsetBottom = -148;
-        ui.AddChild(_inventoryPanel);
-
-        var inventoryScroll = new ScrollContainer();
-        _inventoryPanel.AddChild(inventoryScroll);
-        _inventoryContent = new VBoxContainer { CustomMinimumSize = new Vector2(260, 0) };
-        _inventoryContent.AddThemeConstantOverride("separation", 4);
-        inventoryScroll.AddChild(_inventoryContent);
-
-        _dialoguePanel = new PanelContainer
-        {
-            Visible = false,
-            Position = new Vector2(16, 220),
-            CustomMinimumSize = new Vector2(620, 160),
-        };
-        ui.AddChild(_dialoguePanel);
-
-        _dialogueContent = new VBoxContainer();
+        _dialoguePanel = MakeHudPanel();
+        _dialoguePanel.Visible = false;
+        _dialoguePanel.SetAnchorsPreset(Control.LayoutPreset.Center);
+        _dialoguePanel.OffsetLeft = -330;
+        _dialoguePanel.OffsetTop = -220;
+        _dialoguePanel.OffsetRight = 330;
+        _dialoguePanel.OffsetBottom = 220;
+        root.AddChild(_dialoguePanel);
+        _dialogueScroll = new ScrollContainer();
+        _dialogueScroll.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        _dialoguePanel.AddChild(_dialogueScroll);
+        _dialogueContent = new VBoxContainer { CustomMinimumSize = new Vector2(610, 0) };
         _dialogueContent.AddThemeConstantOverride("separation", 6);
-        _dialoguePanel.AddChild(_dialogueContent);
+        _dialogueScroll.AddChild(_dialogueContent);
     }
 
-    private static Button AddHudButton(CanvasLayer ui, string text, Vector2 position, Vector2 size, System.Action onPressed)
+    private static PanelContainer MakeHudPanel()
     {
-        var button = new Button { Text = text, Position = position, Size = size };
-        button.Pressed += onPressed;
-        ui.AddChild(button);
-        return button;
+        var panel = new PanelContainer();
+        var box = new StyleBoxFlat
+        {
+            BgColor = new Color(0.055f, 0.045f, 0.035f, 0.94f),
+            BorderColor = new Color(0.57f, 0.43f, 0.22f),
+        };
+        box.SetBorderWidthAll(2);
+        box.SetCornerRadiusAll(5);
+        panel.AddThemeStyleboxOverride("panel", box);
+        return panel;
     }
 
-    private static Label AddCornerLabel(CanvasLayer ui, string text, float top)
+    private static VBoxContainer MakeHudColumn(Container parent, int separation)
     {
-        var label = new Label { Text = text };
-        label.SetAnchorsPreset(Control.LayoutPreset.TopRight);
-        label.OffsetLeft = -180;
-        label.OffsetRight = -16;
-        label.OffsetTop = top;
-        label.OffsetBottom = top + 24;
-        ui.AddChild(label);
+        var margin = new MarginContainer();
+        margin.AddThemeConstantOverride("margin_left", 10);
+        margin.AddThemeConstantOverride("margin_right", 10);
+        margin.AddThemeConstantOverride("margin_top", 10);
+        margin.AddThemeConstantOverride("margin_bottom", 10);
+        parent.AddChild(margin);
+        var column = new VBoxContainer();
+        column.AddThemeConstantOverride("separation", separation);
+        margin.AddChild(column);
+        return column;
+    }
+
+    private static Label MakeHudLabel(string text, int size, HorizontalAlignment alignment = HorizontalAlignment.Left)
+    {
+        var label = new Label { Text = text, HorizontalAlignment = alignment };
+        label.AddThemeColorOverride("font_color", new Color(0.94f, 0.86f, 0.68f));
+        label.AddThemeFontSizeOverride("font_size", size);
         return label;
     }
 
-    private static Button AddCornerButton(CanvasLayer ui, string text, float top, System.Action onPressed)
-    {
-        var button = new Button { Text = text };
-        button.SetAnchorsPreset(Control.LayoutPreset.TopRight);
-        button.OffsetLeft = -136;
-        button.OffsetRight = -16;
-        button.OffsetTop = top;
-        button.OffsetBottom = top + 32;
-        button.Pressed += onPressed;
-        ui.AddChild(button);
-        return button;
-    }
-
-    private static Label AddBottomLabel(CanvasLayer ui, string text, float bottom)
-    {
-        var label = new Label { Text = text };
-        label.SetAnchorsPreset(Control.LayoutPreset.BottomLeft);
-        label.OffsetLeft = 16;
-        label.OffsetRight = 236;
-        label.OffsetTop = bottom;
-        label.OffsetBottom = bottom + 22;
-        ui.AddChild(label);
-        return label;
-    }
-
-    private static ProgressBar AddBottomBar(CanvasLayer ui, float bottom)
+    private static ProgressBar MakeHudBar()
     {
         var bar = new ProgressBar
         {
+            CustomMinimumSize = new Vector2(260, 16),
             MinValue = 0,
             MaxValue = 100,
             Value = 100,
             ShowPercentage = false,
         };
-        bar.SetAnchorsPreset(Control.LayoutPreset.BottomLeft);
-        bar.OffsetLeft = 16;
-        bar.OffsetRight = 236;
-        bar.OffsetTop = bottom;
-        bar.OffsetBottom = bottom + 18;
-        ui.AddChild(bar);
         return bar;
+    }
+
+    private static Button AddHudButton(Container parent, string text, System.Action onPressed)
+    {
+        var button = new Button { Text = text, CustomMinimumSize = new Vector2(0, 30) };
+        button.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+        button.Pressed += onPressed;
+        parent.AddChild(button);
+        return button;
     }
 
     private void EnsureDialoguePanel()
@@ -1158,6 +1248,32 @@ public partial class GameManager : Node3D
         _dialoguePanel!.Visible = true;
     }
 
+    private void ShowSettingsView()
+    {
+        EnsureDialoguePanel();
+        ReplaceDialogueContent();
+        AddDialogueLabel("Realm Settings");
+        AddDialogueLabel("Gameplay");
+        AddDialogueAction("Toggle run mode", ToggleRun);
+        AddDialogueAction($"Cycle combat style ({_attackStyle})", () =>
+        {
+            CycleAttackStyle();
+            ShowSettingsView();
+        });
+        AddDialogueLabel("Character");
+        AddDialogueAction("Open character customization", ShowCharacterCreator);
+        AddDialogueAction("Randomize appearance", () =>
+        {
+            RandomizeLook();
+            ShowSettingsView();
+        });
+        AddDialogueLabel("Account");
+        AddDialogueAction("Save progress now", () => SaveProgress());
+        AddDialogueAction("Reload last saved progress", () => GetTree().ReloadCurrentScene());
+        AddCloseButton("Close settings");
+        _dialoguePanel!.Visible = true;
+    }
+
     private void ProcessLocalTick()
     {
         _localTick++;
@@ -1205,15 +1321,15 @@ public partial class GameManager : Node3D
             return;
         }
 
-        if (_dialogueContent is not null)
+        if (_dialogueContent is not null && _dialogueContent.GetParent() is { } parent)
         {
-            _dialoguePanel.RemoveChild(_dialogueContent);
+            parent.RemoveChild(_dialogueContent);
             _dialogueContent.QueueFree();
         }
 
-        _dialogueContent = new VBoxContainer();
+        _dialogueContent = new VBoxContainer { CustomMinimumSize = new Vector2(610, 0) };
         _dialogueContent.AddThemeConstantOverride("separation", 6);
-        _dialoguePanel.AddChild(_dialogueContent);
+        _dialogueScroll!.AddChild(_dialogueContent);
     }
 
     private void RefreshStatus()
@@ -1282,7 +1398,13 @@ public partial class GameManager : Node3D
 
         if (_minimapLabel is not null)
         {
-            _minimapLabel.Text = "Minimap: River Valley\nCastle | Market | Bridge | Mine";
+            _minimapLabel.Text =
+                "RIVER VALLEY\n\n" +
+                "       CITADEL\n" +
+                "   MARKET  +  BANK\n" +
+                "       |  BRIDGE  |\n" +
+                "  GROVE       MINE\n\n" +
+                "Explore the roads beyond the village.";
         }
     }
 

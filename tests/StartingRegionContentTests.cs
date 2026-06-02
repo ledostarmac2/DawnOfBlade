@@ -37,7 +37,7 @@ public class StartingRegionContentTests
     public void InteractionNodes_MatchPart25Coordinates()
     {
         var nodes = StartingRegion.InteractionNodes;
-        Assert.Equal(8, nodes.Count);
+        Assert.Equal(28, nodes.Count);
 
         var copper1 = nodes.Single(n => n.NodeId == "copper_ore_01");
         Assert.Equal(new GridCoordinate(85, 15), copper1.Coordinate);
@@ -46,8 +46,8 @@ public class StartingRegionContentTests
         Assert.Equal(RegionItemIds.CopperOre, copper1.ItemId);
         Assert.False(copper1.IsProcessingStation);
 
-        Assert.Equal(4, StartingRegion.NodesOfType(InteractionType.Mining).Count());
-        Assert.Equal(2, StartingRegion.NodesOfType(InteractionType.Woodcutting).Count());
+        Assert.Equal(12, StartingRegion.NodesOfType(InteractionType.Mining).Count());
+        Assert.Equal(14, StartingRegion.NodesOfType(InteractionType.Woodcutting).Count());
 
         // Processing stations carry no yield item.
         var hearth = nodes.Single(n => n.NodeId == "castle_cooking_hearth");
@@ -60,7 +60,7 @@ public class StartingRegionContentTests
     public void ResourceSpawnerPool_SeedsOnlyHarvestableTiles()
     {
         var pool = StartingRegion.CreateResourceSpawnerPool();
-        Assert.Equal(6, pool.ActiveCount); // 4 ore + 2 trees, no processing stations
+        Assert.Equal(26, pool.ActiveCount); // 12 ore + 14 trees, no processing stations
         Assert.True(pool.IsActive(new GridCoordinate(85, 15)));
         Assert.False(pool.IsActive(new GridCoordinate(45, 35))); // hearth not a resource
     }
@@ -117,6 +117,6 @@ public class StartingRegionContentTests
         Assert.True(StartingRegionMonsters.ById["forest_marauder"].Aggressive);
         Assert.Equal(3, StartingRegionMonsters.ById["forest_marauder"].AggroRadius);
         Assert.False(StartingRegionMonsters.ById["chicken"].Aggressive);
-        Assert.Equal(CombatStyle.Melee, StartingRegionMonsters.ById["skeleton"].Style);
+        Assert.Equal(CombatStyle.Melee, StartingRegionMonsters.ById["reanimated_skeleton"].Style);
     }
 }

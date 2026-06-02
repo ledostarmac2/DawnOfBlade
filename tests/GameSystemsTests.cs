@@ -78,7 +78,7 @@ public class GameSystemsTests
         Assert.False(pool.IsActive(ore));
 
         var respawned = pool.Tick(150);          // at timestamp
-        Assert.Equal(new[] { ore }, respawned);
+        Assert.Equal(new[] { ore }, respawned.Select(anchor => anchor.Coordinate));
         Assert.True(pool.IsActive(ore));
         Assert.Equal(2, pool.ActiveCount);
     }
@@ -143,6 +143,34 @@ public class GameSystemsTests
         Assert.Equal(36, market.DepotGold("s2"));   // 3 @ 12
         Assert.Equal(10, market.DepotGold("buyer")); // refund from the 5 @ 10 leg only
         Assert.Equal(1, market.OpenSellCount);      // s2 has 2 left
+    }
+
+    [Fact]
+    public void Market_CheaperUnmatchedSell_DoesNotStarveDifferentItemCross()
+    {
+        var market = new MarketEngine();
+        market.PlaceSellOrder("seller-a", itemId: 10, quantity: 1, unitPrice: 1);
+        market.PlaceSellOrder("seller-b", itemId: 20, quantity: 1, unitPrice: 5);
+
+        var result = market.PlaceBuyOrder("buyer-b", itemId: 20, quantity: 1, maxUnitPrice: 5, buyerGold: 5);
+
+        Assert.Equal(1, result.FilledQuantity);
+        Assert.Equal(1, market.DepotItemCount("buyer-b", 20));
+        Assert.Equal(1, market.OpenSellCount);
+    }
+
+    [Fact]
+    public void Market_HigherUnmatchedBuy_DoesNotStarveDifferentItemCross()
+    {
+        var market = new MarketEngine();
+        market.PlaceBuyOrder("buyer-a", itemId: 10, quantity: 1, maxUnitPrice: 100, buyerGold: 100);
+        market.PlaceBuyOrder("buyer-b", itemId: 20, quantity: 1, maxUnitPrice: 5, buyerGold: 5);
+
+        var result = market.PlaceSellOrder("seller-b", itemId: 20, quantity: 1, unitPrice: 5);
+
+        Assert.Equal(1, result.FilledQuantity);
+        Assert.Equal(1, market.DepotItemCount("buyer-b", 20));
+        Assert.Equal(1, market.OpenBuyCount);
     }
 
     [Fact]

@@ -6,7 +6,13 @@ namespace DawnOfBlade.Auth;
 /// </summary>
 public static class Session
 {
-    public static string? Username { get; set; }
+    private static string? _username;
+
+    public static string? Username
+    {
+        get => _username;
+        set => _username = string.IsNullOrWhiteSpace(value) ? null : AccountIdentity.NormalizeUsername(value);
+    }
 
     public static bool IsSignedIn => !string.IsNullOrEmpty(Username);
 }

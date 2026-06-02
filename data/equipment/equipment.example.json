@@ -18,6 +18,42 @@
     "requiredDefense": 1
   },
   {
+    "itemId": "shortbow",
+    "slot": "Weapon",
+    "attackBonus": 4,
+    "strengthBonus": 2,
+    "defenseBonus": 0,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "elemental_staff",
+    "slot": "Weapon",
+    "attackBonus": 4,
+    "strengthBonus": 3,
+    "defenseBonus": 0,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "bronze_hatchet",
+    "slot": "Weapon",
+    "attackBonus": 3,
+    "strengthBonus": 4,
+    "defenseBonus": 0,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "bronze_pickaxe",
+    "slot": "Weapon",
+    "attackBonus": 3,
+    "strengthBonus": 3,
+    "defenseBonus": 0,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
     "itemId": "oak_buckler",
     "slot": "Shield",
     "attackBonus": 0,
@@ -32,6 +68,321 @@
     "attackBonus": 0,
     "strengthBonus": 0,
     "defenseBonus": 3,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "oak_shortbow",
+    "slot": "Weapon",
+    "attackBonus": 7,
+    "strengthBonus": 4,
+    "defenseBonus": 0,
+    "requiredAttack": 3,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "willow_longbow",
+    "slot": "Weapon",
+    "attackBonus": 10,
+    "strengthBonus": 6,
+    "defenseBonus": 0,
+    "requiredAttack": 8,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "ember_staff",
+    "slot": "Weapon",
+    "attackBonus": 7,
+    "strengthBonus": 6,
+    "defenseBonus": 0,
+    "requiredAttack": 4,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "tide_staff",
+    "slot": "Weapon",
+    "attackBonus": 10,
+    "strengthBonus": 8,
+    "defenseBonus": 0,
+    "requiredAttack": 8,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "bronze_sword",
+    "slot": "Weapon",
+    "attackBonus": 5,
+    "strengthBonus": 4,
+    "defenseBonus": 0,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "iron_sword",
+    "slot": "Weapon",
+    "attackBonus": 8,
+    "strengthBonus": 7,
+    "defenseBonus": 0,
+    "requiredAttack": 5,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "steel_sword",
+    "slot": "Weapon",
+    "attackBonus": 12,
+    "strengthBonus": 10,
+    "defenseBonus": 0,
+    "requiredAttack": 10,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "bronze_shield",
+    "slot": "Shield",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 4,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "iron_shield",
+    "slot": "Shield",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 8,
+    "requiredAttack": 1,
+    "requiredDefense": 5
+  },
+  {
+    "itemId": "steel_shield",
+    "slot": "Shield",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 13,
+    "requiredAttack": 1,
+    "requiredDefense": 10
+  },
+  {
+    "itemId": "bronze_helm",
+    "slot": "Head",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 2,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "bronze_chestplate",
+    "slot": "Body",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 5,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "bronze_legplates",
+    "slot": "Legs",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 4,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "bronze_gloves",
+    "slot": "Hands",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 1,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "bronze_boots",
+    "slot": "Feet",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 1,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "iron_helm",
+    "slot": "Head",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 4,
+    "requiredAttack": 1,
+    "requiredDefense": 5
+  },
+  {
+    "itemId": "iron_chestplate",
+    "slot": "Body",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 9,
+    "requiredAttack": 1,
+    "requiredDefense": 5
+  },
+  {
+    "itemId": "iron_legplates",
+    "slot": "Legs",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 7,
+    "requiredAttack": 1,
+    "requiredDefense": 5
+  },
+  {
+    "itemId": "iron_gloves",
+    "slot": "Hands",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 2,
+    "requiredAttack": 1,
+    "requiredDefense": 5
+  },
+  {
+    "itemId": "iron_boots",
+    "slot": "Feet",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 3,
+    "requiredAttack": 1,
+    "requiredDefense": 5
+  },
+  {
+    "itemId": "steel_helm",
+    "slot": "Head",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 7,
+    "requiredAttack": 1,
+    "requiredDefense": 10
+  },
+  {
+    "itemId": "steel_chestplate",
+    "slot": "Body",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 14,
+    "requiredAttack": 1,
+    "requiredDefense": 10
+  },
+  {
+    "itemId": "steel_legplates",
+    "slot": "Legs",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 11,
+    "requiredAttack": 1,
+    "requiredDefense": 10
+  },
+  {
+    "itemId": "steel_gloves",
+    "slot": "Hands",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 4,
+    "requiredAttack": 1,
+    "requiredDefense": 10
+  },
+  {
+    "itemId": "steel_boots",
+    "slot": "Feet",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 5,
+    "requiredAttack": 1,
+    "requiredDefense": 10
+  },
+  {
+    "itemId": "leather_cowl",
+    "slot": "Head",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 1,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "leather_jerkin",
+    "slot": "Body",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 3,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "leather_chaps",
+    "slot": "Legs",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 2,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "leather_gloves",
+    "slot": "Hands",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 1,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "leather_boots",
+    "slot": "Feet",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 1,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "mind_hood",
+    "slot": "Head",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 1,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "mind_robes",
+    "slot": "Body",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 2,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "mind_leggings",
+    "slot": "Legs",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 1,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "mind_gloves",
+    "slot": "Hands",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 1,
+    "requiredAttack": 1,
+    "requiredDefense": 1
+  },
+  {
+    "itemId": "mind_boots",
+    "slot": "Feet",
+    "attackBonus": 0,
+    "strengthBonus": 0,
+    "defenseBonus": 1,
     "requiredAttack": 1,
     "requiredDefense": 1
   }

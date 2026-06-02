@@ -429,14 +429,14 @@
     {
       "id": "LQ-020",
       "title": "Run Codex Claude peer-review discussion",
-      "state": "done",
+      "state": "open",
       "owner": null,
-      "delegateTo": "codex",
+      "delegateTo": "claude",
       "depends": [],
       "filesTouched": [
         "docs/AGENT_DISCUSSION.md"
       ],
-      "notes": "[discussion turn 12 - Codex closed design round] See docs/AGENT_DISCUSSION.md Turn 12. Agreed next-lane checklist: staged shared assets and chunk-boundary relevance refresh; initially hide/disable distant NPC views without pooling; immutable modal DTOs with ActionId dispatch; pure usable-item result DTOs returning inventory/equipment/HP deltas. Reopen checkpoint after LQ-021,LQ-022,LQ-024 land before LQ-023.",
+      "notes": "[post-implementation checkpoint requested] LQ-021,LQ-022,LQ-024 and Codex LQ-029 landed. Request Claude read-only review of actual adapter signatures, save tmp/bak recovery implementation, HUD boundary, test output, and paper walkthroughs before LQ-023.",
       "verification": [
         "Cross-agent peer review completed; scoped implementation tasks LQ-021..LQ-028 created.",
         "Codex-Claude live discussion extended through Turns 5-12; save, adapter, simulation, HUD, world optimization, and usable-item boundaries agreed."
@@ -446,25 +446,40 @@
     {
       "id": "LQ-021",
       "title": "Fix cross-item market matching",
-      "state": "claimed",
+      "state": "done",
       "owner": "claude",
       "delegateTo": null,
       "depends": [],
-      "filesTouched": [],
-      "notes": "Owner Claude. Scope: src/GameSystems/MarketEngine.cs, tests/GameSystemsTests.cs. Partition or compatibly select market crosses per item; add two-item starvation regression test.",
-      "verification": [],
+      "filesTouched": [
+        "src/GameSystems/MarketEngine.cs",
+        "tests/GameSystemsTests.cs"
+      ],
+      "notes": "Completed Claude-owned lane. CrossBook now searches for the lowest valid resting sell with a compatible same-item buy instead of stopping on unrelated global top-of-book orders. Added cheaper-sell and higher-buy cross-item starvation regressions.",
+      "verification": [
+        "per-item CrossBook; cross-item isolation + existing market tests green; full suite 135 passed"
+      ],
       "updated": "2026-06-02"
     },
     {
       "id": "LQ-022",
       "title": "Create canonical region and item adapter boundary",
-      "state": "claimed",
+      "state": "done",
       "owner": "claude",
       "delegateTo": null,
       "depends": [],
-      "filesTouched": [],
-      "notes": "Owner Claude. Scope: src/GameSystems/Content, src/GameSystems/ResourceSpawnerPool.cs, new adapter file under src/GameSystems, corresponding tests. Add explicit numeric GameSystems ID to live string ID mapping with divergence checks; expand canonical authoritative metadata to all 26 live resource nodes; evolve ResourceSpawnerPool to stable NodeId keys while preserving coordinate metadata lookup; align hostile IDs.",
-      "verification": [],
+      "filesTouched": [
+        "src/GameSystems/LiveItemIdAdapter.cs",
+        "src/GameSystems/ResourceSpawnerPool.cs",
+        "src/GameSystems/Content/RegionContent.cs",
+        "src/GameSystems/Content/MonsterLoot.cs",
+        "tests/GameSystemsTests.cs",
+        "tests/StartingRegionContentTests.cs",
+        "tests/GameSystemsAdapterTests.cs"
+      ],
+      "notes": "Completed Claude-owned lane. Added strict bidirectional LiveItemIdAdapter, canonical 26-node harvest metadata plus lookup APIs, NodeId-first ResourceSpawnerPool with coordinate compatibility lookups, and reanimated_skeleton hostile-id alignment. Tests cover mapping round trips, unknown ids, duplicate rejection, all harvest/loot outputs, metadata parity, stable NodeId respawn, coordinate lookup, and hostile spawn alignment.",
+      "verification": [
+        "LiveItemIdAdapter (totality/round-trip/dup-reject), NodeId-keyed ResourceSpawnerPool, canonical 26-node StartingRegion + lookups, reanimated_skeleton aligned; full suite 135 passed"
+      ],
       "updated": "2026-06-02"
     },
     {
@@ -484,13 +499,22 @@
     {
       "id": "LQ-024",
       "title": "Harden account normalization and debounced saves",
-      "state": "claimed",
+      "state": "done",
       "owner": "codex",
       "delegateTo": null,
       "depends": [],
-      "filesTouched": [],
-      "notes": "Owner Codex. Scope: src/Auth, src/UI/LoginScreen.cs, src/Save, focused tests. Normalize account identity once; use dirty/debounced autosave with explicit flush; test save paths and migration.",
-      "verification": [],
+      "filesTouched": [
+        "src/Auth/AccountIdentity.cs",
+        "src/Auth/AccountStore.cs",
+        "src/Auth/Session.cs",
+        "src/Core/GameManager.cs",
+        "src/Save/SaveService.cs",
+        "tests/SaveSerializerTests.cs"
+      ],
+      "notes": "Added canonical account identity, hashed collision-resistant save keys, legacy candidate migration, tmp/bak promotion recovery, dirty 3-second autosave, and forced manual/close/predelete/ExitTree flushes.",
+      "verification": [
+        "Release build passed 0 warnings; full combined suite passed 135/135."
+      ],
       "updated": "2026-06-02"
     },
     {
@@ -548,6 +572,23 @@
       "filesTouched": [],
       "notes": "Owner Codex. Scope: src/Core, src/World/GeneratedAssetFactory.cs, interaction UI. Expose usable catalog actions and generated visual coverage in the playable client.",
       "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-029",
+      "title": "Build polished MMORPG HUD shell",
+      "state": "done",
+      "owner": "codex",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [
+        "data/items/items.example.json",
+        "src/Core/GameManager.cs"
+      ],
+      "notes": "Replaced prototype HUD clutter with responsive MMORPG-style realm frame: anchored status and quest panel, bronze-framed right sidebar, map panel, compact tabs, persistent scrollable inventory, compact action grid, chat panel, shared scrollable modal, and in-game settings/customization view. Added adapter-ready loot inputs feathers/raw_poultry/brittle_bones/raw_wool.",
+      "verification": [
+        "Release build passed 0 warnings; combined suite passed 135/135; Windows export succeeded; packaged EXE stayed running for 7-second launch check."
+      ],
       "updated": "2026-06-02"
     }
   ]

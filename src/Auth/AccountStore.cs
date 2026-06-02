@@ -125,7 +125,7 @@ public sealed class AccountStore
         file.StoreString(Json.Stringify(_accounts, "  "));
     }
 
-    private static string Key(string username) => (username ?? string.Empty).Trim().ToLowerInvariant();
+    private static string Key(string username) => AccountIdentity.NormalizeUsername(username);
 
     private static string NewSalt() =>
         Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(16));

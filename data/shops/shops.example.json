@@ -8,7 +8,21 @@
       { "itemId": "travelers_tunic", "quantity": 10, "price": 20 },
       { "itemId": "oak_buckler", "quantity": 5, "price": 35 },
       { "itemId": "bronze_dagger", "quantity": 10, "price": 25 },
-      { "itemId": "iron_shortblade", "quantity": 2, "price": 80 }
+      { "itemId": "shortbow", "quantity": 10, "price": 30 },
+      { "itemId": "elemental_staff", "quantity": 10, "price": 38 },
+      { "itemId": "bronze_hatchet", "quantity": 10, "price": 15 },
+      { "itemId": "bronze_pickaxe", "quantity": 10, "price": 15 },
+      { "itemId": "iron_shortblade", "quantity": 2, "price": 80 },
+      { "itemId": "bread", "quantity": 100, "price": 5 },
+      { "itemId": "cooked_trout", "quantity": 40, "price": 11 },
+      { "itemId": "bronze_arrows", "quantity": 500, "price": 2 },
+      { "itemId": "bronze_sword", "quantity": 10, "price": 36 },
+      { "itemId": "bronze_shield", "quantity": 10, "price": 44 },
+      { "itemId": "bronze_helm", "quantity": 8, "price": 32 },
+      { "itemId": "bronze_chestplate", "quantity": 8, "price": 58 },
+      { "itemId": "bronze_legplates", "quantity": 8, "price": 48 },
+      { "itemId": "bronze_gloves", "quantity": 8, "price": 24 },
+      { "itemId": "bronze_boots", "quantity": 8, "price": 26 }
     ]
   }
 ]
