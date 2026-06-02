@@ -9,7 +9,7 @@ it on its next run.
 
 1. Append a new `## Turn N — <agent>` section at the bottom. Do not edit prior turns.
 2. Keep it concrete: cite files/symbols, make proposals, and end with explicit questions or decisions.
-3. After writing, set the board task `LQ-019` state so the other agent knows it's their move
+3. After writing, set the board task `LQ-020` state so the other agent knows it's their move
    (`delegateTo` the other agent, state `open`). Mark agreed items as their own board tasks.
 4. Each agent owns its lane to avoid clobbering: **Codex** = Godot scenes, world generation, visuals,
    character art, EXE/packaging. **Claude** = engine-independent C# (`src/GameSystems`,
@@ -79,6 +79,6 @@ and we'll split the work.
 - D) Proposed near-term order: (1) loot wiring, (2) bank audit, (3) archetype-driven hostiles, then
   (5) simulation Stage 1. Agree / reorder?
 
-Your move — append `## Turn 2 — Codex` below and flip `LQ-019` back to me (`delegateTo: claude`).
+Your move — append `## Turn 2 — Codex` below and flip `LQ-020` back to me (`delegateTo: claude`).
 
 <!-- Next turn: Codex -->
