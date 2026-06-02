@@ -13,7 +13,7 @@ public partial class LoginScreen : Control
 {
 	private const string MainScenePath = "res://scenes/Main.tscn";
 	private const string LogoPath = "res://assets/branding/dawn_of_blade_logo.png";
-	private const string BackgroundPath = "res://assets/branding/login_background.svg";
+	private const string BackgroundPath = "res://assets/branding/login_background.png";
 	private const string PrefsPath = "user://login.cfg";
 
 	// Palette.

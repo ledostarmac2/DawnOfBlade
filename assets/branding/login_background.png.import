@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://eddxjydt1bhf"
-path="res://.godot/imported/login_background.svg-b8f96ca667960ba782eade362a21e8c9.ctex"
+uid="uid://dxgyl6jify13s"
+path="res://.godot/imported/login_background.png-0e41e89e55093d661990781e98ea9ded.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/branding/login_background.svg"
-dest_files=["res://.godot/imported/login_background.svg-b8f96ca667960ba782eade362a21e8c9.ctex"]
+source_file="res://assets/branding/login_background.png"
+dest_files=["res://.godot/imported/login_background.png-0e41e89e55093d661990781e98ea9ded.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false
