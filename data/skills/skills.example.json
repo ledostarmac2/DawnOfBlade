@@ -40,5 +40,113 @@
     "displayName": "Hitpoints",
     "description": "Determines how much damage you can take.",
     "maxLevel": 99
+  },
+  {
+    "id": "ranged",
+    "displayName": "Ranged",
+    "description": "Attack from afar with bows and thrown weapons.",
+    "maxLevel": 99
+  },
+  {
+    "id": "magic",
+    "displayName": "Magic",
+    "description": "Cast spells to damage foes and enchant items.",
+    "maxLevel": 99
+  },
+  {
+    "id": "prayer",
+    "displayName": "Prayer",
+    "description": "Draw on the dawn-gods for protective and offensive blessings.",
+    "maxLevel": 99
+  },
+  {
+    "id": "mining",
+    "displayName": "Mining",
+    "description": "Extract ore and gems from rocks.",
+    "maxLevel": 99
+  },
+  {
+    "id": "fishing",
+    "displayName": "Fishing",
+    "description": "Catch fish from rivers, lakes, and the sea.",
+    "maxLevel": 99
+  },
+  {
+    "id": "woodcutting",
+    "displayName": "Woodcutting",
+    "description": "Chop logs from trees across the realm.",
+    "maxLevel": 99
+  },
+  {
+    "id": "farming",
+    "displayName": "Farming",
+    "description": "Grow crops, herbs, and trees.",
+    "maxLevel": 99
+  },
+  {
+    "id": "hunter",
+    "displayName": "Hunter",
+    "description": "Track and trap the realm's wild creatures.",
+    "maxLevel": 99
+  },
+  {
+    "id": "cooking",
+    "displayName": "Cooking",
+    "description": "Prepare raw food into restorative meals.",
+    "maxLevel": 99
+  },
+  {
+    "id": "firemaking",
+    "displayName": "Firemaking",
+    "description": "Light logs to create fires and warmth.",
+    "maxLevel": 99
+  },
+  {
+    "id": "smithing",
+    "displayName": "Smithing",
+    "description": "Smelt ore and forge metal equipment.",
+    "maxLevel": 99
+  },
+  {
+    "id": "fletching",
+    "displayName": "Fletching",
+    "description": "Craft bows, arrows, and ranged ammunition.",
+    "maxLevel": 99
+  },
+  {
+    "id": "herblore",
+    "displayName": "Herblore",
+    "description": "Brew potions from herbs and secondary ingredients.",
+    "maxLevel": 99
+  },
+  {
+    "id": "runecrafting",
+    "displayName": "Runecrafting",
+    "description": "Bind raw essence into magical runes.",
+    "maxLevel": 99
+  },
+  {
+    "id": "construction",
+    "displayName": "Construction",
+    "description": "Build and furnish a home of your own.",
+    "maxLevel": 99
+  },
+  {
+    "id": "agility",
+    "displayName": "Agility",
+    "description": "Cross obstacles and recover run energy faster.",
+    "maxLevel": 99
+  },
+  {
+    "id": "thieving",
+    "displayName": "Thieving",
+    "description": "Pickpocket marks and steal from stalls and chests.",
+    "maxLevel": 99
+  },
+  {
+    "id": "slayer",
+    "displayName": "Slayer",
+    "description": "Hunt assigned monsters for unique rewards.",
+    "maxLevel": 99
   }
 ]

@@ -47,5 +47,26 @@
     "description": "Padded cloth that turns a glancing blow.",
     "stackable": false,
     "value": 20
+  },
+  {
+    "id": "logs",
+    "displayName": "Logs",
+    "description": "Freshly chopped logs. Burn them or fletch them into bows.",
+    "stackable": true,
+    "value": 4
+  },
+  {
+    "id": "copper_ore",
+    "displayName": "Copper Ore",
+    "description": "Raw copper ore, ready for the furnace.",
+    "stackable": true,
+    "value": 5
+  },
+  {
+    "id": "raw_trout",
+    "displayName": "Raw Trout",
+    "description": "A fresh river trout. Best cooked before eating.",
+    "stackable": true,
+    "value": 6
   }
 ]

@@ -41,3 +41,13 @@ Vocabulary is loaded from `data/vocabulary/vocabulary.example.json` and presente
 ## Phase 9: Polish and Content Tools ✅
 
 Branded login/account-creation screen, data-driven content workflow, and a runnable xUnit test suite (`tests/`) including data-schema validation. Further art direction remains an ongoing effort.
+
+## Phase 10: Content Expansion and Toolchain ✅
+
+Reconciled two parallel branches into one buildable game. Expanded the skill set to a RuneScape-style spread (25 skills on the 99-level curve; combat trains attack/strength/defense/hitpoints by style), grew the language vocabulary to 50 themed Spanish→English entries, and added woodcutting/mining/fishing resource nodes (data-driven `ResourceNode`). Vendored a self-contained **.NET 8** toolchain under `.tools/` via `tools/setup-dev.ps1` and fixed the C# Dev Kit SDK discovery in `.vscode/settings.json` (absolute `existingDotnetPath`, since the .NET Install Tool does not expand `${workspaceFolder}`).
+
+## Next Steps
+
+- Wire the remaining artisan skills (smithing, cooking, firemaking, fletching, …) to crafting actions.
+- Persist in-progress quest objective counts and unlocked vocabulary across saves.
+- Expand quests/dialogue/shops content and add more hostile actors with Slayer-style rewards.

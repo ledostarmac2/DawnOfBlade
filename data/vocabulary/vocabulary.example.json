@@ -1,19 +1,402 @@
 [
   {
-    "term": "hello",
+    "term": "hola",
     "translation": "hello",
     "transliteration": "",
     "partOfSpeech": "interjection",
-    "exampleSentence": "Hello, traveler.",
+    "exampleSentence": "¡Hola, viajero!",
     "difficulty": 1
   },
   {
-    "term": "path",
+    "term": "adiós",
+    "translation": "goodbye",
+    "transliteration": "",
+    "partOfSpeech": "interjection",
+    "exampleSentence": "Adiós, amigo.",
+    "difficulty": 1
+  },
+  {
+    "term": "sí",
+    "translation": "yes",
+    "transliteration": "",
+    "partOfSpeech": "adverb",
+    "exampleSentence": "Sí, acepto la misión.",
+    "difficulty": 1
+  },
+  {
+    "term": "no",
+    "translation": "no",
+    "transliteration": "",
+    "partOfSpeech": "adverb",
+    "exampleSentence": "No, no tengo oro.",
+    "difficulty": 1
+  },
+  {
+    "term": "gracias",
+    "translation": "thank you",
+    "transliteration": "",
+    "partOfSpeech": "interjection",
+    "exampleSentence": "Gracias por tu ayuda.",
+    "difficulty": 1
+  },
+  {
+    "term": "por favor",
+    "translation": "please",
+    "transliteration": "",
+    "partOfSpeech": "phrase",
+    "exampleSentence": "Ayúdame, por favor.",
+    "difficulty": 1
+  },
+  {
+    "term": "amigo",
+    "translation": "friend",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Mi amigo vive en el pueblo.",
+    "difficulty": 1
+  },
+  {
+    "term": "agua",
+    "translation": "water",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Bebo agua del río.",
+    "difficulty": 1
+  },
+  {
+    "term": "camino",
     "translation": "path",
     "transliteration": "",
     "partOfSpeech": "noun",
-    "exampleSentence": "The path leads to the market.",
+    "exampleSentence": "El camino lleva al mercado.",
     "difficulty": 1
+  },
+  {
+    "term": "pan",
+    "translation": "bread",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Compro pan en el mercado.",
+    "difficulty": 1
+  },
+  {
+    "term": "río",
+    "translation": "river",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El río cruza el bosque.",
+    "difficulty": 2
+  },
+  {
+    "term": "bosque",
+    "translation": "forest",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El bosque está lleno de lobos.",
+    "difficulty": 2
+  },
+  {
+    "term": "montaña",
+    "translation": "mountain",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "La montaña es muy alta.",
+    "difficulty": 2
+  },
+  {
+    "term": "pueblo",
+    "translation": "town",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Vivo en un pueblo pequeño.",
+    "difficulty": 2
+  },
+  {
+    "term": "mercado",
+    "translation": "market",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El mercado abre al amanecer.",
+    "difficulty": 2
+  },
+  {
+    "term": "casa",
+    "translation": "house",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Mi casa tiene una puerta roja.",
+    "difficulty": 2
+  },
+  {
+    "term": "puerta",
+    "translation": "door",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Abre la puerta, por favor.",
+    "difficulty": 2
+  },
+  {
+    "term": "árbol",
+    "translation": "tree",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El árbol da buena sombra.",
+    "difficulty": 2
+  },
+  {
+    "term": "piedra",
+    "translation": "stone",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Hay una piedra en el camino.",
+    "difficulty": 2
+  },
+  {
+    "term": "fuego",
+    "translation": "fire",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El herrero enciende el fuego.",
+    "difficulty": 2
+  },
+  {
+    "term": "rey",
+    "translation": "king",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El rey vive en el castillo.",
+    "difficulty": 3
+  },
+  {
+    "term": "reina",
+    "translation": "queen",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "La reina gobierna con sabiduría.",
+    "difficulty": 3
+  },
+  {
+    "term": "guerrero",
+    "translation": "warrior",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El guerrero lleva una espada.",
+    "difficulty": 3
+  },
+  {
+    "term": "herrero",
+    "translation": "blacksmith",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El herrero forja armaduras.",
+    "difficulty": 3
+  },
+  {
+    "term": "comerciante",
+    "translation": "merchant",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El comerciante vende oro y plata.",
+    "difficulty": 3
+  },
+  {
+    "term": "oro",
+    "translation": "gold",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Tengo cien monedas de oro.",
+    "difficulty": 3
+  },
+  {
+    "term": "plata",
+    "translation": "silver",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Esta moneda es de plata.",
+    "difficulty": 3
+  },
+  {
+    "term": "moneda",
+    "translation": "coin",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Le doy una moneda al comerciante.",
+    "difficulty": 3
+  },
+  {
+    "term": "espada",
+    "translation": "sword",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "La espada es afilada.",
+    "difficulty": 3
+  },
+  {
+    "term": "escudo",
+    "translation": "shield",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El escudo me protege en la batalla.",
+    "difficulty": 3
+  },
+  {
+    "term": "batalla",
+    "translation": "battle",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "La batalla dura toda la noche.",
+    "difficulty": 4
+  },
+  {
+    "term": "enemigo",
+    "translation": "enemy",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El enemigo se acerca al pueblo.",
+    "difficulty": 4
+  },
+  {
+    "term": "arco",
+    "translation": "bow",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Uso un arco para cazar.",
+    "difficulty": 4
+  },
+  {
+    "term": "flecha",
+    "translation": "arrow",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "La flecha vuela rápido.",
+    "difficulty": 4
+  },
+  {
+    "term": "armadura",
+    "translation": "armor",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Mi armadura es pesada.",
+    "difficulty": 4
+  },
+  {
+    "term": "corazón",
+    "translation": "heart",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El guerrero tiene un corazón valiente.",
+    "difficulty": 4
+  },
+  {
+    "term": "mano",
+    "translation": "hand",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Sostengo la espada con la mano.",
+    "difficulty": 4
+  },
+  {
+    "term": "ojo",
+    "translation": "eye",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El dragón tiene un ojo rojo.",
+    "difficulty": 4
+  },
+  {
+    "term": "sangre",
+    "translation": "blood",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "La batalla deja sangre en el camino.",
+    "difficulty": 4
+  },
+  {
+    "term": "fuerza",
+    "translation": "strength",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El guerrero tiene mucha fuerza.",
+    "difficulty": 4
+  },
+  {
+    "term": "luchar",
+    "translation": "to fight",
+    "transliteration": "",
+    "partOfSpeech": "verb",
+    "exampleSentence": "Voy a luchar contra el enemigo.",
+    "difficulty": 5
+  },
+  {
+    "term": "correr",
+    "translation": "to run",
+    "transliteration": "",
+    "partOfSpeech": "verb",
+    "exampleSentence": "Debo correr hacia el bosque.",
+    "difficulty": 5
+  },
+  {
+    "term": "hablar",
+    "translation": "to speak",
+    "transliteration": "",
+    "partOfSpeech": "verb",
+    "exampleSentence": "Quiero hablar con el rey.",
+    "difficulty": 5
+  },
+  {
+    "term": "aprender",
+    "translation": "to learn",
+    "transliteration": "",
+    "partOfSpeech": "verb",
+    "exampleSentence": "Quiero aprender el idioma.",
+    "difficulty": 5
+  },
+  {
+    "term": "magia",
+    "translation": "magic",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "La magia ilumina la cueva.",
+    "difficulty": 5
+  },
+  {
+    "term": "peligro",
+    "translation": "danger",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "Hay peligro en la montaña.",
+    "difficulty": 5
+  },
+  {
+    "term": "tesoro",
+    "translation": "treasure",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El tesoro está escondido en la cueva.",
+    "difficulty": 5
+  },
+  {
+    "term": "viaje",
+    "translation": "journey",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El viaje al pueblo es largo.",
+    "difficulty": 5
+  },
+  {
+    "term": "victoria",
+    "translation": "victory",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "La victoria es nuestra.",
+    "difficulty": 5
+  },
+  {
+    "term": "valor",
+    "translation": "courage",
+    "transliteration": "",
+    "partOfSpeech": "noun",
+    "exampleSentence": "El guerrero lucha con valor.",
+    "difficulty": 5
   }
 ]
-

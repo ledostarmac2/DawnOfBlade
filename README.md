@@ -13,6 +13,21 @@ This project is not a RuneScape private server and is not a clone using Jagex co
 5. Open `scenes/Main.tscn` and confirm script paths are valid.
 6. Build the C# solution from Godot before running the scene.
 
+### VS Code / Cursor quick start
+
+The project targets **.NET 8** (`global.json` pins SDK `8.0.421`). To bootstrap a
+self-contained toolchain into `.tools/` (gitignored) and wire up the editor:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/setup-dev.ps1
+```
+
+This installs the .NET 8 SDK, a .NET 9 runtime (host for the C# Dev Kit language
+server), and ripgrep, then prepends the vendored SDK to your PATH. `.vscode/settings.json`
+points the C# Dev Kit at `.tools/dotnet/dotnet.exe` via an **absolute** path — the .NET
+Install Tool does not expand `${workspaceFolder}`, so update that path if you clone elsewhere.
+Build/test from a terminal with `dotnet build DawnOfBlade.sln` and `dotnet test tests/DawnOfBlade.Tests.csproj`.
+
 ## Baseline Status
 
 The repository currently contains the first architecture baseline:

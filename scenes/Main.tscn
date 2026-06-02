@@ -81,6 +81,51 @@ surface_material_override/0 = ExtResource("10_resource_mat")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="World/SunleafNode"]
 shape = SubResource("BoxShape3D_resource")
 
+[node name="OakTree" type="StaticBody3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.4, 4)
+script = ExtResource("9_resource_node")
+DisplayName = "Oak Tree"
+ItemId = "logs"
+SkillId = "woodcutting"
+Experience = 25
+
+[node name="Mesh" type="MeshInstance3D" parent="World/OakTree"]
+mesh = SubResource("BoxMesh_resource")
+surface_material_override/0 = ExtResource("10_resource_mat")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/OakTree"]
+shape = SubResource("BoxShape3D_resource")
+
+[node name="CopperRock" type="StaticBody3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.4, -2)
+script = ExtResource("9_resource_node")
+DisplayName = "Copper Rock"
+ItemId = "copper_ore"
+SkillId = "mining"
+Experience = 18
+
+[node name="Mesh" type="MeshInstance3D" parent="World/CopperRock"]
+mesh = SubResource("BoxMesh_resource")
+surface_material_override/0 = ExtResource("10_resource_mat")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/CopperRock"]
+shape = SubResource("BoxShape3D_resource")
+
+[node name="FishingSpot" type="StaticBody3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.4, 6)
+script = ExtResource("9_resource_node")
+DisplayName = "Fishing Spot"
+ItemId = "raw_trout"
+SkillId = "fishing"
+Experience = 20
+
+[node name="Mesh" type="MeshInstance3D" parent="World/FishingSpot"]
+mesh = SubResource("BoxMesh_resource")
+surface_material_override/0 = ExtResource("10_resource_mat")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/FishingSpot"]
+shape = SubResource("BoxShape3D_resource")
+
 [node name="TrainingDummy" type="StaticBody3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.9, -4)
 script = ExtResource("11_hostile")

@@ -4,5 +4,13 @@
     "DOTNET_ROOT": "${workspaceFolder}\\.tools\\dotnet",
     "PATH": "${workspaceFolder}\\.tools\\dotnet;${env:PATH}"
   },
-  "omnisharp.sdkPath": "${workspaceFolder}\\.tools\\dotnet\\sdk\\6.0.428"
+  // The .NET Install Tool does NOT expand ${workspaceFolder}, so this MUST be an
+  // absolute path to a dotnet.exe that has both the net8 SDK and the .NET runtime
+  // the C# language server needs. Points at the vendored toolchain (.tools/dotnet).
+  // If you clone elsewhere, update this path or run tools/setup-dev.ps1.
+  "dotnetAcquisitionExtension.existingDotnetPath": [
+    { "extensionId": "ms-dotnettools.csdevkit", "path": "C:\\Users\\btarabocchia\\DawnOfBlade\\.tools\\dotnet\\dotnet.exe" },
+    { "extensionId": "ms-dotnettools.csharp", "path": "C:\\Users\\btarabocchia\\DawnOfBlade\\.tools\\dotnet\\dotnet.exe" },
+    { "extensionId": "ms-dotnettools.vscode-dotnet-runtime", "path": "C:\\Users\\btarabocchia\\DawnOfBlade\\.tools\\dotnet\\dotnet.exe" }
+  ]
 }
