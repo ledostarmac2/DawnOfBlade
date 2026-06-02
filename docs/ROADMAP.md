@@ -44,7 +44,7 @@ Branded login/account-creation screen, data-driven content workflow, and a runna
 
 ## Phase 10: Content Expansion and Toolchain ✅
 
-Reconciled two parallel branches into one buildable game. Expanded the skill set to a RuneScape-style spread (25 skills on the 99-level curve; combat trains attack/strength/defense/hitpoints by style), grew the language vocabulary to 50 themed Spanish→English entries, and added woodcutting/mining/fishing resource nodes (data-driven `ResourceNode`). Vendored a self-contained **.NET 8** toolchain under `.tools/` via `tools/setup-dev.ps1` and fixed the C# Dev Kit SDK discovery in `.vscode/settings.json` (absolute `existingDotnetPath`, since the .NET Install Tool does not expand `${workspaceFolder}`).
+Reconciled two parallel branches into one buildable game. Expanded the skill set to a RuneScape-style spread (25 skills on the 99-level curve; combat trains attack/strength/defense/hitpoints by style), grew the language vocabulary to 50 themed Spanish→English entries, and added woodcutting/mining/fishing resource nodes (data-driven `ResourceNode`). Vendored a self-contained **.NET 8** project toolchain under `.tools/` via `tools/setup-dev.ps1`; VS Code's .NET Install Tool manages the separate runtime used by C# extensions.
 
 ## Next Steps
 

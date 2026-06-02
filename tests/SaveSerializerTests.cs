@@ -44,4 +44,13 @@ public class SaveSerializerTests
         Assert.NotNull(save);
         Assert.Empty(save.Inventory);
     }
+
+    [Theory]
+    [InlineData("Ledostar", "user://savegame_ledostar.json")]
+    [InlineData("A Name!", "user://savegame_a_name_.json")]
+    [InlineData(null, "user://savegame_guest.json")]
+    public void BuildSavePath_IsAccountScopedAndFilesystemSafe(string? username, string expected)
+    {
+        Assert.Equal(expected, SaveService.BuildSavePath(username));
+    }
 }

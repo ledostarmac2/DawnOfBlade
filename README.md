@@ -22,11 +22,11 @@ self-contained toolchain into `.tools/` (gitignored) and wire up the editor:
 powershell -ExecutionPolicy Bypass -File tools/setup-dev.ps1
 ```
 
-This installs the .NET 8 SDK, a .NET 9 runtime (host for the C# Dev Kit language
-server), and ripgrep, then prepends the vendored SDK to your PATH. `.vscode/settings.json`
-points the C# Dev Kit at `.tools/dotnet/dotnet.exe` via an **absolute** path — the .NET
-Install Tool does not expand `${workspaceFolder}`, so update that path if you clone elsewhere.
-Build/test from a terminal with `dotnet build DawnOfBlade.sln` and `dotnet test tests/DawnOfBlade.Tests.csproj`.
+This installs the .NET 8 SDK and ripgrep, then prepends the vendored SDK to your PATH.
+VS Code's .NET Install Tool manages the separate runtime used by the C# extensions.
+Use the workspace build task in VS Code / Cursor. In an already-open external terminal,
+build and test with `.tools\dotnet\dotnet.exe build DawnOfBlade.sln` and
+`.tools\dotnet\dotnet.exe test tests\DawnOfBlade.Tests.csproj`.
 
 ## Baseline Status
 
@@ -51,4 +51,3 @@ The first playable prototype should support:
 - Simple inventory and XP data models.
 
 See `docs/ROADMAP.md` for phase planning.
-

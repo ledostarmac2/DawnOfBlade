@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://src/Core/GameManager.cs" id="1_game_manager"]
 [ext_resource type="Script" path="res://src/Player/PlayerController.cs" id="2_player_controller"]
@@ -12,12 +12,14 @@
 [ext_resource type="Material" path="res://assets/materials/resource_node.tres" id="10_resource_mat"]
 [ext_resource type="Script" path="res://src/Interaction/HostileActor.cs" id="11_hostile"]
 [ext_resource type="Script" path="res://src/Interaction/Shopkeeper.cs" id="12_shopkeeper"]
+[ext_resource type="Script" path="res://src/Characters/HumanoidVisual.cs" id="13_humanoid"]
+[ext_resource type="Script" path="res://src/World/OpenWorldBuilder.cs" id="14_open_world"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
-size = Vector2(24, 24)
+size = Vector2(180, 180)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
-size = Vector3(24, 0.1, 24)
+size = Vector3(180, 0.1, 180)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_actor"]
 radius = 0.35
@@ -44,6 +46,13 @@ size = Vector3(0.8, 0.8, 0.8)
 script = ExtResource("1_game_manager")
 
 [node name="World" type="Node3D" parent="."]
+script = ExtResource("14_open_world")
+
+[node name="Sun" type="DirectionalLight3D" parent="World"]
+rotation_degrees = Vector3(-55, -30, 0)
+light_color = Color(1, 0.91, 0.74, 1)
+light_energy = 1.15
+shadow_enabled = true
 
 [node name="Ground" type="MeshInstance3D" parent="World"]
 mesh = SubResource("PlaneMesh_ground")
@@ -63,8 +72,13 @@ SpeakerName = "Ari"
 Seed = 7
 
 [node name="Mesh" type="MeshInstance3D" parent="World/Npc"]
+visible = false
 mesh = SubResource("CapsuleMesh_actor")
 surface_material_override/0 = ExtResource("5_npc_mat")
+
+[node name="Humanoid" type="Node3D" parent="World/Npc"]
+position = Vector3(0, -0.9, 0)
+script = ExtResource("13_humanoid")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="World/Npc"]
 shape = SubResource("CapsuleShape3D_actor")
@@ -149,8 +163,14 @@ DisplayName = "Crossroads Supplies"
 ShopId = "village_general"
 
 [node name="Mesh" type="MeshInstance3D" parent="World/Shopkeeper"]
+visible = false
 mesh = SubResource("CapsuleMesh_actor")
 surface_material_override/0 = ExtResource("10_resource_mat")
+
+[node name="Humanoid" type="Node3D" parent="World/Shopkeeper"]
+position = Vector3(0, -0.9, 0)
+script = ExtResource("13_humanoid")
+ShirtColor = "#9a7a30"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="World/Shopkeeper"]
 shape = SubResource("CapsuleShape3D_actor")
@@ -160,8 +180,13 @@ script = ExtResource("2_player_controller")
 MoveTargetMarkerPath = NodePath("../MoveTarget")
 
 [node name="Mesh" type="MeshInstance3D" parent="Player"]
+visible = false
 mesh = SubResource("CapsuleMesh_actor")
 surface_material_override/0 = ExtResource("6_player_mat")
+
+[node name="Humanoid" type="Node3D" parent="Player"]
+position = Vector3(0, -0.9, 0)
+script = ExtResource("13_humanoid")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 shape = SubResource("CapsuleShape3D_actor")

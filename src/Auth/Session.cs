@@ -7,7 +7,6 @@ namespace DawnOfBlade.Auth;
 public static class Session
 {
     public static string? Username { get; set; }
-    public static string? Server { get; set; }
 
     public static bool IsSignedIn => !string.IsNullOrEmpty(Username);
 }

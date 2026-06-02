@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DawnOfBlade.Auth;
 using DawnOfBlade.Characters;
 using DawnOfBlade.Combat;
+using DawnOfBlade.Communication;
 using DawnOfBlade.Data;
 using DawnOfBlade.Dialogue;
 using DawnOfBlade.Interaction;
@@ -36,10 +38,16 @@ public partial class GameManager : Node3D
     private readonly DefinitionDatabase _definitions = new();
     private readonly Inventory.Inventory _inventory = new();
     private readonly QuestLog _questLog = new();
-    private readonly SaveService _saveService = new();
+    private readonly SaveService _saveService = new(Session.Username);
     private readonly Equipment _equipment = new();
     private readonly System.Random _random = new();
     private readonly IRandomSource _combatRandom = new SystemRandomSource();
+
+    // Codex built the in-process communication bus (src/Communication); this is the game-side
+    // adoption. Gameplay publishes domain events here; subscribers drive HUD notices and telemetry.
+    private readonly ICommunicationService _bus = new InProcessCommunicationService();
+    private readonly List<System.IDisposable> _subscriptions = new();
+    private readonly List<string> _pendingLevelUps = new();
 
     private readonly Dictionary<string, SkillProgress> _skills = new()
     {
@@ -72,6 +80,7 @@ public partial class GameManager : Node3D
     public override void _Ready()
     {
         InitializeSystems();
+        WireCommunication();
         BuildPrototypeHud();
 
         if (_saveService.SaveExists)
@@ -86,6 +95,29 @@ public partial class GameManager : Node3D
         RebuildPlayerProfile();
         ApplyPlayerAppearance();
         RefreshStatus();
+        SaveProgress(showNotice: false);
+
+        var autosave = new Timer { WaitTime = 10.0, Autostart = true };
+        autosave.Timeout += () => SaveProgress(showNotice: false);
+        AddChild(autosave);
+    }
+
+    public override void _Notification(int what)
+    {
+        if (what == NotificationWMCloseRequest && IsInitialized)
+        {
+            SaveProgress(showNotice: false);
+        }
+
+        if (what == NotificationPredelete)
+        {
+            foreach (var subscription in _subscriptions)
+            {
+                subscription.Dispose();
+            }
+
+            _subscriptions.Clear();
+        }
     }
 
     private void InitializeSystems()
@@ -101,12 +133,42 @@ public partial class GameManager : Node3D
         GD.Print($"Dawn of Blade core systems initialized for {Session.Username ?? "guest"}.");
     }
 
+    // ---- Communication bus ------------------------------------------------
+
+    /// <summary>
+    /// Subscribes the game to the domain events it publishes. Level-ups surface as RuneScape-style
+    /// notices; gather/defeat events are logged so future systems (quests, telemetry, a server
+    /// adapter) can observe the same stream without GameManager knowing about them.
+    /// </summary>
+    private void WireCommunication()
+    {
+        _subscriptions.Add(_bus.Subscribe<SkillLeveledUp>((envelope, _) =>
+        {
+            var message = envelope.Message;
+            _pendingLevelUps.Add($"Congratulations! Your {SkillDisplayName(message.SkillId)} level is now {message.Level}.");
+            return ValueTask.CompletedTask;
+        }));
+
+        _subscriptions.Add(_bus.Subscribe<ResourceGathered>((envelope, _) =>
+        {
+            GD.Print($"[event] ResourceGathered {envelope.Message.ItemId} (+{envelope.Message.Experience} {envelope.Message.SkillId} xp)");
+            return ValueTask.CompletedTask;
+        }));
+
+        _subscriptions.Add(_bus.Subscribe<EnemyDefeated>((envelope, _) =>
+        {
+            GD.Print($"[event] EnemyDefeated {envelope.Message.EnemyName} (+{envelope.Message.CoinReward} coins)");
+            return ValueTask.CompletedTask;
+        }));
+    }
+
     // ---- Gathering / crafting --------------------------------------------
 
     public void GatherResource(ResourceNode node)
     {
         _inventory.Add(node.ItemId);
         AddSkillExperience(node.SkillId, node.Experience);
+        _ = _bus.PublishAsync(new ResourceGathered(node.ItemId, node.SkillId, node.Experience));
 
         if (node.ItemId == GatherItemId)
         {
@@ -115,6 +177,7 @@ public partial class GameManager : Node3D
 
         RefreshStatus();
         ShowNotice($"You gathered {ItemName(node.ItemId)}.");
+        SaveProgress(showNotice: false);
     }
 
     private void CraftPracticeChisel()
@@ -129,6 +192,7 @@ public partial class GameManager : Node3D
         AddSkillExperience("crafting", 30);
         RefreshStatus();
         ShowNotice($"You crafted a {ItemName(CraftItemId)}.");
+        SaveProgress(showNotice: false);
     }
 
     // ---- Dialogue ---------------------------------------------------------
@@ -237,8 +301,10 @@ public partial class GameManager : Node3D
         AddDialogueLabel(correct
             ? $"Correct! \"{entry.Term}\" means \"{entry.Translation}\"."
             : $"Not quite. \"{entry.Term}\" means \"{entry.Translation}\".");
+        FlushPendingLevelUps();
         AddCloseButton("Continue");
         RefreshStatus();
+        SaveProgress(showNotice: false);
     }
 
     private List<string> BuildPromptOptions(VocabularyEntry entry)
@@ -305,6 +371,7 @@ public partial class GameManager : Node3D
         quest.RewardsGranted = true;
         ShowNotice($"Quest complete: {quest.Definition.Title}! Rewards granted.");
         RefreshStatus();
+        SaveProgress(showNotice: false);
     }
 
     // ---- Shops ------------------------------------------------------------
@@ -378,6 +445,7 @@ public partial class GameManager : Node3D
         _shopMessage = message;
         ShowShopView();
         RefreshStatus();
+        SaveProgress(showNotice: false);
     }
 
     private void DoSell(string itemId)
@@ -390,6 +458,7 @@ public partial class GameManager : Node3D
         (_, _shopMessage) = ShopService.Sell(_openShop, itemId, _inventory);
         ShowShopView();
         RefreshStatus();
+        SaveProgress(showNotice: false);
     }
 
     // ---- Equipment --------------------------------------------------------
@@ -451,6 +520,7 @@ public partial class GameManager : Node3D
             AwardCombatExperience(hostile);
             var reward = 5 + hostile.Profile.MaxHitpoints;
             _inventory.Add(Currency, reward);
+            _ = _bus.PublishAsync(new EnemyDefeated(hostile.DisplayName, reward));
             ShowNotice($"{playerLine} You defeated the {hostile.DisplayName}! +{reward} coins. It recovers shortly.");
 
             var timer = GetTree().CreateTimer(4.0);
@@ -458,6 +528,7 @@ public partial class GameManager : Node3D
 
             RebuildPlayerProfile();
             RefreshStatus();
+            SaveProgress(showNotice: false);
             return;
         }
 
@@ -481,6 +552,7 @@ public partial class GameManager : Node3D
         }
 
         RefreshStatus();
+        SaveProgress(showNotice: false);
     }
 
     private void AwardCombatExperience(HostileActor hostile)
@@ -519,6 +591,8 @@ public partial class GameManager : Node3D
         {
             _styleButton.Text = $"Style: {_attackStyle}";
         }
+
+        SaveProgress(showNotice: false);
     }
 
     // ---- Appearance / customization --------------------------------------
@@ -537,24 +611,50 @@ public partial class GameManager : Node3D
 
         ApplyPlayerAppearance();
         ShowNotice($"You changed your look (shirt {_appearance.ShirtColor}, {_appearance.BodyType}).");
+        SaveProgress(showNotice: false);
+    }
+
+    private void CycleBodyType() =>
+        UpdateAppearance(appearance => appearance.BodyType = Next(AppearanceOptions.BodyTypes, appearance.BodyType), "Body type");
+
+    private void CycleSkinTone() =>
+        UpdateAppearance(appearance => appearance.SkinTone = Next(AppearanceOptions.SkinTones, appearance.SkinTone), "Skin tone");
+
+    private void CycleHairColor() =>
+        UpdateAppearance(appearance => appearance.HairColor = Next(AppearanceOptions.HairColors, appearance.HairColor), "Hair color");
+
+    private void CycleShirtColor() =>
+        UpdateAppearance(appearance => appearance.ShirtColor = Next(AppearanceOptions.ShirtColors, appearance.ShirtColor), "Shirt color");
+
+    private void UpdateAppearance(System.Action<Appearance> update, string label)
+    {
+        update(_appearance);
+        ApplyPlayerAppearance();
+        SaveProgress(showNotice: false);
+        ShowNotice($"{label} updated. Your appearance was saved.");
+    }
+
+    private static string Next(string[] values, string current)
+    {
+        var index = System.Array.IndexOf(values, current);
+        return values[(index + 1 + values.Length) % values.Length];
     }
 
     private void ApplyPlayerAppearance()
     {
-        if (GetNodeOrNull<MeshInstance3D>("Player/Mesh") is { } mesh)
+        if (GetNodeOrNull<HumanoidVisual>("Player/Humanoid") is { } humanoid)
         {
-            mesh.SetSurfaceOverrideMaterial(0, new StandardMaterial3D { AlbedoColor = new Color(_appearance.ShirtColor) });
+            humanoid.Apply(_appearance);
         }
     }
 
     // ---- Save / Load ------------------------------------------------------
 
-    private void SaveProgress()
+    private void SaveProgress(bool showNotice = true)
     {
         var save = new SaveGame
         {
             PlayerName = Session.Username ?? "Player",
-            Server = Session.Server ?? string.Empty,
             PlayerPosition = PlayerPositionArray(),
             Inventory = _inventory.Items.ToDictionary(pair => pair.Key, pair => pair.Value),
             SkillExperience = _skills.ToDictionary(pair => pair.Key, pair => pair.Value.Experience),
@@ -574,7 +674,11 @@ public partial class GameManager : Node3D
                 _mainQuest.Progress.ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
-        ShowNotice(_saveService.Save(save) ? "Progress saved." : "Could not save progress.");
+        var saved = _saveService.Save(save);
+        if (showNotice)
+        {
+            ShowNotice(saved ? "Progress saved." : "Could not save progress.");
+        }
     }
 
     private void ApplySave(SaveGame save)
@@ -638,15 +742,20 @@ public partial class GameManager : Node3D
 
     private void AddSkillExperience(string skillId, int amount)
     {
-        if (_skills.TryGetValue(skillId, out var skill))
+        if (!_skills.TryGetValue(skillId, out var skill))
         {
-            skill.AddExperience(amount);
+            skill = new SkillProgress(skillId);
+            _skills[skillId] = skill;
         }
-        else
+
+        var levelBefore = skill.Level;
+        skill.AddExperience(amount);
+        var levelAfter = skill.Level;
+
+        // Announce each level gained through the bus (handles multi-level jumps).
+        for (var level = levelBefore + 1; level <= levelAfter; level++)
         {
-            var created = new SkillProgress(skillId);
-            created.AddExperience(amount);
-            _skills[skillId] = created;
+            _ = _bus.PublishAsync(new SkillLeveledUp(skillId, level));
         }
 
         if (skillId is "attack" or "strength" or "defense" or "hitpoints")
@@ -657,6 +766,9 @@ public partial class GameManager : Node3D
 
     private string ItemName(string itemId) =>
         _definitions.ItemById.TryGetValue(itemId, out var item) ? item.DisplayName : itemId;
+
+    private string SkillDisplayName(string skillId) =>
+        _definitions.SkillById.TryGetValue(skillId, out var skill) ? skill.DisplayName : skillId;
 
     private string SpeakerName(string speakerId) =>
         _definitions.NpcById.TryGetValue(speakerId, out var npc) ? npc.DisplayName : speakerId;
@@ -675,11 +787,15 @@ public partial class GameManager : Node3D
         ui.AddChild(_questLabel);
 
         AddHudButton(ui, "Craft Practice Chisel", new Vector2(16, 138), new Vector2(190, 32), CraftPracticeChisel);
-        AddHudButton(ui, "Save", new Vector2(214, 138), new Vector2(80, 32), SaveProgress);
+        AddHudButton(ui, "Save", new Vector2(214, 138), new Vector2(80, 32), () => SaveProgress());
         AddHudButton(ui, "Load", new Vector2(302, 138), new Vector2(80, 32), () => GetTree().ReloadCurrentScene());
 
         _styleButton = AddHudButton(ui, $"Style: {_attackStyle}", new Vector2(16, 176), new Vector2(150, 32), CycleAttackStyle);
-        AddHudButton(ui, "Randomize Look", new Vector2(174, 176), new Vector2(150, 32), RandomizeLook);
+        AddHudButton(ui, "Random Look", new Vector2(174, 176), new Vector2(112, 32), RandomizeLook);
+        AddHudButton(ui, "Body", new Vector2(294, 176), new Vector2(68, 32), CycleBodyType);
+        AddHudButton(ui, "Skin", new Vector2(370, 176), new Vector2(68, 32), CycleSkinTone);
+        AddHudButton(ui, "Hair", new Vector2(446, 176), new Vector2(68, 32), CycleHairColor);
+        AddHudButton(ui, "Shirt", new Vector2(522, 176), new Vector2(68, 32), CycleShirtColor);
 
         _dialoguePanel = new PanelContainer
         {
@@ -736,8 +852,25 @@ public partial class GameManager : Node3D
         EnsureDialoguePanel();
         ReplaceDialogueContent();
         AddDialogueLabel(text);
+        FlushPendingLevelUps();
         AddCloseButton("Close");
         _dialoguePanel!.Visible = true;
+    }
+
+    /// <summary>Appends any level-up lines queued by the SkillLeveledUp subscriber to the open panel.</summary>
+    private void FlushPendingLevelUps()
+    {
+        if (_pendingLevelUps.Count == 0 || _dialogueContent is null)
+        {
+            return;
+        }
+
+        foreach (var line in _pendingLevelUps)
+        {
+            AddDialogueLabel(line);
+        }
+
+        _pendingLevelUps.Clear();
     }
 
     private void ReplaceDialogueContent()
@@ -765,7 +898,7 @@ public partial class GameManager : Node3D
             return;
         }
 
-        var who = Session.IsSignedIn ? $"{Session.Username} ({Session.Server})" : "Adventurer";
+        var who = Session.IsSignedIn ? Session.Username : "Adventurer";
         var weapon = _equipment.ItemInSlot(EquipmentSlot.Weapon) is { } weaponId ? ItemName(weaponId) : "Unarmed";
 
         _statusLabel.Text =

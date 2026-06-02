@@ -2,8 +2,18 @@
   "version": 2,
   "project": "Dawn of Blade",
   "schema": {
-    "states": ["open", "claimed", "blocked", "review", "done"],
-    "agents": ["claude", "codex", "human"],
+    "states": [
+      "open",
+      "claimed",
+      "blocked",
+      "review",
+      "done"
+    ],
+    "agents": [
+      "claude",
+      "codex",
+      "human"
+    ],
     "taskFields": {
       "id": "stable string id, e.g. LQ-001",
       "title": "short imperative summary",
@@ -25,7 +35,9 @@
       "owner": null,
       "delegateTo": null,
       "depends": [],
-      "filesTouched": ["src/Movement/ClickToMoveController.cs"],
+      "filesTouched": [
+        "src/Movement/ClickToMoveController.cs"
+      ],
       "notes": "Replace temporary forward movement with a camera raycast to the ground plane and move the player toward the hit point.",
       "verification": [],
       "updated": "2026-05-29"
@@ -36,8 +48,13 @@
       "state": "open",
       "owner": null,
       "delegateTo": null,
-      "depends": ["LQ-001"],
-      "filesTouched": ["src/Interaction/Interactable.cs", "scenes/Main.tscn"],
+      "depends": [
+        "LQ-001"
+      ],
+      "filesTouched": [
+        "src/Interaction/Interactable.cs",
+        "scenes/Main.tscn"
+      ],
       "notes": "The placeholder NPC capsule already exists in scenes/Main.tscn (World/Npc). Attach an Interactable, raise an interaction event, and show a minimal dialogue Control.",
       "verification": [],
       "updated": "2026-05-29"
@@ -48,11 +65,127 @@
       "state": "open",
       "owner": null,
       "delegateTo": null,
-      "depends": ["LQ-002"],
-      "filesTouched": ["src/Learning/LearningPrompt.cs", "data/vocabulary/vocabulary.example.json"],
+      "depends": [
+        "LQ-002"
+      ],
+      "filesTouched": [
+        "src/Learning/LearningPrompt.cs",
+        "data/vocabulary/vocabulary.example.json"
+      ],
       "notes": "Load a LearningPrompt from example data and present it after dialogue. No language hard-coded yet.",
       "verification": [],
       "updated": "2026-05-29"
+    },
+    {
+      "id": "LQ-004",
+      "title": "Implement deterministic 600ms simulation tick foundation",
+      "state": "open",
+      "owner": null,
+      "delegateTo": "claude",
+      "depends": [],
+      "filesTouched": [],
+      "notes": "Implement a transport-neutral deterministic 600ms simulation foundation in NEW files under src/Simulation/ and focused tests under tests/. Use existing src/Communication contracts. Include monotonic ticks, buffered commands, next-tick handling for late commands, deterministic ordered drain, and extension points for movement/combat/resources. Do not edit scenes, UI, saves, world presentation, or GameManager. Verify with dotnet test and record files touched.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-005",
+      "title": "Audit repaired login autosave and open-world slice",
+      "state": "open",
+      "owner": null,
+      "delegateTo": "claude",
+      "depends": [],
+      "filesTouched": [],
+      "notes": "Read-only review: inspect project.godot, scenes/Main.tscn, src/UI/LoginScreen.cs, src/Core/GameManager.cs, src/Save/SaveService.cs, src/Characters/HumanoidVisual.cs, and src/World/OpenWorldBuilder.cs. Do not edit source. Record concrete bugs, regressions, missing tests, and runtime risks in task notes, then move to review. Prioritize save correctness, responsive layout, Godot lifecycle behavior, and performance.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-006",
+      "title": "Implement grid chunks zones and relevance filtering",
+      "state": "done",
+      "owner": "codex",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [
+        "src/World/Grid/ChunkCoordinate.cs",
+        "src/World/Grid/ChunkInterestManager.cs",
+        "src/World/Grid/GridCoordinate.cs",
+        "src/World/Grid/GridPathfinder.cs",
+        "src/World/Grid/TileProfile.cs",
+        "src/World/Grid/WorldZone.cs",
+        "tests/GridWorldTests.cs"
+      ],
+      "notes": "Codex completed the grid-domain slice. Added integer tile coordinates, floor-correct 32x32 chunk mapping including negative tiles, configurable 3x3 chunk relevance filtering, static tile metadata, escalating zone-risk profiles, and deterministic cardinal A* pathfinding that ignores dynamic actors by design. Claude LQ-004 can consume these APIs from DawnOfBlade.World.Grid.",
+      "verification": [
+        "dotnet test: 64 passed; Godot Main.tscn headless smoke: no script errors"
+      ],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-007",
+      "title": "Design responsive MMORPG HUD control tree",
+      "state": "open",
+      "owner": null,
+      "delegateTo": "claude",
+      "depends": [],
+      "filesTouched": [],
+      "notes": "Write docs/HUD_ARCHITECTURE.md only. Provide an incremental Godot 4 Control-tree and client event-binding design from the Part 8-11 blueprint. Do not edit source or scenes. Coordinate with existing src/Communication and pending src/Simulation.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-008",
+      "title": "Implement client HUD presentation state models",
+      "state": "done",
+      "owner": "codex",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [
+        "src/UI/Presentation/HitMarkerPresentation.cs",
+        "src/UI/Presentation/HudPresentationState.cs",
+        "src/UI/Presentation/HudTab.cs",
+        "src/UI/Presentation/RunEnergyState.cs",
+        "src/UI/Presentation/VitalGaugeState.cs",
+        "tests/HudPresentationTests.cs"
+      ],
+      "notes": "Codex completed engine-independent HUD presentation state under DawnOfBlade.UI.Presentation. Added verified coordinate text and tab state, delayed trailing health gauge behavior, authoritative run-energy exhaustion/re-enable handling, and normalized hit-marker lifetime/offset metadata. Claude LQ-007 should bind responsive Godot Controls to these models incrementally.",
+      "verification": [
+        "dotnet test: 70 passed; Godot Main.tscn headless smoke: no script errors"
+      ],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-009",
+      "title": "Design distributed persistence and zone-server architecture",
+      "state": "open",
+      "owner": null,
+      "delegateTo": "claude",
+      "depends": [],
+      "filesTouched": [],
+      "notes": "Missing deliverable: create docs/PRODUCTION_BACKEND_ARCHITECTURE.md only from Parts 12-16, record the touched file, and move the task to review or done with verification. Do not edit source or scenes.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-010",
+      "title": "Implement advanced grid LOS and wilderness lifecycle rules",
+      "state": "done",
+      "owner": "codex",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [
+        "src/Combat/AggressorStatus.cs",
+        "src/World/Grid/GridLineOfSight.cs",
+        "src/World/Grid/GridMovementRules.cs",
+        "src/World/GroundItems/GroundItem.cs",
+        "tests/AdvancedWorldRulesTests.cs"
+      ],
+      "notes": "Codex completed deterministic production-domain rules. Added Bresenham tile LOS excluding source and target from obstacle rejection, one-tile movement validation with diagonal sealed-corner prevention, ground-drop visibility lifecycle using 100 private + 100 public ticks, and 2000-tick aggressor expiry.",
+      "verification": [
+        "dotnet test: 75 passed; Godot Main.tscn headless smoke: no script errors"
+      ],
+      "updated": "2026-06-02"
     }
   ]
 }

@@ -1,12 +1,12 @@
 # Bootstraps the local dev toolchain for DawnOfBlade into .tools/ (gitignored):
 #   - .NET 8 SDK        (builds the net8.0 Godot game + xUnit tests)
-#   - .NET 9 runtime    (host for the C# / C# Dev Kit language server in VS Code / Cursor)
 #   - ripgrep           (Todo Tree and other extensions)
 # Then prepends the vendored SDK to the user PATH, sets DOTNET_ROOT, and restores packages.
+# Windows places machine PATH entries before user PATH entries in some shells, so the
+# workspace tasks and editor settings call the vendored dotnet.exe explicitly.
 #
 # Run once per machine:  powershell -ExecutionPolicy Bypass -File tools/setup-dev.ps1
-# The matching absolute path in .vscode/settings.json (dotnetAcquisitionExtension.existingDotnetPath)
-# must point at <repo>/.tools/dotnet/dotnet.exe for the C# Dev Kit to find the SDK.
+# VS Code's .NET Install Tool manages the separate runtime used by C# extensions.
 
 param(
     [switch]$SkipPath
@@ -28,9 +28,6 @@ Invoke-WebRequest -Uri "https://builds.dotnet.microsoft.com/dotnet/scripts/v1/do
 
 Write-Host "Installing .NET 8 SDK to $installDir ..."
 & $installScript -Channel 8.0 -InstallDir $installDir -Architecture x64
-
-Write-Host "Installing .NET 9 runtime (host for the C# Dev Kit language server) ..."
-& $installScript -Runtime dotnet -Channel 9.0 -InstallDir $installDir -Architecture x64 -SkipNonVersionedFiles
 
 $dotnet = Join-Path $installDir "dotnet.exe"
 if (-not (Test-Path $dotnet)) {

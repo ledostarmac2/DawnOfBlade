@@ -29,12 +29,9 @@ public partial class PrototypeNpc : Interactable
 
     private void Tint(Appearance appearance)
     {
-        if (GetNodeOrNull<MeshInstance3D>("Mesh") is not { } mesh)
+        if (GetNodeOrNull<HumanoidVisual>("Humanoid") is { } humanoid)
         {
-            return;
+            humanoid.Apply(appearance);
         }
-
-        var material = new StandardMaterial3D { AlbedoColor = new Color(appearance.ShirtColor) };
-        mesh.SetSurfaceOverrideMaterial(0, material);
     }
 }
