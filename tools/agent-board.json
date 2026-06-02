@@ -429,14 +429,124 @@
     {
       "id": "LQ-020",
       "title": "Run Codex Claude peer-review discussion",
-      "state": "open",
+      "state": "done",
       "owner": null,
       "delegateTo": "codex",
       "depends": [],
       "filesTouched": [
         "docs/AGENT_DISCUSSION.md"
       ],
-      "notes": "Turn-based peer review in docs/AGENT_DISCUSSION.md. Turn 1 (Claude) posted: a code review of Codex's committed systems + 6 convergence proposals (route HostileActor/GroundLootNode drops through GameSystems LootRoller/MonsterArchetype; audit BankStorage via TransactionLogger; reconcile ResourceRespawnState vs ResourceSpawnerPool and StartingRegion vs RiverValleyRegion; adopt SimulationLoop for ticks in Stage 1) plus questions A-D. Codex's move: append '## Turn 2 - Codex', answer A-D, review Claude's src/GameSystems|Simulation|Communication, then set delegateTo=claude.",
+      "notes": "[discussion turn 12 - Codex closed design round] See docs/AGENT_DISCUSSION.md Turn 12. Agreed next-lane checklist: staged shared assets and chunk-boundary relevance refresh; initially hide/disable distant NPC views without pooling; immutable modal DTOs with ActionId dispatch; pure usable-item result DTOs returning inventory/equipment/HP deltas. Reopen checkpoint after LQ-021,LQ-022,LQ-024 land before LQ-023.",
+      "verification": [
+        "Cross-agent peer review completed; scoped implementation tasks LQ-021..LQ-028 created.",
+        "Codex-Claude live discussion extended through Turns 5-12; save, adapter, simulation, HUD, world optimization, and usable-item boundaries agreed."
+      ],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-021",
+      "title": "Fix cross-item market matching",
+      "state": "claimed",
+      "owner": "claude",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [],
+      "notes": "Owner Claude. Scope: src/GameSystems/MarketEngine.cs, tests/GameSystemsTests.cs. Partition or compatibly select market crosses per item; add two-item starvation regression test.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-022",
+      "title": "Create canonical region and item adapter boundary",
+      "state": "claimed",
+      "owner": "claude",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [],
+      "notes": "Owner Claude. Scope: src/GameSystems/Content, src/GameSystems/ResourceSpawnerPool.cs, new adapter file under src/GameSystems, corresponding tests. Add explicit numeric GameSystems ID to live string ID mapping with divergence checks; expand canonical authoritative metadata to all 26 live resource nodes; evolve ResourceSpawnerPool to stable NodeId keys while preserving coordinate metadata lookup; align hostile IDs.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-023",
+      "title": "Wire authoritative simulation respawn and loot into Godot",
+      "state": "open",
+      "owner": null,
+      "delegateTo": "codex",
+      "depends": [
+        "LQ-022"
+      ],
+      "filesTouched": [],
+      "notes": "Owner Codex. Scope: src/Core/GameManager.cs and interaction adapters. Adopt SimulationClock/SimulationLoop heartbeat; bind authoritative respawn and loot through LQ-022 adapters.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-024",
+      "title": "Harden account normalization and debounced saves",
+      "state": "claimed",
+      "owner": "codex",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [],
+      "notes": "Owner Codex. Scope: src/Auth, src/UI/LoginScreen.cs, src/Save, focused tests. Normalize account identity once; use dirty/debounced autosave with explicit flush; test save paths and migration.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-025",
+      "title": "Build responsive scrollable HUD and dialogue",
+      "state": "open",
+      "owner": null,
+      "delegateTo": "codex",
+      "depends": [
+        "LQ-023"
+      ],
+      "filesTouched": [],
+      "notes": "Owner Codex. Scope: src/Core/GameManager.cs and UI helpers. Replace fixed prototype controls with responsive container layout and scrolling for merchant, bank, and dialogue content.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-026",
+      "title": "Optimize world assets and chunk activation",
+      "state": "open",
+      "owner": null,
+      "delegateTo": "codex",
+      "depends": [
+        "LQ-022"
+      ],
+      "filesTouched": [],
+      "notes": "Owner Codex. Scope: src/World and focused tests. Reuse shared meshes/materials, add profiling counters, then activate background scenery by relevant chunks.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-027",
+      "title": "Implement pure C# usable catalog actions",
+      "state": "open",
+      "owner": null,
+      "delegateTo": "claude",
+      "depends": [
+        "LQ-022"
+      ],
+      "filesTouched": [],
+      "notes": "Owner Claude. Scope: new src/GameSystems action services and tests. Add engine-independent consume, ammunition, recipe, and equipment action rules.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-028",
+      "title": "Wire usable catalog and generated visuals into Godot",
+      "state": "open",
+      "owner": null,
+      "delegateTo": "codex",
+      "depends": [
+        "LQ-023",
+        "LQ-027"
+      ],
+      "filesTouched": [],
+      "notes": "Owner Codex. Scope: src/Core, src/World/GeneratedAssetFactory.cs, interaction UI. Expose usable catalog actions and generated visual coverage in the playable client.",
       "verification": [],
       "updated": "2026-06-02"
     }
