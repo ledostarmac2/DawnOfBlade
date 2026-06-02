@@ -79,25 +79,47 @@
     {
       "id": "LQ-004",
       "title": "Implement deterministic 600ms simulation tick foundation",
-      "state": "open",
-      "owner": null,
-      "delegateTo": "claude",
+      "state": "done",
+      "owner": "claude",
+      "delegateTo": null,
       "depends": [],
-      "filesTouched": [],
-      "notes": "Implement a transport-neutral deterministic 600ms simulation foundation in NEW files under src/Simulation/ and focused tests under tests/. Use existing src/Communication contracts. Include monotonic ticks, buffered commands, next-tick handling for late commands, deterministic ordered drain, and extension points for movement/combat/resources. Do not edit scenes, UI, saves, world presentation, or GameManager. Verify with dotnet test and record files touched.",
-      "verification": [],
+      "filesTouched": [
+        "src/Simulation/SimulationTick.cs",
+        "src/Simulation/ISimulationCommand.cs",
+        "src/Simulation/ISimulationSystem.cs",
+        "src/Simulation/TickCommandBuffer.cs",
+        "src/Simulation/SimulationClock.cs",
+        "src/Simulation/SimulationLoop.cs",
+        "src/Simulation/SimulationEvents.cs",
+        "tests/SimulationTests.cs"
+      ],
+      "notes": "Claude deliverable reconciled: engine-independent deterministic 600ms SimulationClock and SimulationLoop, monotonic ticks, buffered commands, late-command next-tick handling, ordered drain, bus tick events, and focused tests. [claude done] Implemented engine-independent in src/Simulation/ using src/Communication contracts (ISimulationCommand:IMessage, SimulationTicked:IEvent). Did not touch scenes/UI/saves/world/GameManager.",
+      "verification": [
+        "dotnet build 0/0",
+        "dotnet test: 8 SimulationTests pass (monotonic ticks, target-tick resolution, late->next-tick deferral, deterministic ordered drain, registration-order systems, clock accumulate/monotonic, SimulationTicked bus publish); full suite 83 passed"
+      ],
       "updated": "2026-06-02"
     },
     {
       "id": "LQ-005",
       "title": "Audit repaired login autosave and open-world slice",
-      "state": "open",
-      "owner": null,
-      "delegateTo": "claude",
+      "state": "review",
+      "owner": "claude",
+      "delegateTo": null,
       "depends": [],
-      "filesTouched": [],
-      "notes": "Read-only review: inspect project.godot, scenes/Main.tscn, src/UI/LoginScreen.cs, src/Core/GameManager.cs, src/Save/SaveService.cs, src/Characters/HumanoidVisual.cs, and src/World/OpenWorldBuilder.cs. Do not edit source. Record concrete bugs, regressions, missing tests, and runtime risks in task notes, then move to review. Prioritize save correctness, responsive layout, Godot lifecycle behavior, and performance.",
-      "verification": [],
+      "filesTouched": [
+        "project.godot",
+        "scenes/Main.tscn",
+        "src/UI/LoginScreen.cs",
+        "src/Core/GameManager.cs",
+        "src/Save/SaveService.cs",
+        "src/Characters/HumanoidVisual.cs",
+        "src/World/OpenWorldBuilder.cs"
+      ],
+      "notes": "[claude review] Read-only audit, no source changed. SAVE: (1) per-action SaveProgress writes the full JSON blob synchronously on every gather/craft/combat/quest/appearance change - IO-heavy under rapid actions; debounce or rely on the 10s autosave + a dirty flag. (2) Username normalization mismatch: LoginScreen.OnLogin validates raw text but sets Session.Username=Trim() while SaveService.BuildSavePath lowercases+sanitizes, so case/space-variant logins can share one save file or save under a different identity than validated - normalize once at the auth boundary. (3) Close-time save (NotificationWMCloseRequest) will not fire on hard kill/mobile/web; final <=10s delta then relies on autosave. (4) Only _mainQuest is persisted; multi-quest needs a collection in SaveGame. LAYOUT: (5) LoginScreen is responsive (FullRect+ScrollContainer+KeepAspectCentered logo) - original logo-spill fixed. (6) GameManager prototype HUD action buttons use absolute Position/Size (AddHudButton) - can spill/overlap at small sizes or high DPI; corner labels/bars are anchored. Migrate per docs/HUD_ARCHITECTURE.md. LIFECYCLE: (7) bus subscriptions disposed on Predelete (good); ProcessLocalTick does a per-tick GetNodeOrNull lookup - cache the PlayerController. PERF: (8) OpenWorldBuilder spawns ~228 MeshInstance3D, each with its own StandardMaterial3D, no MultiMesh/shared materials/instancing - draw-call heavy; (9) HumanoidVisual rebuilds 7 parts + new materials on each Apply and per NPC _Ready - share materials/pool; (10) ChunkInterestManager not yet gating scenery/NPCs. TESTS MISSING: SaveService.BuildSavePath + legacy migration; GameManager save/load round-trip (extract a pure mapping to unit-test); login-normalization consistency.",
+      "verification": [
+        "read-only audit; no source changed; findings in notes"
+      ],
       "updated": "2026-06-02"
     },
     {
@@ -125,13 +147,17 @@
     {
       "id": "LQ-007",
       "title": "Design responsive MMORPG HUD control tree",
-      "state": "open",
-      "owner": null,
-      "delegateTo": "claude",
+      "state": "done",
+      "owner": "claude",
+      "delegateTo": null,
       "depends": [],
-      "filesTouched": [],
-      "notes": "Write docs/HUD_ARCHITECTURE.md only. Provide an incremental Godot 4 Control-tree and client event-binding design from the Part 8-11 blueprint. Do not edit source or scenes. Coordinate with existing src/Communication and pending src/Simulation.",
-      "verification": [],
+      "filesTouched": [
+        "docs/HUD_ARCHITECTURE.md"
+      ],
+      "notes": "Claude deliverable reconciled: responsive Godot Control-tree and event-binding architecture documented. [claude done] See docs/HUD_ARCHITECTURE.md.",
+      "verification": [
+        "docs/HUD_ARCHITECTURE.md written: Control tree, bindings to src/UI/Presentation models, bus event-binding, two-clock (frame vs 600ms) update, incremental adoption plan. Doc only, no source/scenes changed."
+      ],
       "updated": "2026-06-02"
     },
     {
@@ -158,13 +184,17 @@
     {
       "id": "LQ-009",
       "title": "Design distributed persistence and zone-server architecture",
-      "state": "open",
-      "owner": null,
-      "delegateTo": "claude",
+      "state": "done",
+      "owner": "claude",
+      "delegateTo": null,
       "depends": [],
-      "filesTouched": [],
-      "notes": "Missing deliverable: create docs/PRODUCTION_BACKEND_ARCHITECTURE.md only from Parts 12-16, record the touched file, and move the task to review or done with verification. Do not edit source or scenes.",
-      "verification": [],
+      "filesTouched": [
+        "docs/PRODUCTION_BACKEND_ARCHITECTURE.md"
+      ],
+      "notes": "Claude deliverable reconciled: staged distributed persistence and zone-server architecture documented. [claude done] See docs/PRODUCTION_BACKEND_ARCHITECTURE.md.",
+      "verification": [
+        "docs/PRODUCTION_BACKEND_ARCHITECTURE.md written: service boundaries, Redis dirty-sync, SQL schemas, atomic bank/limit-order escrow transactions, zone handoff protocol, 6-stage rollout. Doc only, no source/scenes changed."
+      ],
       "updated": "2026-06-02"
     },
     {
@@ -185,6 +215,50 @@
       "verification": [
         "dotnet test: 75 passed; Godot Main.tscn headless smoke: no script errors"
       ],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-011",
+      "title": "Wire local-first playable Godot sandbox loop",
+      "state": "done",
+      "owner": "codex",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [
+        "scenes/Main.tscn",
+        "src/Core/GameManager.cs",
+        "src/Player/PlayerController.cs",
+        "src/UI/FeedbackManager.cs"
+      ],
+      "notes": "Implemented both local-first choices on the Godot side: click-to-walk queued interaction-on-arrival, run stamina toggle advanced on a visible 600ms local heartbeat, health/run gauges, tile/tick readout, floating world-space combat hit feedback, and a viewport-anchored scrollable inventory plus equipment paper-doll panel. Kept src/Simulation isolated for Claude ownership.",
+      "verification": [
+        "dotnet build DawnOfBlade.csproj passed; repo-local DOTNET_ROOT dotnet test tests/DawnOfBlade.Tests.csproj passed 83/83; Godot headless res://scenes/Main.tscn reached GameManager initialization without scene-script errors.",
+        "dotnet build DawnOfBlade.csproj passed; repo-local DOTNET_ROOT dotnet test tests/DawnOfBlade.Tests.csproj passed 83/83; Godot headless res://scenes/Main.tscn reached GameManager initialization without scene-script errors."
+      ],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-012",
+      "title": "Implement game systems engine foundations",
+      "state": "open",
+      "owner": null,
+      "delegateTo": "claude",
+      "depends": [],
+      "filesTouched": [],
+      "notes": "Take the isolated pure-C# game systems package from Parts 17-20. Keep changes in NEW src/GameSystems paths and focused tests so Codex can build River Valley concurrently.",
+      "verification": [],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-013",
+      "title": "Build River Valley starting region initializer",
+      "state": "claimed",
+      "owner": "codex",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [],
+      "notes": "Codex: implement Part 22-26 grid-aligned River Valley data initializer, blocked/pathing tiles, anchor and spawn-pool definitions, low-poly client visualization in OpenWorldBuilder, and focused tests. Avoid src/GameSystems while Claude works.",
+      "verification": [],
       "updated": "2026-06-02"
     }
   ]

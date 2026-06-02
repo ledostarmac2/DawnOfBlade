@@ -11,10 +11,12 @@ using DawnOfBlade.Interaction;
 using DawnOfBlade.Inventory;
 using DawnOfBlade.Items;
 using DawnOfBlade.Learning;
+using DawnOfBlade.Player;
 using DawnOfBlade.Quests;
 using DawnOfBlade.Save;
 using DawnOfBlade.Shops;
 using DawnOfBlade.Skills;
+using DawnOfBlade.UI;
 using Godot;
 
 namespace DawnOfBlade.Core;
@@ -76,12 +78,23 @@ public partial class GameManager : Node3D
     private Button? _styleButton;
     private PanelContainer? _dialoguePanel;
     private VBoxContainer? _dialogueContent;
+    private ProgressBar? _healthBar;
+    private ProgressBar? _runEnergyBar;
+    private Label? _healthLabel;
+    private Label? _runEnergyLabel;
+    private Label? _heartbeatLabel;
+    private Label? _coordinateLabel;
+    private PanelContainer? _inventoryPanel;
+    private VBoxContainer? _inventoryContent;
+    private FeedbackManager? _feedbackManager;
+    private long _localTick;
 
     public override void _Ready()
     {
         InitializeSystems();
         WireCommunication();
         BuildPrototypeHud();
+        _feedbackManager = GetNodeOrNull<FeedbackManager>("FeedbackManager");
 
         if (_saveService.SaveExists)
         {
@@ -100,6 +113,10 @@ public partial class GameManager : Node3D
         var autosave = new Timer { WaitTime = 10.0, Autostart = true };
         autosave.Timeout += () => SaveProgress(showNotice: false);
         AddChild(autosave);
+
+        var localHeartbeat = new Timer { WaitTime = 0.6, Autostart = true };
+        localHeartbeat.Timeout += ProcessLocalTick;
+        AddChild(localHeartbeat);
     }
 
     public override void _Notification(int what)
@@ -515,6 +532,8 @@ public partial class GameManager : Node3D
             hostile.Profile.ApplyDamage(hit.Damage);
         }
 
+        _feedbackManager?.ShowDamage(hostile, hit.Damage, hit.Landed);
+
         if (hostile.Profile.IsDefeated)
         {
             AwardCombatExperience(hostile);
@@ -536,6 +555,11 @@ public partial class GameManager : Node3D
         if (enemyHit.Landed)
         {
             _playerProfile.ApplyDamage(enemyHit.Damage);
+        }
+
+        if (GetNodeOrNull<PlayerController>("Player") is { } player)
+        {
+            _feedbackManager?.ShowDamage(player, enemyHit.Damage, enemyHit.Landed);
         }
 
         var enemyLine = enemyHit.Landed ? $"It hits {enemyHit.Damage}." : "It misses.";
@@ -796,6 +820,31 @@ public partial class GameManager : Node3D
         AddHudButton(ui, "Skin", new Vector2(370, 176), new Vector2(68, 32), CycleSkinTone);
         AddHudButton(ui, "Hair", new Vector2(446, 176), new Vector2(68, 32), CycleHairColor);
         AddHudButton(ui, "Shirt", new Vector2(522, 176), new Vector2(68, 32), CycleShirtColor);
+        AddHudButton(ui, "Toggle Run", new Vector2(598, 176), new Vector2(96, 32), ToggleRun);
+
+        _heartbeatLabel = AddCornerLabel(ui, "Local Tick: 0", 16);
+        _coordinateLabel = AddCornerLabel(ui, "Tile: 0, 0", 42);
+        AddCornerButton(ui, "Inventory", 72, ToggleInventory);
+
+        _healthLabel = AddBottomLabel(ui, "Health", -76);
+        _healthBar = AddBottomBar(ui, -50);
+        _runEnergyLabel = AddBottomLabel(ui, "Run energy", -124);
+        _runEnergyBar = AddBottomBar(ui, -98);
+
+        _inventoryPanel = new PanelContainer { Visible = false };
+        _inventoryPanel.SetAnchorsPreset(Control.LayoutPreset.TopRight);
+        _inventoryPanel.SetAnchor(Side.Bottom, 1.0f);
+        _inventoryPanel.OffsetLeft = -300;
+        _inventoryPanel.OffsetRight = -16;
+        _inventoryPanel.OffsetTop = 112;
+        _inventoryPanel.OffsetBottom = -148;
+        ui.AddChild(_inventoryPanel);
+
+        var inventoryScroll = new ScrollContainer();
+        _inventoryPanel.AddChild(inventoryScroll);
+        _inventoryContent = new VBoxContainer { CustomMinimumSize = new Vector2(260, 0) };
+        _inventoryContent.AddThemeConstantOverride("separation", 4);
+        inventoryScroll.AddChild(_inventoryContent);
 
         _dialoguePanel = new PanelContainer
         {
@@ -816,6 +865,61 @@ public partial class GameManager : Node3D
         button.Pressed += onPressed;
         ui.AddChild(button);
         return button;
+    }
+
+    private static Label AddCornerLabel(CanvasLayer ui, string text, float top)
+    {
+        var label = new Label { Text = text };
+        label.SetAnchorsPreset(Control.LayoutPreset.TopRight);
+        label.OffsetLeft = -180;
+        label.OffsetRight = -16;
+        label.OffsetTop = top;
+        label.OffsetBottom = top + 24;
+        ui.AddChild(label);
+        return label;
+    }
+
+    private static Button AddCornerButton(CanvasLayer ui, string text, float top, System.Action onPressed)
+    {
+        var button = new Button { Text = text };
+        button.SetAnchorsPreset(Control.LayoutPreset.TopRight);
+        button.OffsetLeft = -136;
+        button.OffsetRight = -16;
+        button.OffsetTop = top;
+        button.OffsetBottom = top + 32;
+        button.Pressed += onPressed;
+        ui.AddChild(button);
+        return button;
+    }
+
+    private static Label AddBottomLabel(CanvasLayer ui, string text, float bottom)
+    {
+        var label = new Label { Text = text };
+        label.SetAnchorsPreset(Control.LayoutPreset.BottomLeft);
+        label.OffsetLeft = 16;
+        label.OffsetRight = 236;
+        label.OffsetTop = bottom;
+        label.OffsetBottom = bottom + 22;
+        ui.AddChild(label);
+        return label;
+    }
+
+    private static ProgressBar AddBottomBar(CanvasLayer ui, float bottom)
+    {
+        var bar = new ProgressBar
+        {
+            MinValue = 0,
+            MaxValue = 100,
+            Value = 100,
+            ShowPercentage = false,
+        };
+        bar.SetAnchorsPreset(Control.LayoutPreset.BottomLeft);
+        bar.OffsetLeft = 16;
+        bar.OffsetRight = 236;
+        bar.OffsetTop = bottom;
+        bar.OffsetBottom = bottom + 18;
+        ui.AddChild(bar);
+        return bar;
     }
 
     private void EnsureDialoguePanel()
@@ -855,6 +959,30 @@ public partial class GameManager : Node3D
         FlushPendingLevelUps();
         AddCloseButton("Close");
         _dialoguePanel!.Visible = true;
+    }
+
+    private void ToggleRun()
+    {
+        GetNodeOrNull<PlayerController>("Player")?.ToggleRun();
+        RefreshVitals();
+    }
+
+    private void ToggleInventory()
+    {
+        if (_inventoryPanel is null)
+        {
+            return;
+        }
+
+        _inventoryPanel.Visible = !_inventoryPanel.Visible;
+        RefreshInventoryPanel();
+    }
+
+    private void ProcessLocalTick()
+    {
+        _localTick++;
+        GetNodeOrNull<PlayerController>("Player")?.ApplyLocalTick();
+        RefreshVitals();
     }
 
     /// <summary>Appends any level-up lines queued by the SkillLeveledUp subscriber to the open panel.</summary>
@@ -906,6 +1034,9 @@ public partial class GameManager : Node3D
             $"Atk L{SkillLevel("attack")}  Str L{SkillLevel("strength")}  Def L{SkillLevel("defense")}  HP L{SkillLevel("hitpoints")}   |   Weapon: {weapon}\n" +
             $"Foraging L{SkillLevel("foraging")}  Crafting L{SkillLevel("crafting")}  Language L{SkillLevel("language")}   |   {ItemName(GatherItemId)} {_inventory.Count(GatherItemId)}";
 
+        RefreshVitals();
+        RefreshInventoryPanel();
+
         if (_questLabel is null || _mainQuest is null)
         {
             return;
@@ -915,5 +1046,75 @@ public partial class GameManager : Node3D
             .Select(o => $"{o.Description} ({_mainQuest.GetProgress(o.Id)}/{o.RequiredCount})");
         var state = _mainQuest.IsComplete ? "  [COMPLETE]" : string.Empty;
         _questLabel.Text = $"Quest: {_mainQuest.Definition.Title}{state}\n - " + string.Join("\n - ", objectives);
+    }
+
+    private void RefreshVitals()
+    {
+        if (_healthBar is not null)
+        {
+            _healthBar.MaxValue = _playerProfile.MaxHitpoints;
+            _healthBar.Value = _playerProfile.CurrentHitpoints;
+        }
+
+        if (_healthLabel is not null)
+        {
+            _healthLabel.Text = $"Health: {_playerProfile.CurrentHitpoints}/{_playerProfile.MaxHitpoints}";
+        }
+
+        var player = GetNodeOrNull<PlayerController>("Player");
+        if (_runEnergyBar is not null)
+        {
+            _runEnergyBar.Value = player?.RunEnergy ?? 100.0f;
+        }
+
+        if (_runEnergyLabel is not null)
+        {
+            var mode = player?.IsRunning == true ? "running" : "walking";
+            _runEnergyLabel.Text = $"Run energy: {player?.RunEnergy ?? 100.0f:0} ({mode})";
+        }
+
+        if (_heartbeatLabel is not null)
+        {
+            _heartbeatLabel.Text = $"Local Tick: {_localTick}";
+        }
+
+        if (_coordinateLabel is not null && player is not null)
+        {
+            _coordinateLabel.Text = $"Tile: {Mathf.RoundToInt(player.GlobalPosition.X / 2.0f)}, {Mathf.RoundToInt(player.GlobalPosition.Z / 2.0f)}";
+        }
+    }
+
+    private void RefreshInventoryPanel()
+    {
+        if (_inventoryContent is null)
+        {
+            return;
+        }
+
+        foreach (var child in _inventoryContent.GetChildren())
+        {
+            child.QueueFree();
+        }
+
+        _inventoryContent.AddChild(new Label { Text = "Inventory" });
+        if (_inventory.Items.Count == 0)
+        {
+            _inventoryContent.AddChild(new Label { Text = "  Empty" });
+        }
+        else
+        {
+            foreach (var item in _inventory.Items.OrderBy(pair => ItemName(pair.Key)))
+            {
+                _inventoryContent.AddChild(new Label { Text = $"  {ItemName(item.Key)} x{item.Value}" });
+            }
+        }
+
+        _inventoryContent.AddChild(new HSeparator());
+        _inventoryContent.AddChild(new Label { Text = "Equipment" });
+        foreach (var slot in System.Enum.GetValues<EquipmentSlot>())
+        {
+            var itemName = _equipment.ItemInSlot(slot) is { } itemId ? ItemName(itemId) : "-";
+            _inventoryContent.AddChild(new Label { Text = $"  {slot}: {itemName}" });
+        }
     }
 }
