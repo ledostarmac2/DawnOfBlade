@@ -13,6 +13,7 @@ public partial class LoginScreen : Control
 {
 	private const string MainScenePath = "res://scenes/Main.tscn";
 	private const string LogoPath = "res://assets/branding/dawn_of_blade_logo.png";
+	private const string BackgroundPath = "res://assets/branding/login_background.svg";
 	private const string PrefsPath = "user://login.cfg";
 
 	// Palette.
@@ -62,6 +63,21 @@ public partial class LoginScreen : Control
 		var bg = new ColorRect { Color = ColBg, MouseFilter = MouseFilterEnum.Ignore };
 		bg.SetAnchorsPreset(LayoutPreset.FullRect);
 		AddChild(bg);
+
+		// Hand-authored dawn battle key art (three warriors vs three young dragons). Covers the
+		// solid colour above; if the asset is ever missing the dark ColorRect remains the backdrop.
+		if (GD.Load<Texture2D>(BackgroundPath) is { } keyArt)
+		{
+			var scene = new TextureRect
+			{
+				Texture = keyArt,
+				ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+				StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered,
+				MouseFilter = MouseFilterEnum.Ignore,
+			};
+			scene.SetAnchorsPreset(LayoutPreset.FullRect);
+			AddChild(scene);
+		}
 
 		// Ornate gold frame around the whole screen (border-only stylebox).
 		var frame = new Panel { MouseFilter = MouseFilterEnum.Ignore };
