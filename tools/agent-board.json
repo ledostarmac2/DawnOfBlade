@@ -429,17 +429,19 @@
     {
       "id": "LQ-020",
       "title": "Run Codex Claude peer-review discussion",
-      "state": "open",
+      "state": "done",
       "owner": null,
-      "delegateTo": "claude",
+      "delegateTo": "codex",
       "depends": [],
       "filesTouched": [
         "docs/AGENT_DISCUSSION.md"
       ],
-      "notes": "[post-implementation checkpoint requested] LQ-021,LQ-022,LQ-024 and Codex LQ-029 landed. Request Claude read-only review of actual adapter signatures, save tmp/bak recovery implementation, HUD boundary, test output, and paper walkthroughs before LQ-023.",
+      "notes": "[discussion turn 14 - checkpoint resolved] Reviewed blockers fixed: blank-save backup recovery, backup-preserving promotion, finally-reset save guard, proportional narrow-window HUD anchors, and cross-file adapter catalog coverage. LQ-023 may start; remove direct combat coin reward when wiring authoritative loot.",
       "verification": [
         "Cross-agent peer review completed; scoped implementation tasks LQ-021..LQ-028 created.",
-        "Codex-Claude live discussion extended through Turns 5-12; save, adapter, simulation, HUD, world optimization, and usable-item boundaries agreed."
+        "Codex-Claude live discussion extended through Turns 5-12; save, adapter, simulation, HUD, world optimization, and usable-item boundaries agreed.",
+        "Post-review Release build passed 0 warnings; suite passed before final cross-file assertion. Final verification pending.",
+        "Release build passed 0 warnings; final suite passed 136/136; Windows export succeeded; packaged EXE stayed running for 7-second launch check."
       ],
       "updated": "2026-06-02"
     },
@@ -511,9 +513,10 @@
         "src/Save/SaveService.cs",
         "tests/SaveSerializerTests.cs"
       ],
-      "notes": "Added canonical account identity, hashed collision-resistant save keys, legacy candidate migration, tmp/bak promotion recovery, dirty 3-second autosave, and forced manual/close/predelete/ExitTree flushes.",
+      "notes": "Post-review blockers fixed: blank primary saves now fall through to backup recovery; save promotion preserves prior backup until new target exists; flush guard resets in finally. Canonical identity, hashed keys, migration, dirty autosave and forced lifecycle flush remain in place.",
       "verification": [
-        "Release build passed 0 warnings; full combined suite passed 135/135."
+        "Release build passed 0 warnings; full combined suite passed 135/135.",
+        "Release build passed 0 warnings; final suite passed 136/136; export pending launch check."
       ],
       "updated": "2026-06-02"
     },
@@ -583,12 +586,29 @@
       "depends": [],
       "filesTouched": [
         "data/items/items.example.json",
-        "src/Core/GameManager.cs"
+        "src/Core/GameManager.cs",
+        "tests/ExpandedCatalogTests.cs"
       ],
-      "notes": "Replaced prototype HUD clutter with responsive MMORPG-style realm frame: anchored status and quest panel, bronze-framed right sidebar, map panel, compact tabs, persistent scrollable inventory, compact action grid, chat panel, shared scrollable modal, and in-game settings/customization view. Added adapter-ready loot inputs feathers/raw_poultry/brittle_bones/raw_wool.",
+      "notes": "Responsive MMORPG HUD shell complete. Post-review narrow-window fix changed status, sidebar, chat and modal widths to proportional anchors and removed forced content minimum widths. Added adapter-ready loot materials and cross-file live-adapter catalog assertion.",
       "verification": [
-        "Release build passed 0 warnings; combined suite passed 135/135; Windows export succeeded; packaged EXE stayed running for 7-second launch check."
+        "Release build passed 0 warnings; combined suite passed 135/135; Windows export succeeded; packaged EXE stayed running for 7-second launch check.",
+        "Release build passed 0 warnings; final suite passed 136/136; export pending launch check."
       ],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-030",
+      "title": "Review Claude's character rig + finish retro art pipeline (Parts 27-30)",
+      "state": "open",
+      "owner": null,
+      "delegateTo": "codex",
+      "depends": [],
+      "filesTouched": [
+        "src/Characters/HumanoidVisual.cs",
+        "assets/branding/login_background.png"
+      ],
+      "notes": "Claude landed the engine/structural half of Parts 27-30 in HumanoidVisual.cs (commit 25573ca): flat/no-PBR Nearest material, faceted tapered primitives, tapered torso, nose/jaw ridges, segmented arms/legs with elbow/knee pivots, right/left hand sockets, shield, and an ApplyArmor(slot,itemId) component-replacement hook. Also swapped the login background to the user's real PNG key art. Codex to: (1) review the rig for correctness/visual quality and tune poses; (2) produce the art Claude cannot: hand-painted 64/128px diffuse textures, per-face flat normals for true faceting, distinctly modelled per-tier weapon/armour/clothing meshes; (3) wire ApplyArmor + ApplyShield into the real equip flow (EquipmentSlot) and validate the 500-800 tri budget. Full prompt handed to the user.",
+      "verification": [],
       "updated": "2026-06-02"
     }
   ]
