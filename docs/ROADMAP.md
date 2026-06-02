@@ -32,7 +32,7 @@ Vocabulary is loaded from `data/vocabulary/vocabulary.example.json` and presente
 
 ## Phase 7: Save/Load ✅
 
-`SaveService` + `SaveSerializer` persist player position, inventory, skill XP, quest progress, and unlocked vocabulary to `user://savegame.json`; the save loads automatically on entering the game.
+`SaveService` + `SaveSerializer` persist player position, inventory, skill XP, equipment, appearance, quest progress, and unlocked vocabulary to an account-scoped `user://savegame_<account>.json` (with one-time migration from the legacy `user://savegame.json`); the save loads automatically on entering the game, autosaves periodically, and writes on quit.
 
 ## Phase 8: Combat Prototype ✅
 
@@ -46,8 +46,31 @@ Branded login/account-creation screen, data-driven content workflow, and a runna
 
 Reconciled two parallel branches into one buildable game. Expanded the skill set to a RuneScape-style spread (25 skills on the 99-level curve; combat trains attack/strength/defense/hitpoints by style), grew the language vocabulary to 50 themed Spanish→English entries, and added woodcutting/mining/fishing resource nodes (data-driven `ResourceNode`). Vendored a self-contained **.NET 8** project toolchain under `.tools/` via `tools/setup-dev.ps1`; VS Code's .NET Install Tool manages the separate runtime used by C# extensions.
 
+## Phase 11: Open World and MMORPG Foundations ✅
+
+Reframed the prototype toward a server-authoritative, grid-based sandbox MMORPG while keeping it
+locally playable. Added an open overworld (`OpenWorldBuilder`) with scenery, primitive **humanoid
+visuals** (`HumanoidVisual`) and in-game appearance customization, and a per-account save. Built the
+engine-independent foundations the future server will run unchanged:
+
+- **Communication bus** (`src/Communication`): in-process pub/sub + request/response with
+  transport-neutral envelopes; adopted by `GameManager` to publish gather/level-up/defeat events.
+- **Simulation tick** (`src/Simulation`): deterministic 600 ms loop with a buffered command queue
+  (late commands deferred to the next tick), monotonic clock, and ordered system extension points.
+- **Grid world** (`src/World/Grid`): integer tiles, 32×32 chunks, 3×3 interest filtering, cardinal
+  A* pathing, Bresenham line-of-sight, and zone-risk profiles.
+- **HUD presentation models** (`src/UI/Presentation`): coordinate/tab state, trailing vital gauges,
+  run-energy rules, and hit-marker metadata — engine-independent and unit-tested.
+
+Architecture for the next stages is written up in `docs/HUD_ARCHITECTURE.md` and
+`docs/PRODUCTION_BACKEND_ARCHITECTURE.md`.
+
 ## Next Steps
 
+- Drive gameplay through `src/Simulation` (Stage 1 of the backend rollout): route movement, gathering,
+  and combat as tick-scheduled commands instead of immediate calls.
+- Gate scenery, NPCs, and resource nodes through `ChunkInterestManager`, and apply zone-risk rules
+  (safe / contested / wilderness) to combat and death.
+- Build the responsive HUD `Control` tree from `docs/HUD_ARCHITECTURE.md`, replacing the prototype HUD.
 - Wire the remaining artisan skills (smithing, cooking, firemaking, fletching, …) to crafting actions.
-- Persist in-progress quest objective counts and unlocked vocabulary across saves.
-- Expand quests/dialogue/shops content and add more hostile actors with Slayer-style rewards.
+- Persist in-progress quest objective counts; expand quests/dialogue/shops content and hostile actors.

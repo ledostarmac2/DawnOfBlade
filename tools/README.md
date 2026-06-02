@@ -1,8 +1,11 @@
 # Tools
 
-This folder is for local project utilities, content validation scripts, and agent handoff templates.
+This folder is for local project utilities and agent handoff/coordination files.
 
-No external tool dependencies are required for the baseline.
+`setup-dev.ps1` bootstraps the vendored .NET 8 toolchain into `.tools/` and restores packages
+(see the README "VS Code / Cursor quick start"). Content validation is covered by the xUnit suite
+(`ContentIntegrityTests`, `DefinitionParseTests`), not a standalone script. The agent board
+(`agentboard.py` + `agent-board.json`) needs Python; nothing else here has external dependencies.
 
 ## Agent Board
 

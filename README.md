@@ -28,26 +28,37 @@ Use the workspace build task in VS Code / Cursor. In an already-open external te
 build and test with `.tools\dotnet\dotnet.exe build DawnOfBlade.sln` and
 `.tools\dotnet\dotnet.exe test tests\DawnOfBlade.Tests.csproj`.
 
-## Baseline Status
+## Current status
 
-The repository currently contains the first architecture baseline:
+A playable local prototype. From the login/account screen you enter an open low-poly world with a
+customizable humanoid character and can:
 
-- Godot project metadata and placeholder main scene.
-- C# scripts for core game state, player movement, orbit camera, interaction, inventory, skills, combat, dialogue, quests, shops, learning prompts, saves, and debug command routing.
-- Example JSON data definitions using fake original content.
-- Design, technical, roadmap, data schema, contribution, asset sourcing, and agent handoff documentation.
+- Move (click-to-move) under an orbit camera across an open overworld with scenery and NPCs.
+- Train a RuneScape-style spread of **25 skills** on a 99-level XP curve — gathering
+  (foraging/woodcutting/mining/fishing), crafting, and combat (attack/strength/defense/hitpoints).
+- Fight hostile actors through a combat resolver with attack styles and a triangle-style
+  accuracy/damage model.
+- Buy and sell at a shop, equip gear with level requirements and bonuses, and track an objective-based
+  quest.
+- Practice **language-learning** vocabulary prompts (50 themed Spanish→English entries) for Language XP.
+- Keep progress through account-scoped local saves (`SaveService`) with autosave.
 
-## First Milestone
+All gameplay rules live in engine-independent C# and are covered by an xUnit suite
+(`tests/DawnOfBlade.Tests.csproj`, net8.0).
 
-The first playable prototype should support:
+## Where it's going
 
-- A simple 3D plane/map.
-- A placeholder player capsule.
-- Orbit camera follow, rotate, and zoom.
-- Click-to-move target movement.
-- One clickable NPC.
-- One dialogue popup.
-- One vocabulary prompt.
-- Simple inventory and XP data models.
+The project is architected to grow from this local-first prototype toward a server-authoritative,
+grid-based sandbox MMORPG (600 ms tick, classless skills, combat triangle, chunked open world,
+player-driven economy). The engine-independent foundations are in place:
 
-See `docs/ROADMAP.md` for phase planning.
+- **Communication bus** (`src/Communication`) — in-process pub/sub + request/response with
+  transport-neutral envelopes, ready for a future network adapter.
+- **Simulation tick** (`src/Simulation`) — deterministic 600 ms tick loop with buffered commands and
+  pluggable systems.
+- **Grid world** (`src/World/Grid`) — integer tiles, 32×32 chunks, interest filtering, A* pathing,
+  and line-of-sight.
+- **HUD presentation models** (`src/UI/Presentation`) — engine-independent state the Godot HUD binds to.
+
+Design plans: `docs/HUD_ARCHITECTURE.md`, `docs/PRODUCTION_BACKEND_ARCHITECTURE.md`. Phase history and
+next steps: `docs/ROADMAP.md`.
