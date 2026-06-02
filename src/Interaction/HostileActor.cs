@@ -15,6 +15,8 @@ public partial class HostileActor : Interactable
     [Export] public int AttackLevel { get; set; } = 2;
     [Export] public int StrengthLevel { get; set; } = 3;
     [Export] public int DefenseLevel { get; set; } = 1;
+    [Export] public string LootItemId { get; set; } = "coins";
+    [Export] public int LootQuantity { get; set; } = 3;
 
     public CombatProfile Profile { get; private set; } = new(2, 3, 1, 12);
 

@@ -4,8 +4,10 @@ namespace DawnOfBlade.Characters;
 public static class AppearanceOptions
 {
     public static readonly string[] BodyTypes = { "slim", "broad" };
+    public static readonly string[] Presentations = { "masculine", "feminine" };
 
     public const int HairStyleCount = 6;
+    public const int ShapeStyleCount = 3;
 
     public static readonly string[] SkinTones =
     {
@@ -25,5 +27,10 @@ public static class AppearanceOptions
     public static readonly string[] LegColors =
     {
         "#3b3b46", "#5a4632", "#2f4f4f", "#4a2f3a",
+    };
+
+    public static readonly string[] FootColors =
+    {
+        "#4a3324", "#2d2522", "#73553a", "#59412c",
     };
 }

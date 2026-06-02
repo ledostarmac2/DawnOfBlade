@@ -33,12 +33,14 @@ public partial class GameManager : Node3D
     private const string AnswerObjectiveId = "answer_prompt";
     private const string GatherItemId = "sunleaf";
     private const string CraftItemId = "practice_chisel";
+    private const string BronzeBarItemId = "bronze_bar";
     private const string Currency = "coins";
 
     public bool IsInitialized { get; private set; }
 
     private readonly DefinitionDatabase _definitions = new();
     private readonly Inventory.Inventory _inventory = new();
+    private readonly BankStorage _bank = new();
     private readonly QuestLog _questLog = new();
     private readonly SaveService _saveService = new(Session.Username);
     private readonly Equipment _equipment = new();
@@ -84,6 +86,8 @@ public partial class GameManager : Node3D
     private Label? _runEnergyLabel;
     private Label? _heartbeatLabel;
     private Label? _coordinateLabel;
+    private Label? _minimapLabel;
+    private Label? _chatLog;
     private PanelContainer? _inventoryPanel;
     private VBoxContainer? _inventoryContent;
     private FeedbackManager? _feedbackManager;
@@ -91,12 +95,13 @@ public partial class GameManager : Node3D
 
     public override void _Ready()
     {
+        var isFreshCharacter = !_saveService.SaveExists;
         InitializeSystems();
         WireCommunication();
         BuildPrototypeHud();
         _feedbackManager = GetNodeOrNull<FeedbackManager>("FeedbackManager");
 
-        if (_saveService.SaveExists)
+        if (!isFreshCharacter)
         {
             ApplySave(_saveService.Load());
         }
@@ -117,6 +122,11 @@ public partial class GameManager : Node3D
         var localHeartbeat = new Timer { WaitTime = 0.6, Autostart = true };
         localHeartbeat.Timeout += ProcessLocalTick;
         AddChild(localHeartbeat);
+
+        if (isFreshCharacter)
+        {
+            ShowCharacterCreator();
+        }
     }
 
     public override void _Notification(int what)
@@ -183,7 +193,13 @@ public partial class GameManager : Node3D
 
     public void GatherResource(ResourceNode node)
     {
+        if (node.IsDepleted)
+        {
+            return;
+        }
+
         _inventory.Add(node.ItemId);
+        node.Deplete(_localTick);
         AddSkillExperience(node.SkillId, node.Experience);
         _ = _bus.PublishAsync(new ResourceGathered(node.ItemId, node.SkillId, node.Experience));
 
@@ -209,6 +225,23 @@ public partial class GameManager : Node3D
         AddSkillExperience("crafting", 30);
         RefreshStatus();
         ShowNotice($"You crafted a {ItemName(CraftItemId)}.");
+        SaveProgress(showNotice: false);
+    }
+
+    private void SmeltBronzeBar()
+    {
+        if (_inventory.Count("copper_ore") < 1 || _inventory.Count("tin_ore") < 1)
+        {
+            ShowNotice("You need 1 Copper Ore and 1 Tin Ore to smelt a Bronze Bar.");
+            return;
+        }
+
+        _inventory.Remove("copper_ore");
+        _inventory.Remove("tin_ore");
+        _inventory.Add(BronzeBarItemId);
+        AddSkillExperience("smithing", 20);
+        RefreshStatus();
+        ShowNotice("You smelted a Bronze Bar.");
         SaveProgress(showNotice: false);
     }
 
@@ -506,6 +539,7 @@ public partial class GameManager : Node3D
         }
 
         _equipment.Equip(slot, itemId);
+        ApplyPlayerEquipment();
         message = $"Equipped {ItemName(itemId)}.";
         return true;
     }
@@ -540,6 +574,7 @@ public partial class GameManager : Node3D
             var reward = 5 + hostile.Profile.MaxHitpoints;
             _inventory.Add(Currency, reward);
             _ = _bus.PublishAsync(new EnemyDefeated(hostile.DisplayName, reward));
+            DropGroundLoot(hostile.GlobalPosition, hostile.LootItemId, hostile.LootQuantity);
             ShowNotice($"{playerLine} You defeated the {hostile.DisplayName}! +{reward} coins. It recovers shortly.");
 
             var timer = GetTree().CreateTimer(4.0);
@@ -670,6 +705,52 @@ public partial class GameManager : Node3D
         {
             humanoid.Apply(_appearance);
         }
+
+        ApplyPlayerEquipment();
+    }
+
+    private void ApplyPlayerEquipment()
+    {
+        GetNodeOrNull<HumanoidVisual>("Player/Humanoid")?.ApplyEquipment(_equipment.ItemInSlot(EquipmentSlot.Weapon));
+    }
+
+    private void ShowCharacterCreator()
+    {
+        AddChild(new CharacterCreatorPanel(_appearance, appearance =>
+        {
+            _appearance = appearance;
+            ApplyPlayerAppearance();
+            SaveProgress(showNotice: false);
+        }));
+    }
+
+    public void PickUpGroundLoot(GroundLootNode loot)
+    {
+        _inventory.Add(loot.ItemId, loot.Quantity);
+        ShowNotice($"You picked up {loot.Quantity} x {ItemName(loot.ItemId)}.");
+        loot.QueueFree();
+        RefreshStatus();
+        SaveProgress(showNotice: false);
+    }
+
+    private void DropGroundLoot(Vector3 position, string itemId, int quantity)
+    {
+        var loot = new GroundLootNode
+        {
+            DisplayName = $"{quantity} x {ItemName(itemId)}",
+            ItemId = itemId,
+            Quantity = quantity,
+            ExpiresAtTick = _localTick + 200,
+            Position = position,
+        };
+        loot.AddChild(new MeshInstance3D
+        {
+            Mesh = new CylinderMesh { TopRadius = 0.34f, BottomRadius = 0.34f, Height = 0.08f },
+            Position = Vector3.Up * 0.08f,
+            MaterialOverride = new StandardMaterial3D { AlbedoColor = new Color("#d9ad42") },
+        });
+        loot.AddChild(new CollisionShape3D { Shape = new CylinderShape3D { Radius = 0.42f, Height = 0.18f } });
+        AddChild(loot);
     }
 
     // ---- Save / Load ------------------------------------------------------
@@ -681,6 +762,7 @@ public partial class GameManager : Node3D
             PlayerName = Session.Username ?? "Player",
             PlayerPosition = PlayerPositionArray(),
             Inventory = _inventory.Items.ToDictionary(pair => pair.Key, pair => pair.Value),
+            Bank = _bank.Items.ToDictionary(pair => pair.Key, pair => pair.Value),
             SkillExperience = _skills.ToDictionary(pair => pair.Key, pair => pair.Value.Experience),
             UnlockedVocabularyIds = new HashSet<string>(_unlockedVocabulary),
             Equipment = _equipment.Worn.ToDictionary(pair => pair.Key.ToString(), pair => pair.Value),
@@ -712,6 +794,8 @@ public partial class GameManager : Node3D
             _inventory.Add(pair.Key, pair.Value);
         }
 
+        _bank.Load(save.Bank);
+
         foreach (var pair in save.SkillExperience)
         {
             _skills[pair.Key] = new SkillProgress(pair.Key, pair.Value);
@@ -729,6 +813,8 @@ public partial class GameManager : Node3D
                 _equipment.Equip(slot, pair.Value);
             }
         }
+
+        ApplyPlayerEquipment();
 
         _appearance = save.Appearance ?? new Appearance();
 
@@ -813,6 +899,7 @@ public partial class GameManager : Node3D
         AddHudButton(ui, "Craft Practice Chisel", new Vector2(16, 138), new Vector2(190, 32), CraftPracticeChisel);
         AddHudButton(ui, "Save", new Vector2(214, 138), new Vector2(80, 32), () => SaveProgress());
         AddHudButton(ui, "Load", new Vector2(302, 138), new Vector2(80, 32), () => GetTree().ReloadCurrentScene());
+        AddHudButton(ui, "Smelt Bronze", new Vector2(390, 138), new Vector2(120, 32), SmeltBronzeBar);
 
         _styleButton = AddHudButton(ui, $"Style: {_attackStyle}", new Vector2(16, 176), new Vector2(150, 32), CycleAttackStyle);
         AddHudButton(ui, "Random Look", new Vector2(174, 176), new Vector2(112, 32), RandomizeLook);
@@ -825,11 +912,33 @@ public partial class GameManager : Node3D
         _heartbeatLabel = AddCornerLabel(ui, "Local Tick: 0", 16);
         _coordinateLabel = AddCornerLabel(ui, "Tile: 0, 0", 42);
         AddCornerButton(ui, "Inventory", 72, ToggleInventory);
+        AddCornerButton(ui, "Bank", 110, ShowBankView);
+        AddCornerButton(ui, "Skills", 148, ShowSkillsView);
+        AddCornerButton(ui, "Quests", 186, ShowQuestsView);
+        AddCornerButton(ui, "Social", 224, ShowSocialView);
+        _minimapLabel = AddCornerLabel(ui, "Minimap: River Valley", 264);
 
         _healthLabel = AddBottomLabel(ui, "Health", -76);
         _healthBar = AddBottomBar(ui, -50);
         _runEnergyLabel = AddBottomLabel(ui, "Run energy", -124);
         _runEnergyBar = AddBottomBar(ui, -98);
+
+        _chatLog = AddBottomLabel(ui, "Local chat ready.", -174);
+        var chatInput = new LineEdit { PlaceholderText = "Say something..." };
+        chatInput.SetAnchorsPreset(Control.LayoutPreset.BottomRight);
+        chatInput.OffsetLeft = -340;
+        chatInput.OffsetRight = -16;
+        chatInput.OffsetTop = -48;
+        chatInput.OffsetBottom = -16;
+        chatInput.TextSubmitted += text =>
+        {
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                _chatLog.Text = $"{Session.Username ?? "Adventurer"}: {text.Trim()}";
+                chatInput.Clear();
+            }
+        };
+        ui.AddChild(chatInput);
 
         _inventoryPanel = new PanelContainer { Visible = false };
         _inventoryPanel.SetAnchorsPreset(Control.LayoutPreset.TopRight);
@@ -978,11 +1087,99 @@ public partial class GameManager : Node3D
         RefreshInventoryPanel();
     }
 
+    private void ShowBankView()
+    {
+        EnsureDialoguePanel();
+        ReplaceDialogueContent();
+        AddDialogueLabel("River Valley Bank");
+        AddDialogueLabel("Deposit or withdraw one item at a time.");
+        foreach (var item in _inventory.Items.OrderBy(pair => ItemName(pair.Key)).ToArray())
+        {
+            var itemId = item.Key;
+            AddDialogueAction($"Deposit {ItemName(itemId)} ({item.Value})", () =>
+            {
+                _bank.Deposit(_inventory, itemId);
+                SaveProgress(showNotice: false);
+                RefreshStatus();
+                ShowBankView();
+            });
+        }
+
+        foreach (var item in _bank.Items.OrderBy(pair => ItemName(pair.Key)).ToArray())
+        {
+            var itemId = item.Key;
+            AddDialogueAction($"Withdraw {ItemName(itemId)} ({item.Value})", () =>
+            {
+                _bank.Withdraw(_inventory, itemId);
+                SaveProgress(showNotice: false);
+                RefreshStatus();
+                ShowBankView();
+            });
+        }
+
+        AddCloseButton("Close bank");
+        _dialoguePanel!.Visible = true;
+    }
+
+    private void ShowSkillsView()
+    {
+        EnsureDialoguePanel();
+        ReplaceDialogueContent();
+        AddDialogueLabel("Skills");
+        foreach (var skill in _skills.OrderBy(pair => SkillDisplayName(pair.Key)))
+        {
+            AddDialogueLabel($"{SkillDisplayName(skill.Key)}: level {skill.Value.Level} ({skill.Value.Experience} xp)");
+        }
+
+        AddCloseButton("Close skills");
+        _dialoguePanel!.Visible = true;
+    }
+
+    private void ShowQuestsView()
+    {
+        EnsureDialoguePanel();
+        ReplaceDialogueContent();
+        AddDialogueLabel("Quest Journal");
+        AddDialogueLabel(_questLabel?.Text ?? "No active quests.");
+        AddCloseButton("Close journal");
+        _dialoguePanel!.Visible = true;
+    }
+
+    private void ShowSocialView()
+    {
+        EnsureDialoguePanel();
+        ReplaceDialogueContent();
+        AddDialogueLabel("Social");
+        AddDialogueLabel("Party: Solo adventurer");
+        AddDialogueLabel("Guild: Not affiliated");
+        AddDialogueLabel("Nearby trade: Use local chat to coordinate exchanges.");
+        AddDialogueLabel("The server transport will replace this local shell when multiplayer hosting lands.");
+        AddCloseButton("Close social");
+        _dialoguePanel!.Visible = true;
+    }
+
     private void ProcessLocalTick()
     {
         _localTick++;
         GetNodeOrNull<PlayerController>("Player")?.ApplyLocalTick();
+        foreach (var node in GetTree().GetNodesInGroup("resource_nodes"))
+        {
+            (node as ResourceNode)?.AdvanceTick(_localTick);
+        }
+
+        foreach (var node in GetTree().GetNodesInGroup("ground_loot"))
+        {
+            (node as GroundLootNode)?.AdvanceTick(_localTick);
+        }
+
         RefreshVitals();
+    }
+
+    private void AddDialogueAction(string text, System.Action action)
+    {
+        var button = new Button { Text = text };
+        button.Pressed += action;
+        _dialogueContent!.AddChild(button);
     }
 
     /// <summary>Appends any level-up lines queued by the SkillLeveledUp subscriber to the open panel.</summary>
@@ -1081,6 +1278,11 @@ public partial class GameManager : Node3D
         if (_coordinateLabel is not null && player is not null)
         {
             _coordinateLabel.Text = $"Tile: {Mathf.RoundToInt(player.GlobalPosition.X / 2.0f)}, {Mathf.RoundToInt(player.GlobalPosition.Z / 2.0f)}";
+        }
+
+        if (_minimapLabel is not null)
+        {
+            _minimapLabel.Text = "Minimap: River Valley\nCastle | Market | Bridge | Mine";
         }
     }
 

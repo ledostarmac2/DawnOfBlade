@@ -252,13 +252,76 @@
     {
       "id": "LQ-013",
       "title": "Build River Valley starting region initializer",
-      "state": "claimed",
+      "state": "done",
       "owner": "codex",
       "delegateTo": null,
       "depends": [],
-      "filesTouched": [],
-      "notes": "Codex: implement Part 22-26 grid-aligned River Valley data initializer, blocked/pathing tiles, anchor and spawn-pool definitions, low-poly client visualization in OpenWorldBuilder, and focused tests. Avoid src/GameSystems while Claude works.",
-      "verification": [],
+      "filesTouched": [
+        "data/items/items.example.json",
+        "scenes/Main.tscn",
+        "src/World/OpenWorldBuilder.cs",
+        "src/World/RiverValley/GridBounds.cs",
+        "src/World/RiverValley/RegionAnchor.cs",
+        "src/World/RiverValley/RiverValleyRegion.cs",
+        "src/World/RiverValley/SpawnPoolDefinition.cs",
+        "tests/RiverValleyRegionTests.cs"
+      ],
+      "notes": "Implemented River Valley authoritative data index and client low-poly population: exact grid bounds and starter anchors, ecosystem spawn pools, river/castle/resource path blockers with bridge and gate exceptions, courtyard-zero tile projection, expanded ground, river, bridge, citadel, market, and indexed clickable ore/tree ResourceNodes with colliders. Added tin ore catalog entry and focused tests.",
+      "verification": [
+        "dotnet build DawnOfBlade.csproj passed with 0 warnings; repo-local DOTNET_ROOT dotnet test tests/DawnOfBlade.Tests.csproj passed 89/89; Godot headless res://scenes/Main.tscn reached GameManager initialization.",
+        "dotnet build DawnOfBlade.csproj passed with 0 warnings; repo-local DOTNET_ROOT dotnet test tests/DawnOfBlade.Tests.csproj passed 89/89; Godot headless res://scenes/Main.tscn reached GameManager initialization."
+      ],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-014",
+      "title": "Implement MMORPG local vertical slice",
+      "state": "done",
+      "owner": "codex",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [
+        "data/items/items.example.json",
+        "src/Characters/HumanoidVisual.cs",
+        "src/Core/GameManager.cs",
+        "src/Interaction/GroundLootNode.cs",
+        "src/Interaction/HostileActor.cs",
+        "src/Interaction/ResourceNode.cs",
+        "src/Inventory/BankStorage.cs",
+        "src/Player/PlayerController.cs",
+        "src/Save/SaveGame.cs",
+        "src/World/OpenWorldBuilder.cs",
+        "src/World/ResourceRespawnState.cs",
+        "tests/MmorpgLifecycleTests.cs"
+      ],
+      "notes": "Implemented playable local MMORPG vertical slice: tick-based resource depletion/respawn, bounded River Valley monster population, defeated-enemy ground loot with pickup/expiration, persisted bank storage and UI, first-entry character creator, equipment weapon attachment, skills/journal/social panels, minimap context, local chat shell, right-click world context menu, and copper+tin bronze smelting loop.",
+      "verification": [
+        "dotnet build DawnOfBlade.csproj passed 0 warnings; repo-local DOTNET_ROOT dotnet test tests/DawnOfBlade.Tests.csproj passed 92/92; Godot headless res://scenes/Main.tscn reached GameManager initialization."
+      ],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-015",
+      "title": "Add visual character creator and generated resource assets",
+      "state": "done",
+      "owner": "codex",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [
+        "exports/windows/DawnOfBlade.exe",
+        "src/Characters/Appearance.cs",
+        "src/Characters/AppearanceOptions.cs",
+        "src/Characters/HumanoidVisual.cs",
+        "src/Core/GameManager.cs",
+        "src/Interaction/ResourceNode.cs",
+        "src/UI/CharacterCreatorPanel.cs",
+        "src/World/GeneratedAssetFactory.cs",
+        "src/World/OpenWorldBuilder.cs"
+      ],
+      "notes": "Added a full-screen first-entry character creator inspired by the reference: live 3D preview, design arrows for head/jaw/torso/arms/hands/legs/feet, color arrows for hair/torso/legs/feet/skin/build, hair shape and presentation choices, persisted through Appearance. Added centralized generated low-poly visuals for all ResourceNode item types and differentiated dynamic hostiles; scene placeholders are hidden automatically. Re-exported Windows executable.",
+      "verification": [
+        "dotnet build DawnOfBlade.csproj passed 0 warnings; repo-local DOTNET_ROOT dotnet test tests/DawnOfBlade.Tests.csproj passed 92/92; Godot headless Main scene reached initialization; exported DawnOfBlade.exe stayed running for 5-second package launch check."
+      ],
       "updated": "2026-06-02"
     }
   ]

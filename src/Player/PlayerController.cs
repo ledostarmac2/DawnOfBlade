@@ -19,6 +19,9 @@ public partial class PlayerController : CharacterBody3D
     private ClickToMoveController _movement = new();
     private Node3D? _moveTargetMarker;
     private Interactable? _pendingInteraction;
+    private PopupMenu? _contextMenu;
+    private Interactable? _contextInteractable;
+    private Vector3 _contextPosition;
 
     public override void _Ready()
     {
@@ -29,6 +32,10 @@ public partial class PlayerController : CharacterBody3D
         {
             _moveTargetMarker.Visible = false;
         }
+
+        _contextMenu = new PopupMenu();
+        _contextMenu.IdPressed += OnContextAction;
+        AddChild(_contextMenu);
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -36,6 +43,11 @@ public partial class PlayerController : CharacterBody3D
         if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
         {
             TrySetMoveTargetFromMouse();
+        }
+
+        if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right })
+        {
+            ShowContextMenu();
         }
     }
 
@@ -107,6 +119,63 @@ public partial class PlayerController : CharacterBody3D
         SetMoveTarget(targetPosition);
     }
 
+    private void ShowContextMenu()
+    {
+        if (_contextMenu is null || !TryRaycastMouse(out var hit))
+        {
+            return;
+        }
+
+        _contextMenu.Clear();
+        _contextInteractable = FindInteractable(hit);
+        _contextPosition = hit.TryGetValue("position", out var positionVariant) ? positionVariant.AsVector3() : GlobalPosition;
+        if (_contextInteractable is not null)
+        {
+            _contextMenu.AddItem($"Interact: {_contextInteractable.DisplayName}", 1);
+            _contextMenu.AddItem($"Examine: {_contextInteractable.DisplayName}", 2);
+        }
+
+        _contextMenu.AddItem("Walk here", 3);
+        var mouse = GetViewport().GetMousePosition();
+        _contextMenu.Position = new Vector2I(Mathf.RoundToInt(mouse.X), Mathf.RoundToInt(mouse.Y));
+        _contextMenu.Popup();
+    }
+
+    private void OnContextAction(long id)
+    {
+        switch (id)
+        {
+            case 1 when _contextInteractable is not null:
+                _pendingInteraction = _contextInteractable;
+                SetMoveTarget(_contextInteractable.GlobalPosition);
+                TryCompletePendingInteraction();
+                break;
+            case 2 when _contextInteractable is not null:
+                GD.Print($"Examine: {_contextInteractable.DisplayName}");
+                break;
+            case 3:
+                _pendingInteraction = null;
+                SetMoveTarget(_contextPosition);
+                break;
+        }
+    }
+
+    private bool TryRaycastMouse(out Godot.Collections.Dictionary hit)
+    {
+        hit = new Godot.Collections.Dictionary();
+        var camera = GetViewport().GetCamera3D();
+        if (camera is null)
+        {
+            return false;
+        }
+
+        var mousePosition = GetViewport().GetMousePosition();
+        var rayOrigin = camera.ProjectRayOrigin(mousePosition);
+        var rayEnd = rayOrigin + camera.ProjectRayNormal(mousePosition) * RaycastDistance;
+        hit = GetWorld3D().DirectSpaceState.IntersectRay(PhysicsRayQueryParameters3D.Create(rayOrigin, rayEnd));
+        return hit.Count > 0;
+    }
+
     private bool TryQueueInteraction(Godot.Collections.Dictionary hit)
     {
         if (!hit.TryGetValue("collider", out var colliderVariant))
@@ -114,8 +183,7 @@ public partial class PlayerController : CharacterBody3D
             return false;
         }
 
-        var collider = colliderVariant.AsGodotObject() as Node;
-        var interactable = collider as Interactable ?? collider?.GetParentOrNull<Interactable>();
+        var interactable = FindInteractable(hit);
         if (interactable is null || !interactable.CanInteract(this))
         {
             return false;
@@ -125,6 +193,17 @@ public partial class PlayerController : CharacterBody3D
         SetMoveTarget(interactable.GlobalPosition);
         TryCompletePendingInteraction();
         return true;
+    }
+
+    private static Interactable? FindInteractable(Godot.Collections.Dictionary hit)
+    {
+        if (!hit.TryGetValue("collider", out var colliderVariant))
+        {
+            return null;
+        }
+
+        var collider = colliderVariant.AsGodotObject() as Node;
+        return collider as Interactable ?? collider?.GetParentOrNull<Interactable>();
     }
 
     private void SetMoveTarget(Vector3 targetPosition)

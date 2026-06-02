@@ -63,6 +63,20 @@
     "value": 5
   },
   {
+    "id": "tin_ore",
+    "displayName": "Tin Ore",
+    "description": "Raw tin ore. Smelt it with copper to make bronze.",
+    "stackable": true,
+    "value": 5
+  },
+  {
+    "id": "bronze_bar",
+    "displayName": "Bronze Bar",
+    "description": "A freshly smelted bronze ingot used by novice smiths.",
+    "stackable": true,
+    "value": 14
+  },
+  {
     "id": "raw_trout",
     "displayName": "Raw Trout",
     "description": "A fresh river trout. Best cooked before eating.",
