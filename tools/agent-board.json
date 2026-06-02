@@ -240,13 +240,28 @@
     {
       "id": "LQ-012",
       "title": "Implement game systems engine foundations",
-      "state": "open",
-      "owner": null,
-      "delegateTo": "claude",
+      "state": "done",
+      "owner": "claude",
+      "delegateTo": null,
       "depends": [],
-      "filesTouched": [],
-      "notes": "Take the isolated pure-C# game systems package from Parts 17-20. Keep changes in NEW src/GameSystems paths and focused tests so Codex can build River Valley concurrently.",
-      "verification": [],
+      "filesTouched": [
+        "src/GameSystems/ItemCatalog.cs",
+        "src/GameSystems/PersistenceModels.cs",
+        "src/GameSystems/LootTable.cs",
+        "src/GameSystems/LootRoller.cs",
+        "src/GameSystems/ResourceSpawnerPool.cs",
+        "src/GameSystems/TransactionLog.cs",
+        "src/GameSystems/MarketOrder.cs",
+        "src/GameSystems/MarketEngine.cs",
+        "src/GameSystems/CharacterInitializer.cs",
+        "src/GameSystems/DisconnectPolicy.cs",
+        "tests/GameSystemsTests.cs"
+      ],
+      "notes": "Take the isolated pure-C# game systems package from Parts 17-20. Keep changes in NEW src/GameSystems paths and focused tests so Codex can build River Valley concurrently. [claude done] Engine-independent Parts 17-20 in src/GameSystems/: item/recipe schemas + persistence row models (17); weighted multi-tier LootTable/LootRoller + ResourceSpawnerPool deplete/respawn (18); MarketEngine escrow + ascending-price matching with partial fills/spread refund + TransactionLogger audit bus (19); CharacterInitializer fresh-spawn matrix + DisconnectPolicy combat-logging state machine (20). Pure C#; reuses IRandomSource/GridCoordinate/WorldZone/ICommunicationService. No scenes/UI/GameManager touched.",
+      "verification": [
+        "dotnet build 0/0",
+        "15 GameSystems tests pass; full suite 107 passed"
+      ],
       "updated": "2026-06-02"
     },
     {
@@ -322,6 +337,18 @@
       "verification": [
         "dotnet build DawnOfBlade.csproj passed 0 warnings; repo-local DOTNET_ROOT dotnet test tests/DawnOfBlade.Tests.csproj passed 92/92; Godot headless Main scene reached initialization; exported DawnOfBlade.exe stayed running for 5-second package launch check."
       ],
+      "updated": "2026-06-02"
+    },
+    {
+      "id": "LQ-016",
+      "title": "Add facing and procedural character animations",
+      "state": "claimed",
+      "owner": "codex",
+      "delegateTo": null,
+      "depends": [],
+      "filesTouched": [],
+      "notes": "Codex: orient player toward movement and interactions; add procedural idle/walk states and weapon-category attack animations on HumanoidVisual; trigger attacks from combat; verify and rebuild EXE.",
+      "verification": [],
       "updated": "2026-06-02"
     }
   ]
