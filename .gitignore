@@ -20,6 +20,8 @@ crash/
 *.log
 .env
 tools/agent-board.local.json
+# Locally downloaded Godot engine binary used by tools/run-godot-tests.ps1 (~58MB, not committed).
+tools/godot/
 assets/textures/tmp/
 *.db
 *.sqlite

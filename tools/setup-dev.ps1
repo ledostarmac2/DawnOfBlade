@@ -1,5 +1,6 @@
 # Bootstraps the local dev toolchain for DawnOfBlade into .tools/ (gitignored):
 #   - .NET 8 SDK        (builds the net8.0 Godot game + xUnit tests)
+#   - Godot 4.2.2 .NET  (runs and exports the project)
 #   - ripgrep           (Todo Tree and other extensions)
 # Then prepends the vendored SDK to the user PATH, sets DOTNET_ROOT, and restores packages.
 # Windows places machine PATH entries before user PATH entries in some shells, so the
@@ -16,10 +17,15 @@ $ErrorActionPreference = "Stop"
 
 $root = Split-Path -Parent $PSScriptRoot
 $installDir = Join-Path $root ".tools\dotnet"
+$godotRoot = Join-Path $root ".tools\godot"
+$godotVersion = "4.2.2-stable"
+$godotFolder = "Godot_v$godotVersion" + "_mono_win64"
+$godotDir = Join-Path $godotRoot $godotFolder
 $ripgrepDir = Join-Path $root ".tools\ripgrep"
 $ripgrepVersion = "14.1.1"
 
 New-Item -ItemType Directory -Force -Path (Split-Path $installDir) | Out-Null
+New-Item -ItemType Directory -Force -Path $godotRoot | Out-Null
 New-Item -ItemType Directory -Force -Path $ripgrepDir | Out-Null
 
 $installScript = Join-Path $env:TEMP "dotnet-install.ps1"
@@ -32,6 +38,26 @@ Write-Host "Installing .NET 8 SDK to $installDir ..."
 $dotnet = Join-Path $installDir "dotnet.exe"
 if (-not (Test-Path $dotnet)) {
     throw "dotnet.exe was not installed to $installDir"
+}
+
+$godotExe = Join-Path $godotDir "$godotFolder.exe"
+$godotConsole = Join-Path $godotDir ($godotFolder + "_console.exe")
+if (-not (Test-Path $godotExe) -or -not (Test-Path $godotConsole)) {
+    Write-Host "Installing Godot $godotVersion .NET to $godotDir ..."
+    $zip = Join-Path $env:TEMP "$godotFolder.zip"
+    $url = "https://github.com/godotengine/godot-builds/releases/download/$godotVersion/$godotFolder.zip"
+    Invoke-WebRequest -Uri $url -OutFile $zip -UseBasicParsing
+    $extractDir = Join-Path $env:TEMP $godotFolder
+    if (Test-Path $extractDir) {
+        Remove-Item -Recurse -Force $extractDir
+    }
+    Expand-Archive -Path $zip -DestinationPath $extractDir
+    if (Test-Path $godotDir) {
+        Remove-Item -Recurse -Force $godotDir
+    }
+    Move-Item -Path (Join-Path $extractDir $godotFolder) -Destination $godotDir
+    Remove-Item $zip -Force -ErrorAction SilentlyContinue
+    Remove-Item -Recurse -Force $extractDir -ErrorAction SilentlyContinue
 }
 
 $rg = Join-Path $ripgrepDir "rg.exe"
@@ -66,6 +92,7 @@ Write-Host "  SDKs:"
 & $dotnet --list-sdks | ForEach-Object { Write-Host "    $_" }
 & $dotnet --list-runtimes | ForEach-Object { Write-Host "  Runtime: $_" }
 Write-Host "  ripgrep: $rg"
+Write-Host "  Godot: $godotExe"
 
 Write-Host ""
 Write-Host "Restoring NuGet packages ..."

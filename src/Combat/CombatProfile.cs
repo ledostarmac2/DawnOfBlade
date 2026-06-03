@@ -1,4 +1,5 @@
 using System;
+using DawnOfBlade.Engine.Progression;
 
 namespace DawnOfBlade.Combat;
 
@@ -25,7 +26,7 @@ public sealed class CombatProfile
 
     public bool IsDefeated => CurrentHitpoints <= 0;
 
-    public int CombatLevel => (int)Math.Round((Attack + Strength + Defense + MaxHitpoints) / 4.0);
+    public int CombatLevel => Engine.Progression.CombatLevel.Compute(Attack, Strength, Defense, MaxHitpoints);
 
     public void ApplyDamage(int amount) =>
         CurrentHitpoints = Math.Max(0, CurrentHitpoints - Math.Max(0, amount));

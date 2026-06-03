@@ -1,5 +1,8 @@
 using DawnOfBlade.Characters;
+using DawnOfBlade.Combat;
 using DawnOfBlade.Core;
+using DawnOfBlade.Engine.Ai;
+using DawnOfBlade.Engine.Spatial;
 using Godot;
 
 namespace DawnOfBlade.Interaction;
@@ -13,6 +16,20 @@ public partial class PrototypeNpc : Interactable
 {
     [Export] public string SpeakerName { get; set; } = "Ari";
     [Export] public int Seed { get; set; } = 1;
+
+    /// <summary>Chebyshev tiles this villager strolls from its spawn point.</summary>
+    [Export] public int WanderRadius { get; set; } = 3;
+
+    /// <summary>
+    /// Builds a Passive behavior controller so villagers stroll their fixed area but never engage.
+    /// Shares the exact same <see cref="ActorBrain"/> used by monsters; only the archetype differs.
+    /// </summary>
+    public ActorBrain BuildBrain(TrueTile anchor, IRandomSource random)
+    {
+        var area = new WanderArea(anchor, WanderRadius, WanderRadius + 2);
+        var options = new ActorBrainOptions { AggroRadius = 0 };
+        return new ActorBrain(area, MonsterArchetype.Passive, combatLevel: 3, options, random);
+    }
 
     public override void _Ready()
     {

@@ -112,8 +112,12 @@ public partial class CharacterCreatorPanel : CanvasLayer
                 AmbientLightEnergy = 0.7f,
             },
         });
-        var camera = new Camera3D { Position = new Vector3(0, 1.35f, 5.0f), Current = true };
-        camera.LookAt(new Vector3(0, 1.25f, 0));
+        var camera = new Camera3D { Position = new Vector3(0, 1.35f, 5.0f) };
+        camera.TreeEntered += () =>
+        {
+            camera.LookAt(new Vector3(0, 1.25f, 0));
+            camera.Current = true;
+        };
         viewport.AddChild(camera);
 
         _preview = new HumanoidVisual();

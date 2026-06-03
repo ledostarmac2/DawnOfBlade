@@ -23,6 +23,10 @@ guarantee. If an asset is not in this table, it should not be in the repo.
 | `assets/placeholders/npc_marker.svg` | image | original | DawnOfBlade project | Project license | No | 2026-05-29 |
 | `assets/placeholders/move_target.svg` | image | original | DawnOfBlade project | Project license | No | 2026-05-29 |
 | `assets/placeholders/item_coin.svg` | image | original | DawnOfBlade project | Project license | No | 2026-05-29 |
+| `assets/branding/dawn_of_blade_logo.png` | image | original | DawnOfBlade project | Project license | No | 2026-05-29 |
+| `assets/branding/dawn_of_blade_icon_transparent.png` | image | original | DawnOfBlade project | Project license | No | 2026-06-02 |
+| `assets/branding/dawn_of_blade_icon_transparent.ico` | icon | original | DawnOfBlade project | Project license | No | 2026-06-02 |
+| `assets/branding/login_background.png` | image | original | DawnOfBlade project | Project license | No | 2026-06-02 |
 | `assets/materials/ground.tres` | material | original | DawnOfBlade project | Project license | No | 2026-05-29 |
 | `assets/materials/player.tres` | material | original | DawnOfBlade project | Project license | No | 2026-05-29 |
 | `assets/materials/npc.tres` | material | original | DawnOfBlade project | Project license | No | 2026-05-29 |

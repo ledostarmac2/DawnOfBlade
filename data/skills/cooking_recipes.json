@@ -1,0 +1,8 @@
+[
+  { "id": "cook_shrimp", "rawItemId": "raw_shrimp", "cookedItemId": "shrimp", "burntItemId": "burnt_shrimp", "cookingLevel": 1, "burnStopLevel": 34, "baseBurnChancePercent": 50, "experience": 30, "healAmount": 3, "station": "range" },
+  { "id": "cook_herring", "rawItemId": "raw_herring", "cookedItemId": "herring", "burntItemId": "burnt_herring", "cookingLevel": 5, "burnStopLevel": 41, "baseBurnChancePercent": 55, "experience": 50, "healAmount": 5, "station": "range" },
+  { "id": "cook_trout", "rawItemId": "raw_trout", "cookedItemId": "trout", "burntItemId": "burnt_trout", "cookingLevel": 15, "burnStopLevel": 50, "baseBurnChancePercent": 50, "experience": 70, "healAmount": 7, "station": "range" },
+  { "id": "cook_lobster", "rawItemId": "raw_lobster", "cookedItemId": "lobster", "burntItemId": "burnt_lobster", "cookingLevel": 40, "burnStopLevel": 74, "baseBurnChancePercent": 45, "experience": 120, "healAmount": 12, "station": "range" },
+  { "id": "cook_swordfish", "rawItemId": "raw_swordfish", "cookedItemId": "swordfish", "burntItemId": "burnt_swordfish", "cookingLevel": 50, "burnStopLevel": 86, "baseBurnChancePercent": 42, "experience": 140, "healAmount": 14, "station": "range" },
+  { "id": "cook_shark", "rawItemId": "raw_shark", "cookedItemId": "shark", "burntItemId": "burnt_shark", "cookingLevel": 80, "burnStopLevel": 99, "baseBurnChancePercent": 40, "experience": 210, "healAmount": 20, "station": "range" }
+]

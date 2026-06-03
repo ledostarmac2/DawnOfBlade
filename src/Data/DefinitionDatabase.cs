@@ -20,12 +20,15 @@ namespace DawnOfBlade.Data;
 public sealed class DefinitionDatabase
 {
     public const string ItemsPath = "res://data/items/items.example.json";
+    public const string ItemsOakhavenPath = "res://data/items/items_oakhaven.json";
     public const string SkillsPath = "res://data/skills/skills.example.json";
+    public const string SkillsFullPath = "res://data/skills/skills_full.json";
     public const string NpcsPath = "res://data/npcs/npcs.example.json";
     public const string DialoguePath = "res://data/dialogue/dialogue.example.json";
     public const string QuestsPath = "res://data/quests/quests.example.json";
     public const string VocabularyPath = "res://data/vocabulary/vocabulary.example.json";
     public const string EquipmentPath = "res://data/equipment/equipment.example.json";
+    public const string EquipmentOakhavenPath = "res://data/equipment/equipment_oakhaven.json";
     public const string ShopsPath = "res://data/shops/shops.example.json";
 
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -52,13 +55,13 @@ public sealed class DefinitionDatabase
     /// <summary>Loads every definition file from the Godot resource filesystem.</summary>
     public void Load()
     {
-        ItemById = ParseList<ItemDefinition>(ReadText(ItemsPath)).ToDictionary(i => i.Id);
-        SkillById = ParseList<SkillDefinition>(ReadText(SkillsPath)).ToDictionary(s => s.Id);
+        ItemById = LoadMergedById<ItemDefinition>(i => i.Id, ItemsPath, ItemsOakhavenPath);
+        SkillById = LoadMergedById<SkillDefinition>(s => s.Id, SkillsPath, SkillsFullPath);
         NpcById = ParseList<NpcDefinition>(ReadText(NpcsPath)).ToDictionary(n => n.Id);
         DialogueById = ParseList<DialogueNode>(ReadText(DialoguePath)).ToDictionary(d => d.Id);
         QuestById = ParseList<QuestDefinition>(ReadText(QuestsPath)).ToDictionary(q => q.Id);
         Vocabulary = ParseList<VocabularyEntry>(ReadText(VocabularyPath));
-        EquipmentByItemId = ParseList<EquipmentDefinition>(ReadText(EquipmentPath)).ToDictionary(e => e.ItemId);
+        EquipmentByItemId = LoadMergedById<EquipmentDefinition>(e => e.ItemId, EquipmentPath, EquipmentOakhavenPath);
         ShopById = ParseList<ShopDefinition>(ReadText(ShopsPath)).ToDictionary(s => s.Id);
     }
 
@@ -76,12 +79,36 @@ public sealed class DefinitionDatabase
         return JsonSerializer.Deserialize<List<T>>(json, JsonOptions) ?? new List<T>();
     }
 
-    private static string ReadText(string resourcePath)
+    private static IReadOnlyDictionary<string, T> LoadMergedById<T>(System.Func<T, string> keySelector, params string[] resourcePaths)
     {
+        var merged = new Dictionary<string, T>();
+        foreach (var path in resourcePaths)
+        {
+            var required = path == resourcePaths[0];
+            foreach (var definition in ParseList<T>(ReadText(path, required)))
+            {
+                merged[keySelector(definition)] = definition;
+            }
+        }
+
+        return merged;
+    }
+
+    private static string ReadText(string resourcePath, bool required = true)
+    {
+        if (!required && !FileAccess.FileExists(resourcePath))
+        {
+            return string.Empty;
+        }
+
         using var file = FileAccess.Open(resourcePath, FileAccess.ModeFlags.Read);
         if (file is null)
         {
-            GD.PushWarning($"Definition file not found: {resourcePath} ({FileAccess.GetOpenError()})");
+            if (required)
+            {
+                GD.PushWarning($"Definition file not found: {resourcePath} ({FileAccess.GetOpenError()})");
+            }
+
             return string.Empty;
         }
 

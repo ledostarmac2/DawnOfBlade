@@ -1,0 +1,16 @@
+[
+  { "id": "oakhaven_gate_south", "zoneId": "oakhaven_city", "displayName": "South Gate", "kind": "gate", "tileX": 3220, "tileY": 3180, "interactionVerb": "Enter" },
+  { "id": "oakhaven_gate_west", "zoneId": "oakhaven_city", "displayName": "West Gate", "kind": "gate", "tileX": 3180, "tileY": 3216, "interactionVerb": "Enter" },
+  { "id": "oakhaven_gate_east", "zoneId": "oakhaven_city", "displayName": "East Gate", "kind": "gate", "tileX": 3260, "tileY": 3224, "interactionVerb": "Enter" },
+  { "id": "oakhaven_notice_board", "zoneId": "oakhaven_city", "displayName": "Castle Notice Board", "kind": "notice_board", "tileX": 3219, "tileY": 3215, "interactionVerb": "Read" },
+  { "id": "oakhaven_bank_chest", "zoneId": "oakhaven_city", "displayName": "Oakhaven Bank Chest", "kind": "bank_chest", "tileX": 3196, "tileY": 3220, "interactionVerb": "Open" },
+  { "id": "oakhaven_anvil", "zoneId": "oakhaven_city", "displayName": "Forge Anvil", "kind": "anvil", "tileX": 3242, "tileY": 3225, "interactionVerb": "Smith" },
+  { "id": "oakhaven_furnace", "zoneId": "oakhaven_city", "displayName": "Forge Furnace", "kind": "furnace", "tileX": 3244, "tileY": 3225, "interactionVerb": "Smelt" },
+  { "id": "oakhaven_range", "zoneId": "oakhaven_city", "displayName": "Cooking Range", "kind": "range", "tileX": 3238, "tileY": 3228, "interactionVerb": "Cook" },
+  { "id": "oakhaven_spinning_wheel_1", "zoneId": "oakhaven_city", "displayName": "Spinning Wheel", "kind": "spinning_wheel", "tileX": 3240, "tileY": 3230, "interactionVerb": "Spin" },
+  { "id": "oakhaven_spinning_wheel_2", "zoneId": "oakhaven_city", "displayName": "Spinning Wheel", "kind": "spinning_wheel", "tileX": 3241, "tileY": 3230, "interactionVerb": "Spin" },
+  { "id": "oakhaven_tannery", "zoneId": "oakhaven_city", "displayName": "Tannery", "kind": "tannery", "tileX": 3246, "tileY": 3229, "interactionVerb": "Tan" },
+  { "id": "oakhaven_signpost_market", "zoneId": "oakhaven_city", "displayName": "Market Signpost", "kind": "signpost", "tileX": 3212, "tileY": 3222, "interactionVerb": "Read" },
+  { "id": "mill_flour_hopper", "zoneId": "whispering_mill", "displayName": "Oakhaven Flour Hopper", "kind": "signpost", "tileX": 3168, "tileY": 3252, "interactionVerb": "Operate" },
+  { "id": "crypt_entrance", "zoneId": "sunken_crypt", "displayName": "Crypt Entrance", "kind": "gate", "tileX": 3258, "tileY": 3262, "interactionVerb": "Enter" }
+]

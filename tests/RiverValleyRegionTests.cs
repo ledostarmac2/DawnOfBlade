@@ -61,6 +61,18 @@ public class RiverValleyRegionTests
         Assert.False(_region.IsWalkable(copper.Coordinate));
     }
 
+    [Fact]
+    public void Pathfinder_RoutesRiverCrossingThroughBridge()
+    {
+        var pathfinder = new GridPathfinder(_region.IsWalkable);
+
+        var path = pathfinder.FindPath(_region.RespawnTile, new GridCoordinate(86, 28));
+
+        Assert.NotEmpty(path);
+        Assert.Contains(new GridCoordinate(57, 35), path);
+        Assert.DoesNotContain(path, tile => !_region.IsWalkable(tile));
+    }
+
     private void AssertAnchor(string id, int x, int z, string interactionType)
     {
         var anchor = _region.Anchors.Single(anchor => anchor.Id == id);

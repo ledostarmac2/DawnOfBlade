@@ -1,0 +1,65 @@
+[
+  {
+    "id": "flour_pest", "displayName": "Flour Pest", "zoneId": "whispering_mill",
+    "archetype": "Aggressive", "combatLevel": 2,
+    "maxHitpoints": 3, "attackLevel": 2, "strengthLevel": 2, "defenseLevel": 1,
+    "maxHit": 1, "attackSpeedTicks": 4,
+    "wanderRadius": 4, "aggroRadius": 4, "leashRadius": 7, "runWhileChasing": false,
+    "dropTableId": "drop_flour_pest", "spawnTileX": 3164, "spawnTileY": 3250, "respawnTicks": 100,
+    "examine": "A bloated grain mite, fat on stolen flour."
+  },
+  {
+    "id": "rogue_thief", "displayName": "Rogue Thief", "zoneId": "whispering_mill",
+    "archetype": "Aggressive", "combatLevel": 3,
+    "maxHitpoints": 5, "attackLevel": 3, "strengthLevel": 3, "defenseLevel": 2,
+    "maxHit": 2, "attackSpeedTicks": 4,
+    "wanderRadius": 5, "aggroRadius": 5, "leashRadius": 9, "runWhileChasing": false,
+    "dropTableId": "drop_rogue_thief", "spawnTileX": 3170, "spawnTileY": 3248, "respawnTicks": 100,
+    "examine": "A desperate cutpurse skulking near the mill."
+  },
+  {
+    "id": "tunnel_rat", "displayName": "Tunnel Rat", "zoneId": "verdan_copper_veins",
+    "archetype": "Aggressive", "combatLevel": 7,
+    "maxHitpoints": 10, "attackLevel": 6, "strengthLevel": 6, "defenseLevel": 5,
+    "maxHit": 2, "attackSpeedTicks": 4,
+    "wanderRadius": 3, "aggroRadius": 5, "leashRadius": 6, "runWhileChasing": false,
+    "dropTableId": "drop_tunnel_rat", "spawnTileX": 3158, "spawnTileY": 3210, "respawnTicks": 100,
+    "examine": "A mangy rat grown bold in the copper pit."
+  },
+  {
+    "id": "grave_spider", "displayName": "Grave Spider", "zoneId": "whispering_mill_cellar",
+    "archetype": "Aggressive", "combatLevel": 8,
+    "maxHitpoints": 12, "attackLevel": 7, "strengthLevel": 7, "defenseLevel": 5,
+    "maxHit": 3, "attackSpeedTicks": 4,
+    "wanderRadius": 3, "aggroRadius": 5, "leashRadius": 6, "runWhileChasing": false,
+    "dropTableId": "drop_grave_spider", "spawnTileX": 3166, "spawnTileY": 3256, "respawnTicks": 120,
+    "examine": "Its fangs glisten with acrid venom."
+  },
+  {
+    "id": "skeleton_footman", "displayName": "Skeleton Footman", "zoneId": "sunken_crypt",
+    "archetype": "Aggressive", "combatLevel": 10,
+    "maxHitpoints": 13, "attackLevel": 8, "strengthLevel": 8, "defenseLevel": 7,
+    "maxHit": 3, "attackSpeedTicks": 4,
+    "wanderRadius": 3, "aggroRadius": 6, "leashRadius": 7, "runWhileChasing": false,
+    "dropTableId": "drop_skeleton_footman", "spawnTileX": 3258, "spawnTileY": 3266, "respawnTicks": 100,
+    "examine": "A rattling guard bound to the crypt."
+  },
+  {
+    "id": "bone_overseer", "displayName": "The Bone Overseer", "zoneId": "sunken_crypt",
+    "archetype": "Predator", "combatLevel": 15,
+    "maxHitpoints": 28, "attackLevel": 9, "strengthLevel": 9, "defenseLevel": 10,
+    "maxHit": 4, "attackSpeedTicks": 5,
+    "wanderRadius": 2, "aggroRadius": 8, "leashRadius": 12, "runWhileChasing": false,
+    "dropTableId": "drop_bone_overseer", "spawnTileX": 3262, "spawnTileY": 3270, "respawnTicks": 500,
+    "examine": "The crypt's warden. It does not tire, and it does not forgive trespass."
+  },
+  {
+    "id": "broodmother_spider", "displayName": "The Broodmother", "zoneId": "shifting_sands",
+    "archetype": "Predator", "combatLevel": 75,
+    "maxHitpoints": 90, "attackLevel": 60, "strengthLevel": 60, "defenseLevel": 54,
+    "maxHit": 11, "attackSpeedTicks": 5,
+    "wanderRadius": 3, "aggroRadius": 10, "leashRadius": 16, "runWhileChasing": true,
+    "dropTableId": "drop_broodmother", "spawnTileX": 3300, "spawnTileY": 3320, "respawnTicks": 5000,
+    "examine": "A cavern-sized matriarch. She hunts anything that enters her hollow."
+  }
+]

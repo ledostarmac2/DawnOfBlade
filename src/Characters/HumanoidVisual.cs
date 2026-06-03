@@ -83,24 +83,57 @@ public partial class HumanoidVisual : Node3D
         var headRadius = 0.26f + appearance.HeadStyle * 0.016f;
         var shoulderX = chest + armRadius * 0.6f;
 
+        AddMesh(this, "GroundShadow",
+            new CylinderMesh { TopRadius = 0.52f, BottomRadius = 0.52f, Height = 0.012f, RadialSegments = 20 },
+            new Vector3(0, 0.012f, 0.03f), ShadowMaterial());
+
         // Tapered torso: an inverted frustum (chest wider than waist), faceted (Part 27.1).
         _torsoMesh = AddMesh(this, "Torso",
             new CylinderMesh { TopRadius = chest, BottomRadius = waist, Height = 0.92f, RadialSegments = Facets + 2, Rings = 1 },
             new Vector3(0, 1.25f, 0), appearance.ShirtColor);
         _torso = _torsoMesh;
+        AddMesh(this, "Neck",
+            new CylinderMesh { TopRadius = 0.12f, BottomRadius = 0.14f, Height = 0.18f, RadialSegments = Facets },
+            new Vector3(0, 1.76f, 0), appearance.SkinTone);
+        AddMesh(this, "Belt",
+            new BoxMesh { Size = new Vector3(chest * 1.38f, 0.1f, waist * 1.28f) },
+            new Vector3(0, 0.88f, -0.01f), "#2c2118");
+        AddMesh(this, "Collar",
+            new BoxMesh { Size = new Vector3(chest * 1.12f, 0.075f, 0.075f) },
+            new Vector3(0, 1.72f, -waist * 0.72f), "#ded0aa");
+        for (var i = 0; i < 3; i++)
+        {
+            AddMesh(this, $"TunicLacing{i + 1}",
+                new BoxMesh { Size = new Vector3(0.055f, 0.08f, 0.03f) },
+                new Vector3(0, 1.43f - i * 0.15f, -waist * 0.82f), "#2a2118");
+        }
 
         // Head with sharp nose + jaw ridges instead of a smooth ball (Part 27.1).
         _head = AddMesh(this, "Head",
             new SphereMesh { Radius = headRadius, Height = headRadius * 2.1f, RadialSegments = Facets + 2, Rings = 4 },
             new Vector3(0, 2.02f, 0), appearance.SkinTone);
         AddMesh(_head, "Nose", new PrismMesh { Size = new Vector3(0.07f, 0.10f, 0.12f) },
-            new Vector3(0, -0.02f, headRadius * 0.92f), appearance.SkinTone, rotation: new Vector3(Mathf.Pi / 2, 0, 0));
+            new Vector3(0, -0.02f, -headRadius * 0.92f), appearance.SkinTone, rotation: new Vector3(-Mathf.Pi / 2, 0, 0));
         AddMesh(_head, "Jaw", new PrismMesh { Size = new Vector3(headRadius * 1.3f, 0.16f, headRadius * 0.9f) },
-            new Vector3(0, -headRadius * 0.72f, headRadius * 0.18f), appearance.SkinTone, rotation: new Vector3(Mathf.Pi, 0, 0));
+            new Vector3(0, -headRadius * 0.72f, -headRadius * 0.18f), appearance.SkinTone);
+        AddMesh(_head, "LeftEye", new BoxMesh { Size = new Vector3(0.055f, 0.035f, 0.018f) },
+            new Vector3(-headRadius * 0.36f, headRadius * 0.1f, -headRadius * 0.96f), "#151515");
+        AddMesh(_head, "RightEye", new BoxMesh { Size = new Vector3(0.055f, 0.035f, 0.018f) },
+            new Vector3(headRadius * 0.36f, headRadius * 0.1f, -headRadius * 0.96f), "#151515");
+        AddMesh(_head, "LeftBrow", new BoxMesh { Size = new Vector3(0.09f, 0.025f, 0.018f) },
+            new Vector3(-headRadius * 0.36f, headRadius * 0.24f, -headRadius * 0.97f), appearance.HairColor);
+        AddMesh(_head, "RightBrow", new BoxMesh { Size = new Vector3(0.09f, 0.025f, 0.018f) },
+            new Vector3(headRadius * 0.36f, headRadius * 0.24f, -headRadius * 0.97f), appearance.HairColor);
+        AddMesh(_head, "Mouth", new BoxMesh { Size = new Vector3(0.12f, 0.024f, 0.018f) },
+            new Vector3(0, -headRadius * 0.28f, -headRadius * 0.98f), "#6f2d2a");
+        AddMesh(_head, "LeftEar", new SphereMesh { Radius = 0.055f, Height = 0.12f, RadialSegments = Facets, Rings = 3 },
+            new Vector3(-headRadius * 0.98f, -0.02f, -0.02f), appearance.SkinTone);
+        AddMesh(_head, "RightEar", new SphereMesh { Radius = 0.055f, Height = 0.12f, RadialSegments = Facets, Rings = 3 },
+            new Vector3(headRadius * 0.98f, -0.02f, -0.02f), appearance.SkinTone);
         AddHair(_head, appearance, headRadius);
 
-        _leftShoulder = BuildArm("Left", new Vector3(-shoulderX, 1.6f, 0), armRadius, appearance.SkinTone, out _leftElbow, out _leftHandSocket);
-        _rightShoulder = BuildArm("Right", new Vector3(shoulderX, 1.6f, 0), armRadius, appearance.SkinTone, out _rightElbow, out _rightHandSocket);
+        _leftShoulder = BuildArm("Left", new Vector3(-shoulderX, 1.6f, 0), armRadius, appearance.ShirtColor, appearance.SkinTone, out _leftElbow, out _leftHandSocket);
+        _rightShoulder = BuildArm("Right", new Vector3(shoulderX, 1.6f, 0), armRadius, appearance.ShirtColor, appearance.SkinTone, out _rightElbow, out _rightHandSocket);
         _leftHip = BuildLeg("Left", new Vector3(-0.2f, 0.92f, 0), legRadius, appearance.LegColor, appearance.FootColor, appearance.FootStyle, out _leftKnee, out _legArmorAnchorL);
         _rightHip = BuildLeg("Right", new Vector3(0.2f, 0.92f, 0), legRadius, appearance.LegColor, appearance.FootColor, appearance.FootStyle, out _rightKnee, out _legArmorAnchorR);
     }
@@ -237,19 +270,21 @@ public partial class HumanoidVisual : Node3D
 
     // ---- Build helpers ----------------------------------------------------
 
-    private Node3D BuildArm(string side, Vector3 shoulder, float radius, string skin, out Node3D elbow, out Node3D handSocket)
+    private Node3D BuildArm(string side, Vector3 shoulder, float radius, string sleeveColor, string skin, out Node3D elbow, out Node3D handSocket)
     {
         var shoulderPivot = new Node3D { Name = $"{side}Arm", Position = shoulder };
         AddChild(shoulderPivot);
         // Upper arm hangs from the shoulder pivot origin.
-        AddMesh(shoulderPivot, "UpperArm", new CylinderMesh { TopRadius = radius, BottomRadius = radius * 0.86f, Height = 0.42f, RadialSegments = Facets }, new Vector3(0, -0.21f, 0), skin);
+        AddMesh(shoulderPivot, "Sleeve", new SphereMesh { Radius = radius * 1.25f, Height = radius * 2.0f, RadialSegments = Facets, Rings = 3 }, new Vector3(0, -0.04f, 0), sleeveColor);
+        AddMesh(shoulderPivot, "UpperArm", new CylinderMesh { TopRadius = radius * 0.92f, BottomRadius = radius * 0.8f, Height = 0.42f, RadialSegments = Facets }, new Vector3(0, -0.23f, 0), sleeveColor);
 
         elbow = new Node3D { Name = $"{side}Elbow", Position = new Vector3(0, -0.43f, 0) };
         shoulderPivot.AddChild(elbow);
         AddMesh(elbow, "LowerArm", new CylinderMesh { TopRadius = radius * 0.86f, BottomRadius = radius * 0.72f, Height = 0.42f, RadialSegments = Facets }, new Vector3(0, -0.21f, 0), skin);
+        AddMesh(elbow, "WristCuff", new CylinderMesh { TopRadius = radius * 0.76f, BottomRadius = radius * 0.72f, Height = 0.08f, RadialSegments = Facets }, new Vector3(0, -0.39f, 0), "#2c2118");
         AddMesh(elbow, "Hand", new SphereMesh { Radius = radius * 1.05f, Height = radius * 2.1f, RadialSegments = Facets, Rings = 3 }, new Vector3(0, -0.45f, 0), skin);
 
-        handSocket = new Node3D { Name = $"{side}HandSocket", Position = new Vector3(0, -0.5f, 0.04f) };
+        handSocket = new Node3D { Name = $"{side}HandSocket", Position = new Vector3(0, -0.5f, -0.04f) };
         elbow.AddChild(handSocket);
         return shoulderPivot;
     }
@@ -264,6 +299,7 @@ public partial class HumanoidVisual : Node3D
         hipPivot.AddChild(knee);
         AddMesh(knee, "Shin", new CylinderMesh { TopRadius = radius * 0.86f, BottomRadius = radius * 0.7f, Height = 0.46f, RadialSegments = Facets }, new Vector3(0, -0.23f, 0), legColor);
         // Wedge-shaped foot block (Part 27.1).
+        AddMesh(knee, "BootCuff", new CylinderMesh { TopRadius = radius * 0.86f, BottomRadius = radius * 0.78f, Height = 0.12f, RadialSegments = Facets }, new Vector3(0, -0.39f, 0), footColor);
         AddMesh(knee, "Foot", new BoxMesh { Size = new Vector3(0.26f, 0.2f, 0.46f + footStyle * 0.04f) }, new Vector3(0, -0.46f, -0.1f), footColor);
         return hipPivot;
     }
@@ -277,6 +313,16 @@ public partial class HumanoidVisual : Node3D
         AddMesh(parent, "Hair",
             new SphereMesh { Radius = headRadius * 1.12f, Height = hairHeight, RadialSegments = Facets + 2, Rings = 3 },
             new Vector3(0, headRadius * 0.62f + hairHeight * 0.12f, -0.015f), appearance.HairColor);
+        AddMesh(parent, "Fringe",
+            new BoxMesh { Size = new Vector3(headRadius * 1.25f, 0.13f, 0.08f) },
+            new Vector3(0, headRadius * 0.42f, -headRadius * 0.78f), appearance.HairColor);
+
+        if (appearance.HairStyle is 2 or 3)
+        {
+            AddMesh(parent, "BackHair",
+                new BoxMesh { Size = new Vector3(headRadius * 1.1f, hairHeight * 1.1f, 0.09f) },
+                new Vector3(0, headRadius * 0.05f, headRadius * 0.82f), appearance.HairColor);
+        }
     }
 
     private static WeaponAnimationType WeaponTypeFor(string? itemId)
@@ -352,14 +398,37 @@ public partial class HumanoidVisual : Node3D
         return part;
     }
 
-    // Flat, no-PBR, point-filtered material (Part 28): diffuse only, no metallic/roughness sheen,
-    // Nearest filtering so any future hand-painted 64/128px texture stays crisp and aliased.
+    private MeshInstance3D AddMesh(Node3D parent, string name, Mesh mesh, Vector3 position, Material material, Vector3 rotation = default)
+    {
+        var part = new MeshInstance3D
+        {
+            Name = name,
+            Mesh = mesh,
+            Position = position,
+            Rotation = rotation,
+        };
+        part.SetSurfaceOverrideMaterial(0, material);
+        parent.AddChild(part);
+        return part;
+    }
+
+    // Crisp procedural material: lightly shaded instead of toy-flat, with nearest filtering ready
+    // for future hand-painted 64/128px textures.
     private static StandardMaterial3D LowPolyMaterial(string color) => new()
     {
         AlbedoColor = new Color(color),
+        Roughness = 0.76f,
+        Metallic = 0.0f,
+        SpecularMode = BaseMaterial3D.SpecularModeEnum.SchlickGgx,
+        TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
+    };
+
+    private static StandardMaterial3D ShadowMaterial() => new()
+    {
+        AlbedoColor = new Color(0.0f, 0.0f, 0.0f, 0.26f),
         Roughness = 1.0f,
         Metallic = 0.0f,
+        Transparency = BaseMaterial3D.TransparencyEnum.Alpha,
         SpecularMode = BaseMaterial3D.SpecularModeEnum.Disabled,
-        TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
     };
 }

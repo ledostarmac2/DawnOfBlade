@@ -1,0 +1,6 @@
+[
+  { "id": "road_oakhaven_kharak", "kind": "road", "fromZone": "oakhaven_city", "toZone": "shifting_sands", "fromTileX": 3220, "fromTileY": 3180, "toTileX": 3220, "toTileY": 3100, "costCoins": 0, "travelTicks": 0, "requiredQuestId": null, "recommendedLevel": 31 },
+  { "id": "ferry_riverside_lowlands", "kind": "ferry", "fromZone": "verdan_lowlands", "toZone": "verdan_lowlands", "fromTileX": 3150, "fromTileY": 3240, "toTileX": 3120, "toTileY": 3270, "costCoins": 30, "travelTicks": 5, "requiredQuestId": null, "recommendedLevel": 0 },
+  { "id": "cart_oakhaven_mill", "kind": "cart", "fromZone": "oakhaven_city", "toZone": "whispering_mill", "fromTileX": 3212, "fromTileY": 3222, "toTileX": 3168, "toTileY": 3252, "costCoins": 5, "travelTicks": 3, "requiredQuestId": null, "recommendedLevel": 0 },
+  { "id": "crypt_descent", "kind": "stair", "fromZone": "verdan_lowlands", "toZone": "sunken_crypt", "fromTileX": 3258, "fromTileY": 3262, "toTileX": 3258, "toTileY": 3264, "costCoins": 0, "travelTicks": 0, "requiredQuestId": null, "recommendedLevel": 10 }
+]

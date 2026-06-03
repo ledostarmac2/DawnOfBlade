@@ -1,0 +1,61 @@
+[
+  {
+    "id": "drop_flour_pest", "displayName": "Flour Pest", "rolls": 1,
+    "entries": [
+      { "itemId": "bones", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 1, "rarity": "always" },
+      { "itemId": "coins", "minQuantity": 1, "maxQuantity": 4, "chanceDenominator": 3, "rarity": "common" }
+    ]
+  },
+  {
+    "id": "drop_rogue_thief", "displayName": "Rogue Thief", "rolls": 1,
+    "entries": [
+      { "itemId": "bones", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 1, "rarity": "always" },
+      { "itemId": "coins", "minQuantity": 3, "maxQuantity": 12, "chanceDenominator": 2, "rarity": "common" },
+      { "itemId": "bronze_dagger", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 16, "rarity": "uncommon" }
+    ]
+  },
+  {
+    "id": "drop_tunnel_rat", "displayName": "Tunnel Rat", "rolls": 1,
+    "entries": [
+      { "itemId": "bones", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 1, "rarity": "always" },
+      { "itemId": "coins", "minQuantity": 2, "maxQuantity": 8, "chanceDenominator": 3, "rarity": "common" },
+      { "itemId": "copper_ore", "minQuantity": 1, "maxQuantity": 2, "chanceDenominator": 8, "rarity": "uncommon" }
+    ]
+  },
+  {
+    "id": "drop_grave_spider", "displayName": "Grave Spider", "rolls": 1,
+    "entries": [
+      { "itemId": "bones", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 1, "rarity": "always" },
+      { "itemId": "spider_silk", "minQuantity": 1, "maxQuantity": 3, "chanceDenominator": 4, "rarity": "common" },
+      { "itemId": "acrid_venom_jar", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 3, "rarity": "common" }
+    ]
+  },
+  {
+    "id": "drop_skeleton_footman", "displayName": "Skeleton Footman", "rolls": 1,
+    "entries": [
+      { "itemId": "bones", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 1, "rarity": "always" },
+      { "itemId": "coins", "minQuantity": 5, "maxQuantity": 18, "chanceDenominator": 2, "rarity": "common" },
+      { "itemId": "iron_dagger", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 32, "rarity": "uncommon" }
+    ]
+  },
+  {
+    "id": "drop_bone_overseer", "displayName": "The Bone Overseer", "rolls": 2,
+    "entries": [
+      { "itemId": "bones", "minQuantity": 2, "maxQuantity": 2, "chanceDenominator": 1, "rarity": "always" },
+      { "itemId": "coins", "minQuantity": 40, "maxQuantity": 120, "chanceDenominator": 2, "rarity": "common" },
+      { "itemId": "iron_helm", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 12, "rarity": "uncommon" },
+      { "itemId": "overseers_signet", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 64, "rarity": "rare" }
+    ]
+  },
+  {
+    "id": "drop_broodmother", "displayName": "The Broodmother", "rolls": 2,
+    "entries": [
+      { "itemId": "spider_silk", "minQuantity": 10, "maxQuantity": 20, "chanceDenominator": 1, "rarity": "always" },
+      { "itemId": "raw_lobster", "minQuantity": 5, "maxQuantity": 5, "chanceDenominator": 4, "rarity": "common" },
+      { "itemId": "cobalt_dagger", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 50, "rarity": "uncommon" },
+      { "itemId": "antidote_elixir", "minQuantity": 1, "maxQuantity": 2, "chanceDenominator": 50, "rarity": "uncommon" },
+      { "itemId": "silk_weavers_needle", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 256, "rarity": "rare" },
+      { "itemId": "brood_fang", "minQuantity": 1, "maxQuantity": 1, "chanceDenominator": 256, "rarity": "rare" }
+    ]
+  }
+]

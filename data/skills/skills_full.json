@@ -1,0 +1,23 @@
+[
+  { "id": "attack", "displayName": "Attack", "description": "Improves melee accuracy and unlocks higher-tier weapons.", "maxLevel": 99 },
+  { "id": "strength", "displayName": "Strength", "description": "Increases melee max hit.", "maxLevel": 99 },
+  { "id": "defense", "displayName": "Defense", "description": "Reduces the chance of being hit and unlocks heavier armour.", "maxLevel": 99 },
+  { "id": "hitpoints", "displayName": "Hitpoints", "description": "Determines how much damage you can take before dying.", "maxLevel": 99 },
+  { "id": "ranged", "displayName": "Ranged", "description": "Accuracy and damage with bows and thrown weapons.", "maxLevel": 99 },
+  { "id": "magic", "displayName": "Magic", "description": "Casts combat and utility spells using catalysts.", "maxLevel": 99 },
+  { "id": "devotion", "displayName": "Devotion", "description": "Channels protective and offensive prayers at altars.", "maxLevel": 99 },
+  { "id": "mining", "displayName": "Mining", "description": "Extract ore and stone from rock veins with a pickaxe.", "maxLevel": 99 },
+  { "id": "woodcutting", "displayName": "Arboriculture", "description": "Fell trees for logs used in fires, fletching, and staves.", "maxLevel": 99 },
+  { "id": "fishing", "displayName": "Fishing", "description": "Catch raw fish from rivers and coastlines for cooking.", "maxLevel": 99 },
+  { "id": "foraging", "displayName": "Foraging", "description": "Gather useful plants, fibers, and natural materials.", "maxLevel": 99 },
+  { "id": "smithing", "displayName": "Metallurgy", "description": "Smelt ore into bars and forge bars into gear at furnaces and anvils.", "maxLevel": 99 },
+  { "id": "cooking", "displayName": "Culinary Arts", "description": "Cook raw food into restorative meals; higher levels burn less.", "maxLevel": 99 },
+  { "id": "firemaking", "displayName": "Firemaking", "description": "Burn logs for light and temporary cooking fires.", "maxLevel": 99 },
+  { "id": "tailoring", "displayName": "Tailoring", "description": "Spin fibers into cloth and stitch soft armour.", "maxLevel": 99 },
+  { "id": "crafting", "displayName": "Crafting", "description": "Cut gems, tan hides, and shape leather goods.", "maxLevel": 99 },
+  { "id": "fletching", "displayName": "Fletching", "description": "Carve logs into bows and arrow shafts.", "maxLevel": 99 },
+  { "id": "alchemy", "displayName": "Alchemy", "description": "Brew restoration vials and combat catalysts from reagents.", "maxLevel": 99 },
+  { "id": "agility", "displayName": "Agility", "description": "Improves sprint-energy reserve and unlocks shortcuts.", "maxLevel": 99 },
+  { "id": "thieving", "displayName": "Thieving", "description": "Pickpocket NPCs and disarm locks and traps.", "maxLevel": 99 },
+  { "id": "language", "displayName": "Language", "description": "Learn vocabulary through dialogue, quests, and practice.", "maxLevel": 99 }
+]

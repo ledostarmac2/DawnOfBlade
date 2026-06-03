@@ -1,0 +1,25 @@
+[
+  { "id": "smelt_bronze_bar", "stage": "smelt", "outputItemId": "bronze_bar", "outputQuantity": 1, "requiredLevel": 1, "experience": 6, "inputs": [ { "itemId": "copper_ore", "quantity": 1 }, { "itemId": "tin_ore", "quantity": 1 } ], "barCount": 0, "station": "furnace" },
+  { "id": "smelt_iron_bar", "stage": "smelt", "outputItemId": "iron_bar", "outputQuantity": 1, "requiredLevel": 15, "experience": 12, "inputs": [ { "itemId": "iron_ore", "quantity": 1 } ], "barCount": 0, "station": "furnace" },
+  { "id": "smelt_steel_bar", "stage": "smelt", "outputItemId": "steel_bar", "outputQuantity": 1, "requiredLevel": 30, "experience": 17, "inputs": [ { "itemId": "iron_ore", "quantity": 1 }, { "itemId": "coal_ore", "quantity": 2 } ], "barCount": 0, "station": "furnace" },
+  { "id": "smelt_cobalt_bar", "stage": "smelt", "outputItemId": "cobalt_bar", "outputQuantity": 1, "requiredLevel": 40, "experience": 23, "inputs": [ { "itemId": "mithril_ore", "quantity": 1 }, { "itemId": "coal_ore", "quantity": 4 } ], "barCount": 0, "station": "furnace" },
+  { "id": "smelt_dreadiron_bar", "stage": "smelt", "outputItemId": "dreadiron_bar", "outputQuantity": 1, "requiredLevel": 60, "experience": 38, "inputs": [ { "itemId": "adamantite_ore", "quantity": 1 }, { "itemId": "coal_ore", "quantity": 6 } ], "barCount": 0, "station": "furnace" },
+
+  { "id": "forge_bronze_dagger", "stage": "forge", "outputItemId": "bronze_dagger", "outputQuantity": 1, "requiredLevel": 1, "experience": 12, "inputs": [ { "itemId": "bronze_bar", "quantity": 1 } ], "barCount": 1, "station": "anvil" },
+  { "id": "forge_bronze_sword", "stage": "forge", "outputItemId": "bronze_sword", "outputQuantity": 1, "requiredLevel": 4, "experience": 25, "inputs": [ { "itemId": "bronze_bar", "quantity": 2 } ], "barCount": 2, "station": "anvil" },
+  { "id": "forge_bronze_helm", "stage": "forge", "outputItemId": "bronze_helm", "outputQuantity": 1, "requiredLevel": 7, "experience": 37, "inputs": [ { "itemId": "bronze_bar", "quantity": 3 } ], "barCount": 3, "station": "anvil" },
+  { "id": "forge_bronze_kiteshield", "stage": "forge", "outputItemId": "bronze_kiteshield", "outputQuantity": 1, "requiredLevel": 12, "experience": 50, "inputs": [ { "itemId": "bronze_bar", "quantity": 4 } ], "barCount": 4, "station": "anvil" },
+  { "id": "forge_bronze_platebody", "stage": "forge", "outputItemId": "bronze_platebody", "outputQuantity": 1, "requiredLevel": 18, "experience": 62, "inputs": [ { "itemId": "bronze_bar", "quantity": 5 } ], "barCount": 5, "station": "anvil" },
+
+  { "id": "forge_iron_dagger", "stage": "forge", "outputItemId": "iron_dagger", "outputQuantity": 1, "requiredLevel": 15, "experience": 25, "inputs": [ { "itemId": "iron_bar", "quantity": 1 } ], "barCount": 1, "station": "anvil" },
+  { "id": "forge_iron_shortblade", "stage": "forge", "outputItemId": "iron_shortblade", "outputQuantity": 1, "requiredLevel": 19, "experience": 50, "inputs": [ { "itemId": "iron_bar", "quantity": 2 } ], "barCount": 2, "station": "anvil" },
+  { "id": "forge_iron_helm", "stage": "forge", "outputItemId": "iron_helm", "outputQuantity": 1, "requiredLevel": 22, "experience": 75, "inputs": [ { "itemId": "iron_bar", "quantity": 3 } ], "barCount": 3, "station": "anvil" },
+  { "id": "forge_iron_kiteshield", "stage": "forge", "outputItemId": "iron_kiteshield", "outputQuantity": 1, "requiredLevel": 27, "experience": 100, "inputs": [ { "itemId": "iron_bar", "quantity": 4 } ], "barCount": 4, "station": "anvil" },
+  { "id": "forge_iron_platebody", "stage": "forge", "outputItemId": "iron_platebody", "outputQuantity": 1, "requiredLevel": 33, "experience": 125, "inputs": [ { "itemId": "iron_bar", "quantity": 5 } ], "barCount": 5, "station": "anvil" },
+
+  { "id": "forge_steel_dagger", "stage": "forge", "outputItemId": "steel_dagger", "outputQuantity": 1, "requiredLevel": 30, "experience": 38, "inputs": [ { "itemId": "steel_bar", "quantity": 1 } ], "barCount": 1, "station": "anvil" },
+  { "id": "forge_steel_sword", "stage": "forge", "outputItemId": "steel_sword", "outputQuantity": 1, "requiredLevel": 34, "experience": 75, "inputs": [ { "itemId": "steel_bar", "quantity": 2 } ], "barCount": 2, "station": "anvil" },
+  { "id": "forge_steel_helm", "stage": "forge", "outputItemId": "steel_helm", "outputQuantity": 1, "requiredLevel": 37, "experience": 113, "inputs": [ { "itemId": "steel_bar", "quantity": 3 } ], "barCount": 3, "station": "anvil" },
+  { "id": "forge_steel_kiteshield", "stage": "forge", "outputItemId": "steel_kiteshield", "outputQuantity": 1, "requiredLevel": 42, "experience": 150, "inputs": [ { "itemId": "steel_bar", "quantity": 4 } ], "barCount": 4, "station": "anvil" },
+  { "id": "forge_steel_platebody", "stage": "forge", "outputItemId": "steel_platebody", "outputQuantity": 1, "requiredLevel": 48, "experience": 188, "inputs": [ { "itemId": "steel_bar", "quantity": 5 } ], "barCount": 5, "station": "anvil" }
+]

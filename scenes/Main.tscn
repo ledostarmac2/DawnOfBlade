@@ -17,10 +17,10 @@
 [ext_resource type="Script" path="res://src/UI/FeedbackManager.cs" id="15_feedback"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
-size = Vector2(3600, 3600)
+size = Vector2(3200, 3200)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
-size = Vector3(3600, 0.1, 3600)
+size = Vector3(3200, 0.1, 3200)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_actor"]
 radius = 0.35
@@ -54,8 +54,8 @@ script = ExtResource("14_open_world")
 
 [node name="Sun" type="DirectionalLight3D" parent="World"]
 rotation_degrees = Vector3(-55, -30, 0)
-light_color = Color(1, 0.91, 0.74, 1)
-light_energy = 1.15
+light_color = Color(1, 0.88, 0.68, 1)
+light_energy = 1.35
 shadow_enabled = true
 
 [node name="Ground" type="MeshInstance3D" parent="World"]
@@ -207,3 +207,4 @@ FollowTargetPath = NodePath("../Player")
 [node name="Camera3D" type="Camera3D" parent="CameraRig"]
 transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 0, 4, 7)
 current = true
+fov = 58.0

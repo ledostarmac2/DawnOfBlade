@@ -1,0 +1,24 @@
+[
+  { "id": "mine_copper", "skillId": "mining", "displayName": "Copper Vein", "requiredLevel": 1, "itemId": "copper_ore", "baseExperience": 18, "respawnTicks": 5, "requiredTool": "bronze_pickaxe", "region": "Verdan Copper Veins" },
+  { "id": "mine_tin", "skillId": "mining", "displayName": "Tin Vein", "requiredLevel": 1, "itemId": "tin_ore", "baseExperience": 18, "respawnTicks": 5, "requiredTool": "bronze_pickaxe", "region": "Verdan Copper Veins" },
+  { "id": "mine_iron", "skillId": "mining", "displayName": "Iron Vein", "requiredLevel": 15, "itemId": "iron_ore", "baseExperience": 35, "respawnTicks": 8, "requiredTool": "bronze_pickaxe", "region": "Silica Depths" },
+  { "id": "mine_coal", "skillId": "mining", "displayName": "Coal Seam", "requiredLevel": 30, "itemId": "coal_ore", "baseExperience": 50, "respawnTicks": 50, "requiredTool": "iron_pickaxe", "region": "Silica Depths" },
+  { "id": "mine_mithril", "skillId": "mining", "displayName": "Mithril Vein", "requiredLevel": 50, "itemId": "mithril_ore", "baseExperience": 80, "respawnTicks": 200, "requiredTool": "iron_pickaxe", "region": "Deep cave networks" },
+  { "id": "mine_adamantite", "skillId": "mining", "displayName": "Adamantite Vein", "requiredLevel": 70, "itemId": "adamantite_ore", "baseExperience": 95, "respawnTicks": 400, "requiredTool": "mithril_pickaxe", "region": "Deep wilderness" },
+  { "id": "mine_runite", "skillId": "mining", "displayName": "Runite Vein", "requiredLevel": 85, "itemId": "runite_ore", "baseExperience": 125, "respawnTicks": 1500, "requiredTool": "adamant_pickaxe", "region": "Deep wilderness" },
+  { "id": "mine_bloodstone", "skillId": "mining", "displayName": "Bloodstone Deposit", "requiredLevel": 75, "itemId": "bloodstone_ore", "baseExperience": 110, "respawnTicks": 600, "requiredTool": "adamant_pickaxe", "region": "Bloodstone Crater (open PvP)" },
+
+  { "id": "chop_common", "skillId": "woodcutting", "displayName": "Common Tree", "requiredLevel": 1, "itemId": "common_logs", "baseExperience": 12, "respawnTicks": 5, "requiredTool": "bronze_hatchet", "region": "Everywhere" },
+  { "id": "chop_oak", "skillId": "woodcutting", "displayName": "Oak Tree", "requiredLevel": 15, "itemId": "oak_logs", "baseExperience": 27, "respawnTicks": 14, "requiredTool": "bronze_hatchet", "region": "Oakhaven outskirts" },
+  { "id": "chop_willow", "skillId": "woodcutting", "displayName": "Willow Tree", "requiredLevel": 30, "itemId": "willow_logs", "baseExperience": 42, "respawnTicks": 14, "requiredTool": "iron_hatchet", "region": "Verdan riversides" },
+  { "id": "chop_maple", "skillId": "woodcutting", "displayName": "Maple Tree", "requiredLevel": 45, "itemId": "maple_logs", "baseExperience": 60, "respawnTicks": 58, "requiredTool": "iron_hatchet", "region": "Highland groves" },
+  { "id": "chop_yew", "skillId": "woodcutting", "displayName": "Yew Tree", "requiredLevel": 60, "itemId": "yew_logs", "baseExperience": 88, "respawnTicks": 100, "requiredTool": "steel_hatchet", "region": "Old forest" },
+  { "id": "chop_elder", "skillId": "woodcutting", "displayName": "Elder Tree", "requiredLevel": 75, "itemId": "elder_logs", "baseExperience": 130, "respawnTicks": 200, "requiredTool": "mithril_hatchet", "region": "Sacred grove" },
+
+  { "id": "fish_shrimp", "skillId": "fishing", "displayName": "Shrimp Shoal", "requiredLevel": 1, "itemId": "raw_shrimp", "baseExperience": 10, "respawnTicks": 0, "requiredTool": "fishing_net", "region": "Lowland shallows" },
+  { "id": "fish_herring", "skillId": "fishing", "displayName": "Herring Shoal", "requiredLevel": 10, "itemId": "raw_herring", "baseExperience": 20, "respawnTicks": 0, "requiredTool": "fishing_net", "region": "Lowland shallows" },
+  { "id": "fish_trout", "skillId": "fishing", "displayName": "Trout Run", "requiredLevel": 20, "itemId": "raw_trout", "baseExperience": 30, "respawnTicks": 0, "requiredTool": "fishing_rod", "region": "Verdan riversides" },
+  { "id": "fish_lobster", "skillId": "fishing", "displayName": "Lobster Pot", "requiredLevel": 40, "itemId": "raw_lobster", "baseExperience": 55, "respawnTicks": 0, "requiredTool": "lobster_cage", "region": "Coastline" },
+  { "id": "fish_swordfish", "skillId": "fishing", "displayName": "Swordfish Grounds", "requiredLevel": 50, "itemId": "raw_swordfish", "baseExperience": 70, "respawnTicks": 0, "requiredTool": "harpoon", "region": "Deep coastline" },
+  { "id": "fish_shark", "skillId": "fishing", "displayName": "Shark Grounds", "requiredLevel": 76, "itemId": "raw_shark", "baseExperience": 110, "respawnTicks": 0, "requiredTool": "harpoon", "region": "Deep coastline" }
+]

@@ -1,7 +1,7 @@
 [gd_resource type="StandardMaterial3D" format=3]
 
-; Original DawnOfBlade placeholder material: NPC capsule.
+; Original DawnOfBlade fallback material: NPC body.
 [resource]
-albedo_color = Color(0.69, 0.54, 0.18, 1)
-roughness = 0.6
+albedo_color = Color(0.55, 0.43, 0.24, 1)
+roughness = 0.74
 metallic = 0.0

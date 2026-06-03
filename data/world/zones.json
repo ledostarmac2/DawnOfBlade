@@ -1,0 +1,134 @@
+[
+  {
+    "id": "verdan_lowlands",
+    "displayName": "The Verdan Lowlands",
+    "continent": "heartland",
+    "levelMin": 1,
+    "levelMax": 30,
+    "biome": "temperate_grassland",
+    "entryPrerequisites": [],
+    "pvp": "none",
+    "desolationLevelMax": 0,
+    "connectedZones": ["oakhaven_city", "whispering_mill", "verdan_copper_veins", "sunken_crypt", "shifting_sands"],
+    "hazards": [],
+    "description": "The fertile river valley surrounding Oakhaven and the starting province of every adventurer."
+  },
+  {
+    "id": "oakhaven_city",
+    "displayName": "Oakhaven",
+    "continent": "heartland",
+    "levelMin": 1,
+    "levelMax": 30,
+    "biome": "urban",
+    "entryPrerequisites": [],
+    "pvp": "none",
+    "desolationLevelMax": 0,
+    "connectedZones": ["verdan_lowlands"],
+    "hazards": [],
+    "description": "The primary spawn city: a stone keep, a market square, a western bank, and an eastern crafting quarter."
+  },
+  {
+    "id": "whispering_mill",
+    "displayName": "The Whispering Mill",
+    "continent": "heartland",
+    "levelMin": 2,
+    "levelMax": 8,
+    "biome": "farmland",
+    "entryPrerequisites": [],
+    "pvp": "none",
+    "desolationLevelMax": 0,
+    "connectedZones": ["verdan_lowlands", "whispering_mill_cellar"],
+    "hazards": [],
+    "description": "A grain-processing mill northwest of Oakhaven, overrun by Flour Pests and Rogue Thieves."
+  },
+  {
+    "id": "whispering_mill_cellar",
+    "displayName": "The Mill Sub-Basement",
+    "continent": "heartland",
+    "levelMin": 8,
+    "levelMax": 12,
+    "biome": "cellar",
+    "entryPrerequisites": ["item:rusty_crowbar"],
+    "pvp": "none",
+    "desolationLevelMax": 0,
+    "connectedZones": ["whispering_mill"],
+    "hazards": [],
+    "description": "A web-choked cellar beneath the mill, home to Grave Spiders guarding the jammed gears."
+  },
+  {
+    "id": "verdan_copper_veins",
+    "displayName": "Verdan Copper Veins",
+    "continent": "heartland",
+    "levelMin": 1,
+    "levelMax": 12,
+    "biome": "quarry",
+    "entryPrerequisites": [],
+    "pvp": "none",
+    "desolationLevelMax": 0,
+    "connectedZones": ["verdan_lowlands"],
+    "hazards": [],
+    "description": "An open-pit copper and tin quarry southwest of Oakhaven, infested with Tunnel Rats."
+  },
+  {
+    "id": "sunken_crypt",
+    "displayName": "The Sunken Crypt",
+    "continent": "heartland",
+    "levelMin": 10,
+    "levelMax": 15,
+    "biome": "dungeon",
+    "entryPrerequisites": [],
+    "pvp": "none",
+    "desolationLevelMax": 0,
+    "connectedZones": ["verdan_lowlands"],
+    "hazards": [],
+    "description": "A three-room introductory dungeon of Skeleton Footmen ending at the Bone Overseer."
+  },
+  {
+    "id": "shifting_sands",
+    "displayName": "The Shifting Sands of Kharak",
+    "continent": "desert",
+    "levelMin": 31,
+    "levelMax": 60,
+    "biome": "desert",
+    "entryPrerequisites": [],
+    "pvp": "none",
+    "desolationLevelMax": 0,
+    "connectedZones": ["verdan_lowlands", "ashen_grave"],
+    "hazards": [
+      {
+        "id": "kharak_dehydration",
+        "kind": "dehydration",
+        "tileFlag": "arid",
+        "intervalTicks": 50,
+        "effect": "drain:sprint:10pct",
+        "mitigationItemId": "clay_waterskin",
+        "mitigationConvertsTo": "empty_clay_jar"
+      }
+    ],
+    "description": "A sandstone-fortress frontier and economic crossroads; open desert tiles drain sprint energy unless a waterskin is carried."
+  },
+  {
+    "id": "ashen_grave",
+    "displayName": "The Desolation of Ashen-Grave",
+    "continent": "wilderness",
+    "levelMin": 80,
+    "levelMax": 120,
+    "biome": "volcanic_waste",
+    "entryPrerequisites": [],
+    "pvp": "dynamic",
+    "desolationLevelMax": 50,
+    "connectedZones": ["shifting_sands"],
+    "hazards": [
+      {
+        "id": "ashen_pvp_band",
+        "kind": "pvp_disparity",
+        "tileFlag": "desolation",
+        "intervalTicks": 0,
+        "effect": "pvp:maxdisparity:desolationLevel",
+        "mitigationItemId": null,
+        "mitigationConvertsTo": null
+      }
+    ],
+    "description": "A volcanic PvP wasteland whose Desolation Level (1-50) sets the legal combat-level disparity for open player combat."
+  }
+]

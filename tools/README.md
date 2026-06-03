@@ -2,10 +2,11 @@
 
 This folder is for local project utilities and agent handoff/coordination files.
 
-`setup-dev.ps1` bootstraps the vendored .NET 8 toolchain into `.tools/` and restores packages
-(see the README "VS Code / Cursor quick start"). Content validation is covered by the xUnit suite
-(`ContentIntegrityTests`, `DefinitionParseTests`), not a standalone script. The agent board
-(`agentboard.py` + `agent-board.json`) needs Python; nothing else here has external dependencies.
+`setup-dev.ps1` bootstraps the vendored .NET 8, Godot 4.2.2 .NET, and ripgrep toolchain into
+`.tools/` and restores packages (see the README "VS Code / Cursor quick start"). `check-dev.ps1`
+runs the xUnit suite and the in-engine Godot headless test scene. `run-game.ps1` launches the
+project through the same pinned local toolchain. The agent board (`agentboard.py` +
+`agent-board.json`) needs Python; nothing else here has external dependencies after setup.
 
 ## Agent Board
 

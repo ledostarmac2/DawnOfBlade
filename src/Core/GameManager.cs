@@ -17,6 +17,8 @@ using DawnOfBlade.Save;
 using DawnOfBlade.Shops;
 using DawnOfBlade.Skills;
 using DawnOfBlade.UI;
+using DawnOfBlade.World;
+using DawnOfBlade.World.RiverValley;
 using Godot;
 
 namespace DawnOfBlade.Core;
@@ -35,10 +37,12 @@ public partial class GameManager : Node3D
     private const string CraftItemId = "practice_chisel";
     private const string BronzeBarItemId = "bronze_bar";
     private const string Currency = "coins";
+    private static readonly Vector3 HomeSpawnPosition = Vector3.Zero;
 
     public bool IsInitialized { get; private set; }
 
     private readonly DefinitionDatabase _definitions = new();
+    private readonly RiverValleyRegion _region = new();
     private readonly Inventory.Inventory _inventory = new();
     private readonly BankStorage _bank = new();
     private readonly QuestLog _questLog = new();
@@ -87,7 +91,7 @@ public partial class GameManager : Node3D
     private Label? _runEnergyLabel;
     private Label? _heartbeatLabel;
     private Label? _coordinateLabel;
-    private Label? _minimapLabel;
+    private MiniMapControl? _minimap;
     private Label? _chatLog;
     private PanelContainer? _inventoryPanel;
     private VBoxContainer? _inventoryContent;
@@ -726,7 +730,14 @@ public partial class GameManager : Node3D
 
     private void ApplyPlayerEquipment()
     {
-        GetNodeOrNull<HumanoidVisual>("Player/Humanoid")?.ApplyEquipment(_equipment.ItemInSlot(EquipmentSlot.Weapon));
+        if (GetNodeOrNull<HumanoidVisual>("Player/Humanoid") is not { } humanoid)
+        {
+            return;
+        }
+
+        humanoid.ApplyEquipment(_equipment.ItemInSlot(EquipmentSlot.Weapon), _equipment.ItemInSlot(EquipmentSlot.Shield));
+        humanoid.ApplyArmor("body", _equipment.ItemInSlot(EquipmentSlot.Body));
+        humanoid.ApplyArmor("legs", _equipment.ItemInSlot(EquipmentSlot.Legs));
     }
 
     private void ShowCharacterCreator()
@@ -887,7 +898,7 @@ public partial class GameManager : Node3D
 
     private float[] PlayerPositionArray()
     {
-        if (GetNodeOrNull<Node3D>("Player") is { } player)
+        if (GetNodeOrNull<Node3D>("Player") is { } player && player.IsInsideTree())
         {
             var position = player.GlobalPosition;
             return new[] { position.X, position.Y, position.Z };
@@ -986,12 +997,12 @@ public partial class GameManager : Node3D
 
         var sidebarColumn = MakeHudColumn(sidebar, 8);
         var minimap = MakeHudPanel();
-        minimap.CustomMinimumSize = new Vector2(0, 176);
+        minimap.CustomMinimumSize = new Vector2(0, 194);
         sidebarColumn.AddChild(minimap);
-        _minimapLabel = MakeHudLabel("RIVER VALLEY", 15, HorizontalAlignment.Center);
-        _minimapLabel.VerticalAlignment = VerticalAlignment.Center;
-        _minimapLabel.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-        minimap.AddChild(_minimapLabel);
+        _minimap = new MiniMapControl();
+        _minimap.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        _minimap.SetTrackedPlayer(GetNodeOrNull<Node3D>("Player"));
+        minimap.AddChild(_minimap);
 
         var locationRow = new HBoxContainer();
         sidebarColumn.AddChild(locationRow);
@@ -1008,6 +1019,7 @@ public partial class GameManager : Node3D
         AddHudButton(tabs, "Pack", ToggleInventory);
         AddHudButton(tabs, "Bank", ShowBankView);
         AddHudButton(tabs, "Skills", ShowSkillsView);
+        AddHudButton(tabs, "Magic", ShowMagicView);
         AddHudButton(tabs, "Quests", ShowQuestsView);
         AddHudButton(tabs, "Social", ShowSocialView);
         AddHudButton(tabs, "Settings", ShowSettingsView);
@@ -1028,6 +1040,7 @@ public partial class GameManager : Node3D
         sidebarColumn.AddChild(quickActions);
         AddHudButton(quickActions, "Craft", CraftPracticeChisel);
         AddHudButton(quickActions, "Smelt", SmeltBronzeBar);
+        AddHudButton(quickActions, "Home", CastHomeTeleport);
         AddHudButton(quickActions, "Run", ToggleRun);
         _styleButton = AddHudButton(quickActions, $"Style: {_attackStyle}", CycleAttackStyle);
         AddHudButton(quickActions, "Customize", ShowCharacterCreator);
@@ -1234,6 +1247,17 @@ public partial class GameManager : Node3D
         _dialoguePanel!.Visible = true;
     }
 
+    private void ShowMagicView()
+    {
+        EnsureDialoguePanel();
+        ReplaceDialogueContent();
+        AddDialogueLabel("Spellbook");
+        AddDialogueLabel("Utility");
+        AddDialogueAction("Home Teleport - free", CastHomeTeleport);
+        AddCloseButton("Close spellbook");
+        _dialoguePanel!.Visible = true;
+    }
+
     private void ShowQuestsView()
     {
         EnsureDialoguePanel();
@@ -1264,6 +1288,7 @@ public partial class GameManager : Node3D
         AddDialogueLabel("Realm Settings");
         AddDialogueLabel("Gameplay");
         AddDialogueAction("Toggle run mode", ToggleRun);
+        AddDialogueAction("Cast Home Teleport", CastHomeTeleport);
         AddDialogueAction($"Cycle combat style ({_attackStyle})", () =>
         {
             CycleAttackStyle();
@@ -1298,6 +1323,19 @@ public partial class GameManager : Node3D
         }
 
         RefreshVitals();
+    }
+
+    private void CastHomeTeleport()
+    {
+        if (GetNodeOrNull<PlayerController>("Player") is not { } player)
+        {
+            return;
+        }
+
+        player.TeleportTo(HomeSpawnPosition);
+        RefreshVitals();
+        SaveProgress(showNotice: false);
+        ShowNotice("You cast Home Teleport and return to the Oakhaven spawn courtyard.");
     }
 
     private void AddDialogueAction(string text, System.Action action)
@@ -1400,21 +1438,15 @@ public partial class GameManager : Node3D
             _heartbeatLabel.Text = $"Local Tick: {_localTick}";
         }
 
-        if (_coordinateLabel is not null && player is not null)
+        if (_coordinateLabel is not null && player is not null && player.IsInsideTree())
         {
-            _coordinateLabel.Text = $"Tile: {Mathf.RoundToInt(player.GlobalPosition.X / 2.0f)}, {Mathf.RoundToInt(player.GlobalPosition.Z / 2.0f)}";
+            var tileSize = RiverValleyRegion.TileSizeMeters * OpenWorldBuilder.VisualWorldScale;
+            var tileX = _region.RespawnTile.X + Mathf.RoundToInt(player.GlobalPosition.X / tileSize);
+            var tileZ = _region.RespawnTile.Z + Mathf.RoundToInt(player.GlobalPosition.Z / tileSize);
+            _coordinateLabel.Text = $"Tile: {tileX}, {tileZ}";
         }
 
-        if (_minimapLabel is not null)
-        {
-            _minimapLabel.Text =
-                "RIVER VALLEY\n\n" +
-                "       CITADEL\n" +
-                "   MARKET  +  BANK\n" +
-                "       |  BRIDGE  |\n" +
-                "  GROVE       MINE\n\n" +
-                "Explore the roads beyond the village.";
-        }
+        _minimap?.SetTrackedPlayer(player);
     }
 
     private void RefreshInventoryPanel()
