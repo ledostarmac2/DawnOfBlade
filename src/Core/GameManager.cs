@@ -10,7 +10,6 @@ using DawnOfBlade.Dialogue;
 using DawnOfBlade.Interaction;
 using DawnOfBlade.Inventory;
 using DawnOfBlade.Items;
-using DawnOfBlade.Learning;
 using DawnOfBlade.Player;
 using DawnOfBlade.Quests;
 using DawnOfBlade.Save;
@@ -32,7 +31,6 @@ public partial class GameManager : Node3D
 {
     private const string MainQuestId = "first_words";
     private const string CollectObjectiveId = "collect_sunleaf";
-    private const string AnswerObjectiveId = "answer_prompt";
     private const string GatherItemId = "sunleaf";
     private const string CraftItemId = "practice_chisel";
     private const string BronzeBarItemId = "bronze_bar";
@@ -61,21 +59,17 @@ public partial class GameManager : Node3D
     {
         ["foraging"] = new SkillProgress("foraging"),
         ["crafting"] = new SkillProgress("crafting"),
-        ["language"] = new SkillProgress("language"),
         ["attack"] = new SkillProgress("attack"),
         ["strength"] = new SkillProgress("strength"),
         ["defense"] = new SkillProgress("defense"),
         ["hitpoints"] = new SkillProgress("hitpoints"),
     };
 
-    private readonly HashSet<string> _unlockedVocabulary = new();
-
     private Appearance _appearance = new();
     private CombatProfile _playerProfile = new(1, 1, 1, 10);
     private AttackStyle _attackStyle = AttackStyle.Aggressive;
 
     private QuestState? _mainQuest;
-    private VocabularyEntry? _currentPrompt;
     private ShopStock? _openShop;
     private string _shopMessage = string.Empty;
 
@@ -274,7 +268,11 @@ public partial class GameManager : Node3D
             return;
         }
 
-        ShowVocabularyPrompt();
+        EnsureDialoguePanel();
+        ReplaceDialogueContent();
+        AddDialogueLabel("They nod politely, but have nothing to say right now.");
+        AddCloseButton("Continue");
+        _dialoguePanel!.Visible = true;
     }
 
     private void ShowDialogueNode(DialogueNode node)
@@ -293,13 +291,6 @@ public partial class GameManager : Node3D
                 _dialogueContent!.AddChild(button);
             }
         }
-        else if (node.Id == "mira_lesson")
-        {
-            var practice = new Button { Text = "Practice a word" };
-            practice.Pressed += ShowVocabularyPrompt;
-            _dialogueContent!.AddChild(practice);
-            AddCloseButton("Goodbye");
-        }
         else
         {
             AddCloseButton("Continue");
@@ -317,86 +308,6 @@ public partial class GameManager : Node3D
         }
 
         _dialoguePanel!.Visible = false;
-    }
-
-    // ---- Language-learning prompts ---------------------------------------
-
-    private void ShowVocabularyPrompt()
-    {
-        if (_definitions.Vocabulary.Count == 0)
-        {
-            ShowNotice("There are no lessons available yet.");
-            return;
-        }
-
-        var entry = _definitions.Vocabulary[_random.Next(_definitions.Vocabulary.Count)];
-        _currentPrompt = entry;
-
-        EnsureDialoguePanel();
-        ReplaceDialogueContent();
-        AddDialogueLabel($"Lesson: What does \"{entry.Term}\" mean?");
-
-        foreach (var option in BuildPromptOptions(entry))
-        {
-            var button = new Button { Text = option };
-            button.Pressed += () => CallDeferred(MethodName.AnswerVocabularyPrompt, option);
-            _dialogueContent!.AddChild(button);
-        }
-
-        _dialoguePanel!.Visible = true;
-    }
-
-    private void AnswerVocabularyPrompt(string answer)
-    {
-        var entry = _currentPrompt;
-        if (entry is null)
-        {
-            return;
-        }
-
-        var correct = answer == entry.Translation;
-        if (correct)
-        {
-            AddSkillExperience("language", 25);
-            _unlockedVocabulary.Add(entry.Term);
-            AdvanceQuests(AnswerObjectiveId);
-        }
-
-        EnsureDialoguePanel();
-        ReplaceDialogueContent();
-        AddDialogueLabel(correct
-            ? $"Correct! \"{entry.Term}\" means \"{entry.Translation}\"."
-            : $"Not quite. \"{entry.Term}\" means \"{entry.Translation}\".");
-        FlushPendingLevelUps();
-        AddCloseButton("Continue");
-        RefreshStatus();
-        SaveProgress(showNotice: false);
-    }
-
-    private List<string> BuildPromptOptions(VocabularyEntry entry)
-    {
-        var options = new List<string> { entry.Translation };
-
-        foreach (var other in _definitions.Vocabulary)
-        {
-            if (options.Count >= 3)
-            {
-                break;
-            }
-
-            if (!options.Contains(other.Translation))
-            {
-                options.Add(other.Translation);
-            }
-        }
-
-        for (var i = options.Count - 1; i > 0; i--)
-        {
-            var j = _random.Next(i + 1);
-            (options[i], options[j]) = (options[j], options[i]);
-        }
-
-        return options;
     }
 
     // ---- Quests -----------------------------------------------------------
@@ -833,7 +744,6 @@ public partial class GameManager : Node3D
             Inventory = _inventory.Items.ToDictionary(pair => pair.Key, pair => pair.Value),
             Bank = _bank.Items.ToDictionary(pair => pair.Key, pair => pair.Value),
             SkillExperience = _skills.ToDictionary(pair => pair.Key, pair => pair.Value.Experience),
-            UnlockedVocabularyIds = new HashSet<string>(_unlockedVocabulary),
             Equipment = _equipment.Worn.ToDictionary(pair => pair.Key.ToString(), pair => pair.Value),
             Appearance = _appearance.Clone(),
         };
@@ -864,11 +774,6 @@ public partial class GameManager : Node3D
         foreach (var pair in save.SkillExperience)
         {
             _skills[pair.Key] = new SkillProgress(pair.Key, pair.Value);
-        }
-
-        foreach (var term in save.UnlockedVocabularyIds)
-        {
-            _unlockedVocabulary.Add(term);
         }
 
         foreach (var pair in save.Equipment)
@@ -1395,7 +1300,7 @@ public partial class GameManager : Node3D
         _statusLabel.Text =
             $"{who}   ·   Combat Lv {_playerProfile.CombatLevel}   ·   HP {_playerProfile.CurrentHitpoints}/{_playerProfile.MaxHitpoints}   ·   Coins {_inventory.Count(Currency)}\n" +
             $"Atk L{SkillLevel("attack")}  Str L{SkillLevel("strength")}  Def L{SkillLevel("defense")}  HP L{SkillLevel("hitpoints")}   |   Weapon: {weapon}\n" +
-            $"Foraging L{SkillLevel("foraging")}  Crafting L{SkillLevel("crafting")}  Language L{SkillLevel("language")}   |   {ItemName(GatherItemId)} {_inventory.Count(GatherItemId)}";
+            $"Foraging L{SkillLevel("foraging")}  Crafting L{SkillLevel("crafting")}   |   {ItemName(GatherItemId)} {_inventory.Count(GatherItemId)}";
 
         RefreshVitals();
         RefreshInventoryPanel();

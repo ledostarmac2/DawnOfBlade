@@ -31,6 +31,7 @@ guarantee. If an asset is not in this table, it should not be in the repo.
 | `assets/materials/player.tres` | material | original | DawnOfBlade project | Project license | No | 2026-05-29 |
 | `assets/materials/npc.tres` | material | original | DawnOfBlade project | Project license | No | 2026-05-29 |
 | `assets/runtime_textures/` | curated runtime texture subset | Derived from credited CC0 texture packs below | Multiple | CC0 | No | 2026-06-03 |
+| `assets/runtime_models/characters/` | curated runtime character models | Quaternius Modular Character Outfits (peasant/ranger glTF + textures) | Quaternius | CC0 | No | 2026-06-03 |
 | `textures/kenney_retro-textures-fantasy/` | texture pack | Kenney Retro Textures Fantasy | Kenney | CC0 | No | 2026-06-03 |
 | `textures/kenney_retro-fantasy-kit/` | texture/model pack | Kenney Retro Fantasy Kit | Kenney | CC0 | No | 2026-06-03 |
 | `textures/tree_pack_1.1/` | texture/model pack | Tree Pack 1.1 | Included LICENSE.txt | CC0 | No | 2026-06-03 |

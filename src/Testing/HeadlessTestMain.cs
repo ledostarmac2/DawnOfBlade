@@ -31,6 +31,7 @@ public partial class HeadlessTestMain : Node
             TestHostileLeashesHomeInScene();
             TestPassiveNpcWandersButNeverChases();
             TestArtTextureResourcesLoad();
+            TestCharacterModelsLoad();
         }
         catch (Exception e)
         {
@@ -228,5 +229,46 @@ public partial class HeadlessTestMain : Node
 
         Check(GD.Load<StandardMaterial3D>("res://assets/materials/ground.tres") is not null, "ground fallback material resource still parses");
         Check(GD.Load<StandardMaterial3D>("res://assets/materials/player.tres") is not null, "player fallback material resource still parses");
+    }
+
+    private void TestCharacterModelsLoad()
+    {
+        GD.Print("- real character models load, ship, and instantiate with geometry");
+
+        var paths = DawnOfBlade.Characters.CharacterModelLibrary.AllModelPaths();
+        Check(paths.Count == 4, $"character model library exposes the bundled outfit set ({paths.Count} models)");
+        foreach (var path in paths)
+        {
+            Check(System.IO.File.Exists(ProjectSettings.GlobalizePath(path)), $"character model ships on disk: {path.GetFile()}");
+        }
+
+        // A real model must instantiate into a node tree that actually contains mesh geometry, for both
+        // presentations, so NPCs render the pack body rather than silently falling back to primitives.
+        foreach (var presentation in new[] { "masculine", "feminine" })
+        {
+            var appearance = new DawnOfBlade.Characters.Appearance { Presentation = presentation };
+            var model = DawnOfBlade.Characters.CharacterModelLibrary.TryInstantiate(appearance, seed: 1);
+            var hasMesh = model is not null && HasDescendant<MeshInstance3D>(model);
+            Check(hasMesh, $"{presentation} NPC instantiates a real model with mesh geometry");
+            model?.QueueFree();
+        }
+    }
+
+    private static bool HasDescendant<T>(Node node) where T : Node
+    {
+        if (node is T)
+        {
+            return true;
+        }
+
+        foreach (var child in node.GetChildren())
+        {
+            if (HasDescendant<T>(child))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

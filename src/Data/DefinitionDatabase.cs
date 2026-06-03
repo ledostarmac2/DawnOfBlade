@@ -4,7 +4,6 @@ using System.Text.Json;
 using DawnOfBlade.Dialogue;
 using DawnOfBlade.Inventory;
 using DawnOfBlade.Items;
-using DawnOfBlade.Learning;
 using DawnOfBlade.Quests;
 using DawnOfBlade.Shops;
 using DawnOfBlade.Skills;
@@ -26,7 +25,6 @@ public sealed class DefinitionDatabase
     public const string NpcsPath = "res://data/npcs/npcs.example.json";
     public const string DialoguePath = "res://data/dialogue/dialogue.example.json";
     public const string QuestsPath = "res://data/quests/quests.example.json";
-    public const string VocabularyPath = "res://data/vocabulary/vocabulary.example.json";
     public const string EquipmentPath = "res://data/equipment/equipment.example.json";
     public const string EquipmentOakhavenPath = "res://data/equipment/equipment_oakhaven.json";
     public const string ShopsPath = "res://data/shops/shops.example.json";
@@ -46,7 +44,6 @@ public sealed class DefinitionDatabase
         new Dictionary<string, DialogueNode>();
     public IReadOnlyDictionary<string, QuestDefinition> QuestById { get; private set; } =
         new Dictionary<string, QuestDefinition>();
-    public IReadOnlyList<VocabularyEntry> Vocabulary { get; private set; } = new List<VocabularyEntry>();
     public IReadOnlyDictionary<string, EquipmentDefinition> EquipmentByItemId { get; private set; } =
         new Dictionary<string, EquipmentDefinition>();
     public IReadOnlyDictionary<string, ShopDefinition> ShopById { get; private set; } =
@@ -60,7 +57,6 @@ public sealed class DefinitionDatabase
         NpcById = ParseList<NpcDefinition>(ReadText(NpcsPath)).ToDictionary(n => n.Id);
         DialogueById = ParseList<DialogueNode>(ReadText(DialoguePath)).ToDictionary(d => d.Id);
         QuestById = ParseList<QuestDefinition>(ReadText(QuestsPath)).ToDictionary(q => q.Id);
-        Vocabulary = ParseList<VocabularyEntry>(ReadText(VocabularyPath));
         EquipmentByItemId = LoadMergedById<EquipmentDefinition>(e => e.ItemId, EquipmentPath, EquipmentOakhavenPath);
         ShopById = ParseList<ShopDefinition>(ReadText(ShopsPath)).ToDictionary(s => s.Id);
     }

@@ -217,7 +217,7 @@ public class GameSystemsTests
     [Fact]
     public void CharacterInitializer_SeedsSafeZoneSpawn_StarterKit_AndZeroedSkills()
     {
-        var skillIds = new[] { "attack", "woodcutting", "mining", "language" };
+        var skillIds = new[] { "attack", "woodcutting", "mining", "smithing" };
         var fresh = CharacterInitializer.Create("char-1", "acct-1", skillIds);
 
         Assert.Equal(CharacterInitializer.VerdantValleyCenter, fresh.Player.Coordinates);

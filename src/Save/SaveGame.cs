@@ -13,7 +13,6 @@ public sealed class SaveGame
     public Dictionary<string, int> Bank { get; set; } = new();
     public Dictionary<string, int> SkillExperience { get; set; } = new();
     public HashSet<string> CompletedQuestIds { get; set; } = new();
-    public HashSet<string> UnlockedVocabularyIds { get; set; } = new();
 
     /// <summary>Per-quest, per-objective progress counts for quests still in progress.</summary>
     public Dictionary<string, Dictionary<string, int>> QuestProgress { get; set; } = new();

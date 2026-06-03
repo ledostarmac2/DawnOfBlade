@@ -47,10 +47,11 @@ public partial class PrototypeNpc : Interactable
 
     public override void _Ready()
     {
+        Appearance appearance;
         if (UseAuthoredAppearance)
         {
             DisplayName = string.IsNullOrWhiteSpace(Role) ? SpeakerName : $"{SpeakerName} the {Role}";
-            Tint(new Appearance
+            appearance = new Appearance
             {
                 Presentation = Presentation,
                 BodyType = BodyType,
@@ -61,15 +62,18 @@ public partial class PrototypeNpc : Interactable
                 ShirtColor = ShirtColor,
                 LegColor = LegColor,
                 FootColor = FootColor,
-            });
-            return;
+            };
+        }
+        else
+        {
+            var npc = new NpcRandomizer().Generate(Seed, DialogueRootId);
+            SpeakerName = npc.Name;
+            Role = npc.Role;
+            DisplayName = $"{npc.Name} the {npc.Role}";
+            appearance = npc.Appearance;
         }
 
-        var npc = new NpcRandomizer().Generate(Seed, DialogueRootId);
-        SpeakerName = npc.Name;
-        Role = npc.Role;
-        DisplayName = $"{npc.Name} the {npc.Role}";
-        Tint(npc.Appearance);
+        BuildVisual(appearance);
     }
 
     public override void Interact(Node interactor)
@@ -78,11 +82,28 @@ public partial class PrototypeNpc : Interactable
             string.IsNullOrWhiteSpace(SpeakerId) ? DialogueRootId : SpeakerId);
     }
 
-    private void Tint(Appearance appearance)
+    /// <summary>
+    /// Prefers a real rigged character model from <see cref="CharacterModelLibrary"/>; if none is
+    /// available (model not bundled or not yet imported) it falls back to the procedural
+    /// <see cref="HumanoidVisual"/> so the villager always has a body. Any pre-existing "Humanoid"
+    /// child placed by the spawner is replaced once.
+    /// </summary>
+    private void BuildVisual(Appearance appearance)
     {
-        if (GetNodeOrNull<HumanoidVisual>("Humanoid") is { } humanoid)
+        if (GetNodeOrNull<Node3D>("Humanoid") is { } existing)
         {
-            humanoid.Apply(appearance);
+            RemoveChild(existing);
+            existing.QueueFree();
         }
+
+        if (CharacterModelLibrary.TryInstantiate(appearance, Seed) is { } model)
+        {
+            AddChild(model);
+            return;
+        }
+
+        var humanoid = new HumanoidVisual { Name = "Humanoid", Position = new Vector3(0, -0.9f, 0) };
+        AddChild(humanoid);
+        humanoid.Apply(appearance);
     }
 }

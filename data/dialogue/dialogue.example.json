@@ -2,10 +2,10 @@
   {
     "id": "mira_intro",
     "speakerId": "mira_tutor",
-    "text": "Welcome to the crossroads. Practice a few words, then gather what you need.",
+    "text": "Welcome to the crossroads, traveler. Rest if you need to, then gather what the camp asks of you.",
     "choices": [
       {
-        "text": "I am ready to learn.",
+        "text": "What should I do first?",
         "nextNodeId": "mira_lesson"
       },
       {
@@ -17,7 +17,7 @@
   {
     "id": "mira_lesson",
     "speakerId": "mira_tutor",
-    "text": "Start with greetings. A small word can open a large road.",
+    "text": "Gather three Sunleaf along the south path, then bring them back to me. Keep to the lamplit roads.",
     "choices": []
   },
   {

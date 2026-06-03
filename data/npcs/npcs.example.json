@@ -2,7 +2,7 @@
   {
     "id": "mira_tutor",
     "displayName": "Mira",
-    "role": "Village Tutor",
+    "role": "Crossroads Guide",
     "dialogueRootId": "mira_intro"
   },
   {

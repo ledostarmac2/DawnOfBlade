@@ -667,7 +667,6 @@ public partial class OpenWorldBuilder : Node3D
             LegColor = appearance.LegColor,
             FootColor = appearance.FootColor,
         };
-        npc.AddChild(new HumanoidVisual { Name = "Humanoid", Position = new Vector3(0, -0.9f, 0) });
         npc.AddChild(new CollisionShape3D { Shape = new CapsuleShape3D { Radius = 0.38f, Height = 1.85f } });
         npc.AddChild(Nameplate($"{speakerName}\n{role}"));
         AddChild(npc);
@@ -717,7 +716,6 @@ public partial class OpenWorldBuilder : Node3D
                 Position = position,
                 Seed = Seed + StableHash(district) + i,
             };
-            npc.AddChild(new HumanoidVisual { Name = "Humanoid", Position = new Vector3(0, -0.9f, 0) });
             npc.AddChild(new CollisionShape3D { Shape = new CapsuleShape3D { Radius = 0.35f, Height = 1.8f } });
             AddChild(npc);
         }

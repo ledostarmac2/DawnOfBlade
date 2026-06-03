@@ -8,12 +8,12 @@ public class QuestTests
 {
     private static QuestDefinition SampleQuest() => new(
         "first_words",
-        "First Words",
-        "Help Mira prepare a lesson.",
+        "A Traveler's Errand",
+        "Help Mira at the crossroads camp.",
         new List<QuestObjective>
         {
             new("collect_sunleaf", "Collect three Sunleaf.", 3),
-            new("answer_prompt", "Answer one prompt.", 1),
+            new("return_to_camp", "Return to the camp.", 1),
         },
         new List<string> { "xp:foraging:25", "item:practice_chisel:1" });
 
@@ -52,7 +52,7 @@ public class QuestTests
         state.Advance("collect_sunleaf", 3);
         Assert.False(state.IsComplete);
 
-        state.Advance("answer_prompt", 1);
+        state.Advance("return_to_camp", 1);
         Assert.True(state.IsComplete);
     }
 
@@ -73,11 +73,11 @@ public class QuestTests
 
         Assert.Empty(log.Advance("collect_sunleaf", 3));
 
-        var completed = log.Advance("answer_prompt", 1);
+        var completed = log.Advance("return_to_camp", 1);
         Assert.Single(completed);
         Assert.Equal("first_words", completed[0].Definition.Id);
 
         // Advancing again must not report it as newly complete a second time.
-        Assert.Empty(log.Advance("answer_prompt", 1));
+        Assert.Empty(log.Advance("return_to_camp", 1));
     }
 }

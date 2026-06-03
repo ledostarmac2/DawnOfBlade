@@ -4,7 +4,6 @@ using System.Linq;
 using DawnOfBlade.Data;
 using DawnOfBlade.Dialogue;
 using DawnOfBlade.Inventory;
-using DawnOfBlade.Learning;
 using DawnOfBlade.Quests;
 using DawnOfBlade.Skills;
 using Xunit;
@@ -93,15 +92,6 @@ public class DefinitionParseTests
         Assert.Contains(npcs, npc => npc.Id == "orin_woodcutter");
         Assert.All(npcs, npc => Assert.True(dialogue.ContainsKey(npc.DialogueRootId), $"{npc.Id} dialogue root missing"));
         Assert.True(npcs.Select(npc => npc.DialogueRootId).Distinct().Count() >= 4);
-    }
-
-    [Fact]
-    public void Vocabulary_EntriesParse()
-    {
-        var vocab = DefinitionDatabase.ParseList<VocabularyEntry>(DataText("vocabulary/vocabulary.example.json"));
-
-        Assert.NotEmpty(vocab);
-        Assert.All(vocab, v => Assert.False(string.IsNullOrWhiteSpace(v.Term)));
     }
 
     private static void AssertUniqueIds(System.Collections.Generic.IEnumerable<string> ids)

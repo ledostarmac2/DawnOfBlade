@@ -32,6 +32,13 @@ Write-Host "Building C# assembly..." -ForegroundColor Cyan
 & $dotnet build (Join-Path $root 'DawnOfBlade.csproj') --nologo | Out-Host
 if ($LASTEXITCODE -ne 0) { Write-Error "dotnet build failed." }
 
+# Import resources (textures, glTF character models) so a fresh checkout has them before the scene
+# runs. Running a scene headless does NOT trigger Godot's import pipeline (only the editor does), so
+# resource-backed tests would otherwise fail. Editor-shutdown warnings can set a non-zero exit here;
+# the scene run below is the real gate, so we don't fail the script on this step.
+Write-Host "Importing Godot resources..." -ForegroundColor Cyan
+& $godot --headless --path $root --import | Out-Host
+
 Write-Host "Running headless Godot tests..." -ForegroundColor Cyan
 & $godot --headless --path $root "res://test/HeadlessTests.tscn"
 $code = $LASTEXITCODE

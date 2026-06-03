@@ -12,12 +12,6 @@
     "maxLevel": 99
   },
   {
-    "id": "language",
-    "displayName": "Language",
-    "description": "Learn vocabulary through dialogue, quests, and practice.",
-    "maxLevel": 99
-  },
-  {
     "id": "attack",
     "displayName": "Attack",
     "description": "Improves melee accuracy.",

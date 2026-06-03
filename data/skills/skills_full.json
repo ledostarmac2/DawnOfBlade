@@ -18,6 +18,5 @@
   { "id": "fletching", "displayName": "Fletching", "description": "Carve logs into bows and arrow shafts.", "maxLevel": 99 },
   { "id": "alchemy", "displayName": "Alchemy", "description": "Brew restoration vials and combat catalysts from reagents.", "maxLevel": 99 },
   { "id": "agility", "displayName": "Agility", "description": "Improves sprint-energy reserve and unlocks shortcuts.", "maxLevel": 99 },
-  { "id": "thieving", "displayName": "Thieving", "description": "Pickpocket NPCs and disarm locks and traps.", "maxLevel": 99 },
-  { "id": "language", "displayName": "Language", "description": "Learn vocabulary through dialogue, quests, and practice.", "maxLevel": 99 }
+  { "id": "thieving", "displayName": "Thieving", "description": "Pickpocket NPCs and disarm locks and traps.", "maxLevel": 99 }
 ]
