@@ -4,6 +4,23 @@
     "displayName": "Mira",
     "role": "Village Tutor",
     "dialogueRootId": "mira_intro"
+  },
+  {
+    "id": "bran_quartermaster",
+    "displayName": "Bran",
+    "role": "Quartermaster",
+    "dialogueRootId": "bran_intro"
+  },
+  {
+    "id": "lysa_ranger",
+    "displayName": "Lysa",
+    "role": "Ranger",
+    "dialogueRootId": "lysa_intro"
+  },
+  {
+    "id": "orin_woodcutter",
+    "displayName": "Orin",
+    "role": "Woodcutter",
+    "dialogueRootId": "orin_intro"
   }
 ]
-

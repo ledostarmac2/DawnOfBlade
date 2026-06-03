@@ -18,12 +18,12 @@ public partial class OpenWorldBuilder : Node3D
     public const float HalfWorldMeters = WorldSizeMeters * 0.5f;
     public const float VisualWorldScale = 0.88f;
     public const int LandmarkBuildingCount = 10;
-    public const int ContextualNpcCount = 60;
+    public const int ContextualNpcCount = 44;
 
     [Export] public int Seed { get; set; } = 2026;
-    [Export] public int BackgroundTreeCount { get; set; } = 360;
-    [Export] public int BackgroundRockCount { get; set; } = 180;
-    [Export] public int HillCount { get; set; } = 84;
+    [Export] public int BackgroundTreeCount { get; set; } = 260;
+    [Export] public int BackgroundRockCount { get; set; } = 110;
+    [Export] public int HillCount { get; set; } = 48;
 
     private RiverValleyRegion _region = new();
     private Node3D? _player;
@@ -36,12 +36,14 @@ public partial class OpenWorldBuilder : Node3D
         AddRiver();
         AddBridge();
         AddCastlePerimeter();
+        AddIntroPlaza();
         AddMarketSquare();
         AddRoadNetwork();
         AddRoadDetails();
         AddLandmarkBuildings();
         AddSettlementProps();
         AddIndexedResources();
+        AddIntroCharacters();
         AddMonsterPools();
         AddBackgroundScenery();
         AddGroundDetail();
@@ -183,6 +185,61 @@ public partial class OpenWorldBuilder : Node3D
         AddChild(Box(ScaleWorldSize(new Vector3(26, 0.08f, 14)), position, "#b69b70"));
     }
 
+    private void AddIntroPlaza()
+    {
+        var center = Vector3.Zero;
+        AddChild(Box(new Vector3(92.0f, 0.07f, 74.0f), new Vector3(0, 0.09f, 0), "#8d7b5c"));
+        AddChild(Box(new Vector3(42.0f, 0.08f, 28.0f), new Vector3(0, 0.13f, -18.0f), "#a9956f"));
+        AddChild(Box(new Vector3(12.0f, 0.11f, 9.0f), new Vector3(0, 0.22f, -28.0f), "#bca678"));
+
+        AddGuidedPath("IntroPath_North", new Vector3(0, 0.17f, -72), new Vector3(13, 0.045f, 92), "#b7a174");
+        AddGuidedPath("IntroPath_East", new Vector3(78, 0.18f, 4), new Vector3(104, 0.045f, 12), "#b7a174");
+        AddGuidedPath("IntroPath_South", new Vector3(-20, 0.175f, 82), new Vector3(12, 0.045f, 82), "#9f8d68");
+
+        for (var i = -3; i <= 3; i++)
+        {
+            AddLampPost(new Vector3(i * 13.0f, 0, -48.0f));
+        }
+
+        AddSignpost(new Vector3(-36, 0, -40), "Tutor");
+        AddSignpost(new Vector3(34, 0, -36), "Supplies");
+        AddSignpost(new Vector3(-36, 0, 28), "Woodcutting");
+        AddSignpost(new Vector3(36, 0, 24), "Roads");
+
+        AddCourtyardPlanter(new Vector3(-38, 0, -12), "#6f8e48");
+        AddCourtyardPlanter(new Vector3(38, 0, -12), "#6f8e48");
+        AddCourtyardPlanter(new Vector3(-30, 0, 24), "#7b8f52");
+        AddCourtyardPlanter(new Vector3(30, 0, 24), "#7b8f52");
+
+        AddFenceLine(new Vector3(-50, 0, 42), 7, horizontal: true);
+        AddFenceLine(new Vector3(-50, 0, -54), 7, horizontal: true);
+
+        AddChild(Part(new CylinderMesh { TopRadius = 1.0f, BottomRadius = 1.15f, Height = 1.5f, RadialSegments = 10 },
+            center + new Vector3(0, 0.75f, -28.0f), "#6d7478"));
+        AddChild(Part(new PrismMesh { Size = new Vector3(1.1f, 1.6f, 1.1f) },
+            center + new Vector3(0, 2.1f, -28.0f), "#c4b16f"));
+    }
+
+    private void AddGuidedPath(string name, Vector3 position, Vector3 size, string color)
+    {
+        var path = Box(size, position, color);
+        path.Name = name;
+        AddChild(path);
+    }
+
+    private void AddCourtyardPlanter(Vector3 position, string leafColor)
+    {
+        var planter = new Node3D { Name = "CourtyardPlanter", Position = position };
+        planter.AddChild(Box(new Vector3(5.2f, 0.55f, 1.2f), new Vector3(0, 0.28f, 0), "#5d3c27"));
+        planter.AddChild(Box(new Vector3(4.7f, 0.16f, 0.92f), new Vector3(0, 0.64f, 0), "#3a2a20"));
+        for (var i = -2; i <= 2; i++)
+        {
+            planter.AddChild(Part(new SphereMesh { Radius = 0.42f, Height = 0.42f, RadialSegments = 7, Rings = 3 },
+                new Vector3(i * 0.78f, 0.95f, 0), i % 2 == 0 ? leafColor : "#486d36"));
+        }
+        AddChild(planter);
+    }
+
     private void AddLandscapeDistricts()
     {
         AddChild(Box(ScaleWorldSize(new Vector3(980, 0.05f, 760)), ScaleWorldPosition(new Vector3(-940, 0.02f, 860)), "#607f42"));
@@ -237,7 +294,11 @@ public partial class OpenWorldBuilder : Node3D
             var basePosition = onNorthSouth
                 ? new Vector3(-120 + ((float)random.NextDouble() - 0.5f) * 18.0f, 0.16f, ((float)random.NextDouble() * 2.0f - 1.0f) * 1320.0f)
                 : new Vector3(-160 + ((float)random.NextDouble() * 2.0f - 1.0f) * 1180.0f, 0.16f, 80 + ((float)random.NextDouble() - 0.5f) * 18.0f);
-            AddRoadStone(ScaleWorldPosition(basePosition), 0.18f + (float)random.NextDouble() * 0.22f, random);
+            var position = ScaleWorldPosition(basePosition);
+            if (!IsProtectedIntroZone(position))
+            {
+                AddRoadStone(position, 0.18f + (float)random.NextDouble() * 0.22f, random);
+            }
         }
 
         AddSignpost(ScaleWorldPosition(new Vector3(-130, 0, 84)), "Crossroads");
@@ -441,6 +502,11 @@ public partial class OpenWorldBuilder : Node3D
         for (var i = 0; i < HillCount; i++)
         {
             var position = NextWorldPosition(random);
+            if (IsProtectedIntroZone(position))
+            {
+                continue;
+            }
+
             var hill = Part(new SphereMesh { Radius = 10.0f, Height = 13.0f, RadialSegments = 7, Rings = 4 }, position + Vector3.Up * 2.4f, "#526d43");
             hill.Scale = new Vector3(1.6f + (float)random.NextDouble() * 2.5f, 0.45f + (float)random.NextDouble() * 0.8f, 1.4f + (float)random.NextDouble() * 2.0f);
             AddChild(hill);
@@ -449,7 +515,7 @@ public partial class OpenWorldBuilder : Node3D
         for (var i = 0; i < BackgroundTreeCount; i++)
         {
             var position = NextWorldPosition(random);
-            if (position.Length() > 90)
+            if (!IsProtectedIntroZone(position))
             {
                 AddTree(position, 0.7f + (float)random.NextDouble() * 1.15f);
             }
@@ -458,7 +524,7 @@ public partial class OpenWorldBuilder : Node3D
         for (var i = 0; i < BackgroundRockCount; i++)
         {
             var position = NextWorldPosition(random);
-            if (position.Length() > 76)
+            if (!IsProtectedIntroZone(position))
             {
                 AddRock(position, 0.35f + (float)random.NextDouble() * 0.8f);
             }
@@ -471,7 +537,7 @@ public partial class OpenWorldBuilder : Node3D
         for (var i = 0; i < 360; i++)
         {
             var position = NextWorldPosition(random);
-            if (position.Length() < 36)
+            if (IsProtectedIntroZone(position))
             {
                 continue;
             }
@@ -496,16 +562,139 @@ public partial class OpenWorldBuilder : Node3D
         }
     }
 
+    private void AddIntroCharacters()
+    {
+        AddAuthoredNpc(
+            nodeName: "MiraTutor",
+            speakerId: "mira_tutor",
+            speakerName: "Mira",
+            role: "Village Tutor",
+            position: new Vector3(-9, 0.9f, -29),
+            facingDegrees: 35,
+            new Appearance
+            {
+                Presentation = "feminine",
+                BodyType = "slim",
+                HeadStyle = 1,
+                HairStyle = 3,
+                SkinTone = "#d7a06f",
+                HairColor = "#8b2fd6",
+                ShirtColor = "#7f254f",
+                LegColor = "#4a2f3a",
+                FootColor = "#59412c",
+            });
+
+        AddAuthoredNpc(
+            nodeName: "BranQuartermaster",
+            speakerId: "bran_quartermaster",
+            speakerName: "Bran",
+            role: "Quartermaster",
+            position: new Vector3(10, 0.9f, -24),
+            facingDegrees: -35,
+            new Appearance
+            {
+                Presentation = "masculine",
+                BodyType = "broad",
+                HeadStyle = 2,
+                HairStyle = 1,
+                SkinTone = "#c68642",
+                HairColor = "#7a4a1a",
+                ShirtColor = "#3a7a3a",
+                LegColor = "#5a4632",
+                FootColor = "#4a3324",
+            });
+
+        AddAuthoredNpc(
+            nodeName: "LysaRanger",
+            speakerId: "lysa_ranger",
+            speakerName: "Lysa",
+            role: "Ranger",
+            position: new Vector3(32, 0.9f, 16),
+            facingDegrees: -125,
+            new Appearance
+            {
+                Presentation = "feminine",
+                BodyType = "slim",
+                HeadStyle = 0,
+                HairStyle = 7,
+                SkinTone = "#8d5524",
+                HairColor = "#e7e0c8",
+                ShirtColor = "#4b8d38",
+                LegColor = "#31452e",
+                FootColor = "#242831",
+            });
+
+        AddAuthoredNpc(
+            nodeName: "OrinWoodcutter",
+            speakerId: "orin_woodcutter",
+            speakerName: "Orin",
+            role: "Woodcutter",
+            position: new Vector3(-32, 0.9f, 18),
+            facingDegrees: 125,
+            new Appearance
+            {
+                Presentation = "masculine",
+                BodyType = "broad",
+                HeadStyle = 3,
+                HairStyle = 4,
+                SkinTone = "#f0c8a0",
+                HairColor = "#9a9a9a",
+                ShirtColor = "#9a7a30",
+                LegColor = "#5a4632",
+                FootColor = "#73553a",
+            });
+    }
+
+    private void AddAuthoredNpc(string nodeName, string speakerId, string speakerName, string role, Vector3 position, float facingDegrees, Appearance appearance)
+    {
+        var npc = new PrototypeNpc
+        {
+            Name = nodeName,
+            Position = position,
+            RotationDegrees = new Vector3(0, facingDegrees, 0),
+            SpeakerId = speakerId,
+            SpeakerName = speakerName,
+            Role = role,
+            DialogueRootId = $"{speakerId.Split('_')[0]}_intro",
+            UseAuthoredAppearance = true,
+            Presentation = appearance.Presentation,
+            BodyType = appearance.BodyType,
+            HeadStyle = appearance.HeadStyle,
+            HairStyle = appearance.HairStyle,
+            SkinTone = appearance.SkinTone,
+            HairColor = appearance.HairColor,
+            ShirtColor = appearance.ShirtColor,
+            LegColor = appearance.LegColor,
+            FootColor = appearance.FootColor,
+        };
+        npc.AddChild(new HumanoidVisual { Name = "Humanoid", Position = new Vector3(0, -0.9f, 0) });
+        npc.AddChild(new CollisionShape3D { Shape = new CapsuleShape3D { Radius = 0.38f, Height = 1.85f } });
+        npc.AddChild(Nameplate($"{speakerName}\n{role}"));
+        AddChild(npc);
+    }
+
+    private static Label3D Nameplate(string text) => new()
+    {
+        Name = "Nameplate",
+        Text = text,
+        Position = new Vector3(0, 2.55f, 0),
+        PixelSize = 0.012f,
+        Billboard = BaseMaterial3D.BillboardModeEnum.Enabled,
+        Modulate = new Color("#f5ead0"),
+        OutlineModulate = new Color("#15110c"),
+        OutlineSize = 8,
+    };
+
     private void AddContextualNpcs()
     {
         var random = new Random(Seed + 41);
-        AddNpcCluster(random, "citadel", Vector3.Zero, new Vector2(120, 110), 12);
-        AddNpcCluster(random, "market", new Vector3(180, 0, 95), new Vector2(170, 120), 12);
-        AddNpcCluster(random, "farm", new Vector3(-720, 0, 450), new Vector2(220, 170), 8);
+        AddNpcCluster(random, "citadel", new Vector3(-138, 0, -112), new Vector2(64, 50), 6);
+        AddNpcCluster(random, "market", new Vector3(180, 0, 95), new Vector2(150, 100), 10);
+        AddNpcCluster(random, "farm", new Vector3(-720, 0, 450), new Vector2(210, 160), 7);
         AddNpcCluster(random, "monastery", new Vector3(-1180, 0, 1080), new Vector2(190, 150), 6);
-        AddNpcCluster(random, "fortress", new Vector3(1260, 0, 980), new Vector2(210, 170), 8);
-        AddNpcCluster(random, "lodge", new Vector3(-1260, 0, -1110), new Vector2(180, 140), 6);
-        AddNpcCluster(random, "port", new Vector3(1180, 0, -1080), new Vector2(230, 170), 8);
+        AddNpcCluster(random, "fortress", new Vector3(1260, 0, 980), new Vector2(210, 170), 7);
+        AddNpcCluster(random, "lodge", new Vector3(-1260, 0, -1110), new Vector2(180, 140), 4);
+        AddNpcCluster(random, "port", new Vector3(1180, 0, -1080), new Vector2(230, 170), 4);
     }
 
     private void AddNpcCluster(Random random, string district, Vector3 center, Vector2 spread, int count)
@@ -517,6 +706,11 @@ public partial class OpenWorldBuilder : Node3D
                 0.9f,
                 ((float)random.NextDouble() - 0.5f) * spread.Y);
             position = ScaleWorldPosition(position);
+            if (IsProtectedIntroZone(position))
+            {
+                continue;
+            }
+
             var npc = new PrototypeNpc
             {
                 Name = $"{district}_npc_{i + 1:00}",
@@ -573,6 +767,9 @@ public partial class OpenWorldBuilder : Node3D
 
     private static Vector3 NextWorldPosition(Random random) =>
         new(((float)random.NextDouble() * 2.0f - 1.0f) * HalfWorldMeters, 0, ((float)random.NextDouble() * 2.0f - 1.0f) * HalfWorldMeters);
+
+    private static bool IsProtectedIntroZone(Vector3 position) =>
+        Mathf.Abs(position.X) < 96.0f && Mathf.Abs(position.Z) < 86.0f;
 
     private static int StableHash(string value)
     {

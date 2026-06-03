@@ -19,6 +19,68 @@
     "speakerId": "mira_tutor",
     "text": "Start with greetings. A small word can open a large road.",
     "choices": []
+  },
+  {
+    "id": "bran_intro",
+    "speakerId": "bran_quartermaster",
+    "text": "I keep the camp supplied. Follow the tan road to the market, and use the bank before you wander too far.",
+    "choices": [
+      {
+        "text": "What should I do first?",
+        "nextNodeId": "bran_first_steps"
+      },
+      {
+        "text": "Goodbye.",
+        "nextNodeId": null
+      }
+    ]
+  },
+  {
+    "id": "bran_first_steps",
+    "speakerId": "bran_quartermaster",
+    "text": "Gather three Sunleaf by the south path, then come back to Mira. Keep your pack light and your eyes open.",
+    "choices": []
+  },
+  {
+    "id": "lysa_intro",
+    "speakerId": "lysa_ranger",
+    "text": "The safe roads are marked with lamps. Past the bridge, the woods stop being polite.",
+    "choices": [
+      {
+        "text": "Where are the trees for woodcutting?",
+        "nextNodeId": "lysa_trees"
+      },
+      {
+        "text": "Goodbye.",
+        "nextNodeId": null
+      }
+    ]
+  },
+  {
+    "id": "lysa_trees",
+    "speakerId": "lysa_ranger",
+    "text": "Start with the oaks near Orin. The darker pines are farther out and should become better woodcutting tiers later.",
+    "choices": []
+  },
+  {
+    "id": "orin_intro",
+    "speakerId": "orin_woodcutter",
+    "text": "Good timber has a silhouette. Oak is broad, pine is narrow, birch is pale. If the trees all look alike, blame the foreman.",
+    "choices": [
+      {
+        "text": "Show me the beginner trees.",
+        "nextNodeId": "orin_beginner_trees"
+      },
+      {
+        "text": "Goodbye.",
+        "nextNodeId": null
+      }
+    ]
+  },
+  {
+    "id": "orin_beginner_trees",
+    "speakerId": "orin_woodcutter",
+    "text": "The beginner oaks are inside the lamp ring. We will reserve the taller tree-pack shapes for named woodcutting types.",
+    "choices": []
   }
 ]
-

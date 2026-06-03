@@ -81,6 +81,21 @@ public class DefinitionParseTests
     }
 
     [Fact]
+    public void Npcs_HaveDistinctDialogueRoots()
+    {
+        var npcs = DefinitionDatabase.ParseList<NpcDefinition>(DataText("npcs/npcs.example.json"));
+        var dialogue = DefinitionDatabase.ParseList<DialogueNode>(DataText("dialogue/dialogue.example.json"))
+            .ToDictionary(node => node.Id);
+
+        Assert.Contains(npcs, npc => npc.Id == "mira_tutor");
+        Assert.Contains(npcs, npc => npc.Id == "bran_quartermaster");
+        Assert.Contains(npcs, npc => npc.Id == "lysa_ranger");
+        Assert.Contains(npcs, npc => npc.Id == "orin_woodcutter");
+        Assert.All(npcs, npc => Assert.True(dialogue.ContainsKey(npc.DialogueRootId), $"{npc.Id} dialogue root missing"));
+        Assert.True(npcs.Select(npc => npc.DialogueRootId).Distinct().Count() >= 4);
+    }
+
+    [Fact]
     public void Vocabulary_EntriesParse()
     {
         var vocab = DefinitionDatabase.ParseList<VocabularyEntry>(DataText("vocabulary/vocabulary.example.json"));

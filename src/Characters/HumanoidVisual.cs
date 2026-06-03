@@ -555,7 +555,28 @@ public partial class HumanoidVisual : Node3D
     }
 
     private static StandardMaterial3D LowPolyMaterial(string color, ArtMaterialKind materialKind = ArtMaterialKind.Auto) =>
-        ArtMaterialCatalog.Create(color, materialKind);
+        materialKind is ArtMaterialKind.Auto or ArtMaterialKind.CharacterSkin or ArtMaterialKind.CharacterHair or ArtMaterialKind.CharacterCloth
+            ? CharacterMaterial(color, materialKind)
+            : ArtMaterialCatalog.Create(color, materialKind);
+
+    private static StandardMaterial3D CharacterMaterial(string color, ArtMaterialKind materialKind)
+    {
+        var material = new StandardMaterial3D
+        {
+            AlbedoColor = new Color(color),
+            Roughness = materialKind == ArtMaterialKind.CharacterSkin ? 0.86f : 0.74f,
+            Metallic = 0.0f,
+            SpecularMode = BaseMaterial3D.SpecularModeEnum.Disabled,
+            TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
+        };
+
+        if (materialKind == ArtMaterialKind.CharacterHair)
+        {
+            material.AlbedoColor = new Color(Darken(color, 0.9f));
+        }
+
+        return material;
+    }
 
     private static string Lighten(string color, float factor) => ScaleColor(color, factor);
 

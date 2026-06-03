@@ -18,6 +18,6 @@ public class ExpandedWorldTests
     public void ExpandedWorld_DefinesLandmarksAndContextualPopulation()
     {
         Assert.Equal(10, OpenWorldBuilder.LandmarkBuildingCount);
-        Assert.Equal(60, OpenWorldBuilder.ContextualNpcCount);
+        Assert.Equal(44, OpenWorldBuilder.ContextualNpcCount);
     }
 }

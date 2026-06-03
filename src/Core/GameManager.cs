@@ -260,10 +260,13 @@ public partial class GameManager : Node3D
 
     // ---- Dialogue ---------------------------------------------------------
 
-    public void ShowNpcDialogue(string speakerName)
+    public void ShowNpcDialogue(string speakerKey)
     {
-        var npc = _definitions.NpcById.Values.FirstOrDefault();
-        var rootId = npc?.DialogueRootId;
+        var rootId = _definitions.NpcById.TryGetValue(speakerKey, out var npc)
+            ? npc.DialogueRootId
+            : _definitions.DialogueById.ContainsKey(speakerKey)
+                ? speakerKey
+                : _definitions.NpcById.Values.FirstOrDefault()?.DialogueRootId;
 
         if (rootId is not null && _definitions.DialogueById.TryGetValue(rootId, out var node))
         {
