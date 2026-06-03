@@ -37,6 +37,7 @@ guarantee. If an asset is not in this table, it should not be in the repo.
 | `textures/Fantasy Props MegaKit[Standard]/` | texture/model pack | Fantasy Props MegaKit Standard Free | Quaternius | CC0 | No | 2026-06-03 |
 | `textures/Modular Character Outfits - Fantasy[Standard]/` | texture/model pack | Modular Character Outfits - Fantasy Standard Free | Quaternius | CC0 | No | 2026-06-03 |
 | `textures/Universal Base Characters[Standard]/` | texture/model pack | Universal Base Characters Standard Free | Quaternius | CC0 | No | 2026-06-03 |
+| `textures/KayKit_Medieval_Hexagon_Pack_1.0_FREE/` | texture/model pack | KayKit Medieval Hexagon Pack 1.0 (Free) | Kay Lousberg | CC0 | No | 2026-06-03 |
 
 <!-- Template row for an imported CC0/CC-BY asset:
 | `assets/models/tree_01.glb` | model | https://kenney.nl/assets/... | Kenney | CC0 | No | YYYY-MM-DD |

@@ -1,0 +1,31 @@
+CC0 1.0 Universal
+
+Statement of Purpose
+
+The laws of most jurisdictions throughout the world automatically confer exclusive Copyright and Related Rights (defined below) upon the creator and subsequent owner(s) (each and all, an "owner") of an original work of authorship and/or a database (each, a "Work").
+
+Certain owners wish to permanently relinquish those rights to a Work for the purpose of contributing to a commons of creative, cultural and scientific works ("Commons") that the public can reliably and without fear of later claims of infringement build upon, modify, incorporate in other works, reuse and redistribute as freely as possible in any form whatsoever and for any purposes, including without limitation commercial purposes. These owners may contribute to the Commons to promote the ideal of a free culture and the further production of creative, cultural and scientific works, or as a reputation or implicit endorsement credit for their knowledge or training without desiring a right to imply any endorsement by the heir or successor.
+
+With these objectives in mind, and in furtherance of these expectations and desires, the Owner (as defined below) intends to hereby waive all of their Copyright and Related Rights and, in addition, to license all of their Copyright and Related Rights under the terms of the Creative Commons Zero 1.0 Universal License ("CC0") to the maximum extent permitted by law, so that the Work may be freely used, modified, and built upon by others without any restrictions.
+
+1. Definitions.
+
+  a. "Copyright and Related Rights" means copyright and related rights, including, without limitation, neighboring rights, publicity and privacy rights, moral rights, performance and broadcasting rights, and rights protecting databases, regardless of how such rights are defined or categorized by applicable law.
+
+  b. "Owner" means the individual(s) or entity that holds Copyright and Related Rights in the Work and who has affixed this CC0 statement to the Work.
+
+  c. "Work" means the original work of authorship and/or database to which this CC0 statement has been affixed.
+
+2. Waiver. To the greatest extent permitted by, but not in contravention of, applicable law, the Owner hereby overtly, fully, permanently, irrevocably and unconditionally waives, abandons, and surrenders all of the Owner's Copyright and Related Rights and associated claims and causes of action, whether now known or unknown (including existing as well as future claims and causes of action), in the Work (i) in all territories worldwide, (ii) for the maximum duration provided by applicable law or treaty (including future time extensions), (iii) in any current or future medium and for any number of copies, and (iv) for any purpose whatsoever, including without limitation commercial, advertising or promotional purposes (the "Waiver"). The Owner makes the Waiver for the benefit of each member of the public at large and to the detriment of the Owner's heirs and successors, fully intending that such Waiver shall not be subject to revocation, rescission, cancellation, termination, or any other legal or equitable action to disrupt the quiet enjoyment of the Work by the public as contemplated by the Owner's express statement of purpose.
+
+3. Public License Grant. Should any part of the Waiver for any reason be judged legally invalid or ineffective under applicable law, the Waiver shall be preserved to the maximum extent permitted of the Owner's express Statement of Purpose. In addition, the Owner hereby grants to each affected person a royalty-free, non-transferable, non-sublicensable, non-exclusive, irrevocable and unconditional license to exercise the Owner's Copyright and Related Rights in the Work (i) in all territories worldwide, (ii) for the maximum duration provided by applicable law or treaty (including future time extensions), (iii) in any current or future medium and for any number of copies, and (iv) for any purpose whatsoever, including without limitation commercial, advertising or promotional purposes (the "License"). The License shall be deemed effective as of the date CC0 was applied by the Owner to the Work. Should any part of the License for any reason be judged legally invalid or ineffective under applicable law, such partial invalidity or ineffectiveness shall not invalidate the remainder of the License, and in such circumstances the Owner hereby affirms that they will not (i) exercise any of their remaining Copyright and Related Rights in the Work or (ii) assert any associated claims and causes of action with respect to the Work, in either case contrary to the Owner's express Statement of Purpose.
+
+4. Limitations and Disclaimers.
+
+  a. No trademark or patent rights held by the Owner are waived, abandoned, surrendered, licensed or otherwise affected by this document.
+
+  b. Owner offers the Work as-is and makes no representations or warranties of any kind concerning the Work, express, implied, statutory or otherwise, including, without limitation, warranties of title, merchantability, fitness for a particular purpose, non-infringement, or the absence of latent or other defects, accuracy, or the presence or absence of errors, whether or not discoverable, all to the greatest extent permissible under applicable law.
+
+  c. Owner disclaims responsibility for clearing rights of other persons that may apply to the Work or any use thereof, including without limitation any person's Copyright and Related Rights in the Work. Further, Owner disclaims responsibility for obtaining any necessary consents, permissions or other rights required for any use of the Work.
+
+  d. The Owner understands and acknowledges that Creative Commons is not a party to this document and has no duty or obligation with respect to this CC0 or use of the Work.

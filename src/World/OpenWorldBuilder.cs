@@ -476,13 +476,18 @@ public partial class OpenWorldBuilder : Node3D
                 continue;
             }
 
-            if (random.NextDouble() < 0.72)
+            var roll = random.NextDouble();
+            if (roll < 0.5)
             {
                 AddGrassTuft(position, 0.65f + (float)random.NextDouble() * 0.7f, random);
             }
-            else if (random.NextDouble() < 0.42)
+            else if (roll < 0.7)
             {
                 AddWildflowerPatch(position, 0.45f + (float)random.NextDouble() * 0.55f, random);
+            }
+            else if (roll < 0.85)
+            {
+                AddBushClump(position, 0.8f + (float)random.NextDouble() * 0.7f);
             }
             else
             {
@@ -602,6 +607,15 @@ public partial class OpenWorldBuilder : Node3D
     {
         var variant = Mathf.PosMod(StableHash($"{position.X:0.0}:{position.Z:0.0}"), 36) + 1;
         var root = GeneratedAssetFactory.Tree(visualVariant: variant);
+        root.Position = position;
+        root.Scale = Vector3.One * scale;
+        AddChild(root);
+    }
+
+    private void AddBushClump(Vector3 position, float scale)
+    {
+        var variant = Mathf.PosMod(StableHash($"bush:{position.X:0.0}:{position.Z:0.0}"), 8) + 1;
+        var root = GeneratedAssetFactory.Bush(variant);
         root.Position = position;
         root.Scale = Vector3.One * scale;
         AddChild(root);

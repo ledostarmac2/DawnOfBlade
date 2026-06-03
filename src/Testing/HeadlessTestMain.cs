@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using DawnOfBlade.Combat;
 using DawnOfBlade.Engine.Ai;
 using DawnOfBlade.Engine.Progression;
@@ -169,29 +170,62 @@ public partial class HeadlessTestMain : Node
 
     private void TestArtTextureResourcesLoad()
     {
-        GD.Print("- selected texture packs and material resources load");
-        var texturePaths = new[]
-        {
-            "res://assets/runtime_textures/kenney_retro_textures_fantasy/floor_ground_grass.png",
-            "res://assets/runtime_textures/kenney_retro_textures_fantasy/floor_wood_planks.png",
-            "res://assets/runtime_textures/kenney_retro_textures_fantasy/floor_ground_water.png",
-            "res://assets/runtime_textures/tree_pack/tree04.png",
-            "res://assets/runtime_textures/quaternius_props/T_Trim_Props_BaseColor.png",
-            "res://assets/runtime_textures/quaternius_outfits/T_Peasant_BaseColor.png",
-            "res://assets/runtime_textures/quaternius_base_characters/T_Hair_1_BaseColor.png",
-        };
+        GD.Print("- shipped texture set is broad and every catalog texture is used");
 
-        foreach (var path in texturePaths)
+        // Every texture the catalog can route to must actually ship under res://assets/runtime_textures
+        // (the export bundles that tree; the raw res://textures tree is excluded), so the built .exe
+        // renders them instead of falling back to flat colour.
+        var allPaths = ArtMaterialCatalog.AllRuntimeTexturePaths();
+        var missing = allPaths.Where(path => !System.IO.File.Exists(ProjectSettings.GlobalizePath(path))).ToList();
+        Check(missing.Count == 0, $"all {allPaths.Count} catalog textures exist on disk" + (missing.Count == 0 ? "" : $" (missing: {string.Join(", ", missing.Take(5).Select(p => p.GetFile()))})"));
+        Check(allPaths.Count >= 180, $"catalog routes to a broad shipped texture set ({allPaths.Count} files)");
+
+        // Drive every palette entry so each environment/character texture is exercised, not just shipped.
+        var environmentKinds = new[]
         {
-            Check(System.IO.File.Exists(ProjectSettings.GlobalizePath(path)), $"texture file exists: {path.GetFile()}");
+            ArtMaterialKind.GroundGrass, ArtMaterialKind.GroundDirt, ArtMaterialKind.Stone, ArtMaterialKind.Wood,
+            ArtMaterialKind.Roof, ArtMaterialKind.Water, ArtMaterialKind.Metal, ArtMaterialKind.Furniture,
+            ArtMaterialKind.Props, ArtMaterialKind.Leaves,
+        };
+        foreach (var kind in environmentKinds)
+        {
+            var resolved = true;
+            for (var variant = 0; variant < 64; variant++)
+            {
+                resolved &= ArtMaterialCatalog.Environment("#808078", kind, variant).AlbedoTexture is not null;
+            }
+
+            Check(resolved, $"every {kind} palette variant resolves to an albedo texture");
         }
 
-        var material = ArtMaterialCatalog.Environment("#5a3a24", ArtMaterialKind.Wood);
-        Check(material.AlbedoTexture is not null, "procedural wood material has an albedo texture");
-        Check(ArtMaterialCatalog.Environment("#4f7538", ArtMaterialKind.GroundGrass).AlbedoTexture is not null, "procedural grass material has an albedo texture");
-        Check(ArtMaterialCatalog.TreeLeaves("#2f6b36", 12).AlbedoTexture is not null, "tree pack leaf variant material has an albedo texture");
-        Check(ArtMaterialCatalog.Create("#6a5acd", ArtMaterialKind.CharacterCloth).AlbedoTexture is not null, "procedural character cloth material has an albedo texture");
-        Check(ArtMaterialCatalog.Create("#3a2a1a", ArtMaterialKind.CharacterHair).AlbedoTexture is not null, "procedural character hair material has an albedo texture");
+        var characterKinds = new[] { ArtMaterialKind.CharacterCloth, ArtMaterialKind.CharacterSkin, ArtMaterialKind.CharacterHair };
+        foreach (var kind in characterKinds)
+        {
+            var resolved = true;
+            for (var variant = 0; variant < 16; variant++)
+            {
+                resolved &= ArtMaterialCatalog.Create("#9a8d7a", kind, variant).AlbedoTexture is not null;
+            }
+
+            Check(resolved, $"every {kind} palette variant resolves to an albedo texture");
+        }
+
+        var treeOk = true;
+        for (var variant = 1; variant <= 36; variant++)
+        {
+            treeOk &= ArtMaterialCatalog.TreeLeaves("#2f6b36", variant).AlbedoTexture is not null;
+        }
+
+        Check(treeOk, "all 36 tree-pack leaf variants resolve to an albedo texture");
+
+        var bushOk = true;
+        for (var variant = 1; variant <= 8; variant++)
+        {
+            bushOk &= ArtMaterialCatalog.BushLeaves("#3f7a3a", variant).AlbedoTexture is not null;
+        }
+
+        Check(bushOk, "all 8 tree-pack bush variants resolve to an albedo texture");
+
         Check(GD.Load<StandardMaterial3D>("res://assets/materials/ground.tres") is not null, "ground fallback material resource still parses");
         Check(GD.Load<StandardMaterial3D>("res://assets/materials/player.tres") is not null, "player fallback material resource still parses");
     }

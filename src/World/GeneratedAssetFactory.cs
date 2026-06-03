@@ -72,6 +72,20 @@ public static class GeneratedAssetFactory
         return root;
     }
 
+    public static Node3D Bush(int visualVariant = 1, string foliageColor = "#3f7a3a")
+    {
+        var variant = visualVariant <= 0 ? 1 : Mathf.PosMod(visualVariant - 1, 8) + 1;
+        var leaf = ArtMaterialCatalog.BushLeaves(foliageColor, variant);
+        var spread = 1.0f + (variant % 4 - 1.5f) * 0.06f;
+        var root = new Node3D { Name = "GeneratedBush" };
+        root.AddChild(Part(new CylinderMesh { TopRadius = 0.08f, BottomRadius = 0.13f, Height = 0.34f, RadialSegments = 6 }, new Vector3(0, 0.17f, 0), "#5b3a24"));
+        root.AddChild(Part(new SphereMesh { Radius = 0.52f * spread, Height = 0.82f, RadialSegments = 8, Rings = 4 }, new Vector3(0, 0.55f, 0), leaf));
+        root.AddChild(Part(new SphereMesh { Radius = 0.38f * spread, Height = 0.6f, RadialSegments = 7, Rings = 4 }, new Vector3(0.34f, 0.46f, 0.08f), leaf));
+        root.AddChild(Part(new SphereMesh { Radius = 0.34f * spread, Height = 0.54f, RadialSegments = 7, Rings = 4 }, new Vector3(-0.3f, 0.44f, -0.06f), leaf));
+        root.AddChild(Part(new SphereMesh { Radius = 0.28f * spread, Height = 0.46f, RadialSegments = 7, Rings = 3 }, new Vector3(0.04f, 0.74f, -0.2f), leaf));
+        return root;
+    }
+
     public static Node3D Ore(string stoneColor, string veinColor)
     {
         var root = new Node3D { Name = "GeneratedOre" };
