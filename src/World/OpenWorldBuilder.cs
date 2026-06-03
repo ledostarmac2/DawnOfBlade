@@ -89,6 +89,15 @@ public partial class OpenWorldBuilder : Node3D
             AddReedCluster(new Vector3(bankX, 0.12f, z), 0.75f + (float)random.NextDouble() * 0.55f, random);
         }
 
+        for (var i = 0; i < 42; i++)
+        {
+            var z = ((float)random.NextDouble() * 2.0f - 1.0f) * HalfWorldMeters;
+            var side = random.Next(2) == 0 ? -1.0f : 1.0f;
+            var bankX = x + side * (riverSize.X * 0.5f + 0.3f + (float)random.NextDouble() * 0.7f);
+            AddChild(Part(new SphereMesh { Radius = 0.22f, Height = 0.12f, RadialSegments = 6, Rings = 3 },
+                new Vector3(bankX, 0.08f, z), random.Next(2) == 0 ? "#68706a" : "#525a54"));
+        }
+
         var bridgeGap = RiverValleyRegion.TileSizeMeters * VisualWorldScale * 2.0f;
         var blockedLength = HalfWorldMeters - bridgeGap;
         AddCollisionBox(new Vector3(riverSize.X, 0.8f, blockedLength), new Vector3(x, 0.4f, (bridgeGap + HalfWorldMeters) * 0.5f));
@@ -125,6 +134,13 @@ public partial class OpenWorldBuilder : Node3D
 
         bridge.AddChild(Box(new Vector3(deckSize.X, 0.24f, 0.16f), new Vector3(0, 0.42f, deckSize.Z * 0.5f + 0.15f), "#4e3120"));
         bridge.AddChild(Box(new Vector3(deckSize.X, 0.24f, 0.16f), new Vector3(0, 0.42f, -deckSize.Z * 0.5f - 0.15f), "#4e3120"));
+        bridge.AddChild(Box(new Vector3(deckSize.X, 0.08f, 0.07f), new Vector3(0, 0.78f, deckSize.Z * 0.5f + 0.18f), "#2f2118"));
+        bridge.AddChild(Box(new Vector3(deckSize.X, 0.08f, 0.07f), new Vector3(0, 0.78f, -deckSize.Z * 0.5f - 0.18f), "#2f2118"));
+        for (var i = -4; i <= 4; i += 2)
+        {
+            bridge.AddChild(Part(new CylinderMesh { TopRadius = 0.055f, BottomRadius = 0.065f, Height = 0.72f, RadialSegments = 6 }, new Vector3(i * 1.35f, 0.7f, deckSize.Z * 0.5f + 0.16f), "#3a271b"));
+            bridge.AddChild(Part(new CylinderMesh { TopRadius = 0.055f, BottomRadius = 0.065f, Height = 0.72f, RadialSegments = 6 }, new Vector3(i * 1.35f, 0.7f, -deckSize.Z * 0.5f - 0.16f), "#3a271b"));
+        }
         AddChild(bridge);
     }
 
@@ -173,6 +189,31 @@ public partial class OpenWorldBuilder : Node3D
         AddChild(Box(ScaleWorldSize(new Vector3(900, 0.05f, 680)), ScaleWorldPosition(new Vector3(1020, 0.02f, 980)), "#88784a"));
         AddChild(Box(ScaleWorldSize(new Vector3(880, 0.05f, 680)), ScaleWorldPosition(new Vector3(-1100, 0.02f, -1040)), "#566f56"));
         AddChild(Box(ScaleWorldSize(new Vector3(940, 0.05f, 720)), ScaleWorldPosition(new Vector3(1080, 0.02f, -980)), "#8b7654"));
+
+        var random = new Random(Seed + 301);
+        AddTerrainPatchField(random, new Vector3(-940, 0, 860), new Vector2(860, 620), "#71904c", "#435f36", 38);
+        AddTerrainPatchField(random, new Vector3(1020, 0, 980), new Vector2(760, 560), "#a4925c", "#756641", 34);
+        AddTerrainPatchField(random, new Vector3(-1100, 0, -1040), new Vector2(760, 560), "#647d63", "#425840", 36);
+        AddTerrainPatchField(random, new Vector3(1080, 0, -980), new Vector2(800, 600), "#a0835b", "#6e5c43", 34);
+    }
+
+    private void AddTerrainPatchField(Random random, Vector3 center, Vector2 extent, string lightColor, string darkColor, int count)
+    {
+        for (var i = 0; i < count; i++)
+        {
+            var position = ScaleWorldPosition(new Vector3(
+                center.X + ((float)random.NextDouble() - 0.5f) * extent.X,
+                0.105f + i * 0.0004f,
+                center.Z + ((float)random.NextDouble() - 0.5f) * extent.Y));
+            var size = ScaleWorldSize(new Vector3(
+                18.0f + (float)random.NextDouble() * 54.0f,
+                0.018f,
+                8.0f + (float)random.NextDouble() * 34.0f));
+            var color = random.NextDouble() < 0.55 ? lightColor : darkColor;
+            var patch = Box(size, position, color);
+            patch.Rotation = new Vector3(0, (float)random.NextDouble() * Mathf.Tau, 0);
+            AddChild(patch);
+        }
     }
 
     private void AddRoadNetwork()
@@ -276,6 +317,11 @@ public partial class OpenWorldBuilder : Node3D
         var stall = new Node3D { Name = "MarketStall", Position = position };
         stall.AddChild(Box(new Vector3(4.4f, 0.28f, 2.6f), new Vector3(0, 0.72f, 0), "#6b4a2f"));
         stall.AddChild(Box(new Vector3(4.9f, 0.18f, 3.0f), new Vector3(0, 2.1f, 0), awningColor));
+        stall.AddChild(Box(new Vector3(0.64f, 0.2f, 3.08f), new Vector3(-1.58f, 2.23f, 0), "#f0d88d"));
+        stall.AddChild(Box(new Vector3(0.64f, 0.2f, 3.08f), new Vector3(0.0f, 2.23f, 0), "#f0d88d"));
+        stall.AddChild(Box(new Vector3(0.64f, 0.2f, 3.08f), new Vector3(1.58f, 2.23f, 0), "#f0d88d"));
+        stall.AddChild(Box(new Vector3(4.5f, 0.08f, 0.12f), new Vector3(0, 0.93f, -1.22f), "#3d2a1d"));
+        stall.AddChild(Box(new Vector3(4.5f, 0.08f, 0.12f), new Vector3(0, 0.93f, 1.22f), "#3d2a1d"));
         stall.AddChild(Box(new Vector3(0.16f, 1.6f, 0.16f), new Vector3(-1.9f, 1.3f, -1.05f), "#4e3424"));
         stall.AddChild(Box(new Vector3(0.16f, 1.6f, 0.16f), new Vector3(1.9f, 1.3f, -1.05f), "#4e3424"));
         stall.AddChild(Box(new Vector3(0.16f, 1.6f, 0.16f), new Vector3(-1.9f, 1.3f, 1.05f), "#4e3424"));
@@ -283,6 +329,8 @@ public partial class OpenWorldBuilder : Node3D
         stall.AddChild(Part(new SphereMesh { Radius = 0.22f, Height = 0.24f, RadialSegments = 6, Rings = 3 }, new Vector3(-1.0f, 0.98f, 0.15f), "#c85f3d"));
         stall.AddChild(Part(new SphereMesh { Radius = 0.2f, Height = 0.22f, RadialSegments = 6, Rings = 3 }, new Vector3(-0.55f, 0.98f, -0.2f), "#d6b34c"));
         stall.AddChild(Part(new SphereMesh { Radius = 0.18f, Height = 0.2f, RadialSegments = 6, Rings = 3 }, new Vector3(0.15f, 0.98f, 0.18f), "#7ba34b"));
+        stall.AddChild(Box(new Vector3(0.7f, 0.12f, 0.5f), new Vector3(0.9f, 0.98f, -0.12f), "#7a5636"));
+        stall.AddChild(Box(new Vector3(0.6f, 0.1f, 0.08f), new Vector3(0.9f, 1.08f, -0.38f), "#d8c070"));
         AddChild(stall);
     }
 
@@ -292,6 +340,9 @@ public partial class OpenWorldBuilder : Node3D
         crates.AddChild(Box(new Vector3(0.9f, 0.9f, 0.9f), new Vector3(0, 0.45f, 0), "#7a5636"));
         crates.AddChild(Box(new Vector3(0.85f, 0.85f, 0.85f), new Vector3(0.78f, 0.43f, 0.18f), "#6e4a2f"));
         crates.AddChild(Box(new Vector3(0.72f, 0.72f, 0.72f), new Vector3(0.32f, 1.26f, -0.16f), "#8a6140"));
+        AddCrateTrim(crates, new Vector3(0, 0.45f, -0.47f), 0.9f);
+        AddCrateTrim(crates, new Vector3(0.78f, 0.43f, -0.26f), 0.85f);
+        AddCrateTrim(crates, new Vector3(0.32f, 1.26f, -0.54f), 0.72f);
         AddChild(crates);
     }
 
@@ -300,7 +351,9 @@ public partial class OpenWorldBuilder : Node3D
         var barrels = new Node3D { Name = "BarrelCluster", Position = position };
         barrels.AddChild(Part(new CylinderMesh { TopRadius = 0.38f, BottomRadius = 0.42f, Height = 0.9f, RadialSegments = 10 }, new Vector3(0, 0.45f, 0), "#6c452d"));
         barrels.AddChild(Part(new CylinderMesh { TopRadius = 0.32f, BottomRadius = 0.36f, Height = 0.78f, RadialSegments = 10 }, new Vector3(0.58f, 0.39f, 0.18f), "#744d32"));
-        barrels.AddChild(Box(new Vector3(0.9f, 0.08f, 0.08f), new Vector3(0, 0.72f, 0), "#2c2722"));
+        barrels.AddChild(Part(new TorusMesh { InnerRadius = 0.34f, OuterRadius = 0.42f, Rings = 10, RingSegments = 5 }, new Vector3(0, 0.24f, 0), "#2c2722", new Vector3(Mathf.Pi / 2, 0, 0)));
+        barrels.AddChild(Part(new TorusMesh { InnerRadius = 0.32f, OuterRadius = 0.40f, Rings = 10, RingSegments = 5 }, new Vector3(0, 0.68f, 0), "#2c2722", new Vector3(Mathf.Pi / 2, 0, 0)));
+        barrels.AddChild(Part(new TorusMesh { InnerRadius = 0.28f, OuterRadius = 0.35f, Rings = 10, RingSegments = 5 }, new Vector3(0.58f, 0.58f, 0.18f), "#2c2722", new Vector3(Mathf.Pi / 2, 0, 0)));
         AddChild(barrels);
     }
 
@@ -309,6 +362,9 @@ public partial class OpenWorldBuilder : Node3D
         var lamp = new Node3D { Name = "LampPost", Position = position };
         lamp.AddChild(Part(new CylinderMesh { TopRadius = 0.07f, BottomRadius = 0.1f, Height = 2.2f, RadialSegments = 7 }, new Vector3(0, 1.1f, 0), "#3b2a1d"));
         lamp.AddChild(Box(new Vector3(0.52f, 0.38f, 0.52f), new Vector3(0, 2.3f, 0), "#d6a84a"));
+        lamp.AddChild(Box(new Vector3(0.68f, 0.08f, 0.68f), new Vector3(0, 2.54f, 0), "#2d2219"));
+        lamp.AddChild(Box(new Vector3(0.62f, 0.08f, 0.62f), new Vector3(0, 2.06f, 0), "#2d2219"));
+        lamp.AddChild(Part(new CylinderMesh { TopRadius = 0.12f, BottomRadius = 0.18f, Height = 0.12f, RadialSegments = 7 }, new Vector3(0, 2.76f, 0), "#2d2219"));
         lamp.AddChild(new OmniLight3D
         {
             Position = new Vector3(0, 2.32f, 0),
@@ -331,7 +387,23 @@ public partial class OpenWorldBuilder : Node3D
         var railSize = horizontal ? new Vector3(posts * 5.0f, 0.16f, 0.16f) : new Vector3(0.16f, 0.16f, posts * 5.0f);
         var railCenter = horizontal ? new Vector3((posts - 1) * 2.5f, 0.78f, 0) : new Vector3(0, 0.78f, (posts - 1) * 2.5f);
         fence.AddChild(Box(railSize, railCenter, "#6c452d"));
+        var lowerRailCenter = horizontal ? new Vector3((posts - 1) * 2.5f, 0.42f, 0) : new Vector3(0, 0.42f, (posts - 1) * 2.5f);
+        fence.AddChild(Box(railSize, lowerRailCenter, "#5a3a24"));
+        for (var i = 0; i < posts - 1; i++)
+        {
+            var center = horizontal ? new Vector3(i * 5.0f + 2.5f, 0.6f, 0) : new Vector3(0, 0.6f, i * 5.0f + 2.5f);
+            var diagonal = horizontal ? new Vector3(5.1f, 0.12f, 0.12f) : new Vector3(0.12f, 0.12f, 5.1f);
+            fence.AddChild(Box(diagonal, center, "#4d3120", new Vector3(0, 0, horizontal ? 0.18f : 0)));
+        }
         AddChild(fence);
+    }
+
+    private static void AddCrateTrim(Node3D root, Vector3 frontCenter, float size)
+    {
+        root.AddChild(Box(new Vector3(size * 0.86f, 0.055f, 0.035f), frontCenter + new Vector3(0, size * 0.28f, 0), "#3f2d20"));
+        root.AddChild(Box(new Vector3(size * 0.86f, 0.055f, 0.035f), frontCenter - new Vector3(0, size * 0.28f, 0), "#3f2d20"));
+        root.AddChild(Box(new Vector3(0.055f, size * 0.86f, 0.035f), frontCenter + new Vector3(size * 0.28f, 0, 0), "#3f2d20"));
+        root.AddChild(Box(new Vector3(0.055f, size * 0.86f, 0.035f), frontCenter - new Vector3(size * 0.28f, 0, 0), "#3f2d20"));
     }
 
     private void AddBuilding(string name, Vector3 position, Vector2 footprint, float height, string walls, string roof)
@@ -396,7 +468,7 @@ public partial class OpenWorldBuilder : Node3D
     private void AddGroundDetail()
     {
         var random = new Random(Seed + 137);
-        for (var i = 0; i < 220; i++)
+        for (var i = 0; i < 360; i++)
         {
             var position = NextWorldPosition(random);
             if (position.Length() < 36)
@@ -407,6 +479,10 @@ public partial class OpenWorldBuilder : Node3D
             if (random.NextDouble() < 0.72)
             {
                 AddGrassTuft(position, 0.65f + (float)random.NextDouble() * 0.7f, random);
+            }
+            else if (random.NextDouble() < 0.42)
+            {
+                AddWildflowerPatch(position, 0.45f + (float)random.NextDouble() * 0.55f, random);
             }
             else
             {
@@ -524,9 +600,26 @@ public partial class OpenWorldBuilder : Node3D
 
     private void AddTree(Vector3 position, float scale)
     {
-        var root = GeneratedAssetFactory.Tree();
+        var variant = Mathf.PosMod(StableHash($"{position.X:0.0}:{position.Z:0.0}"), 36) + 1;
+        var root = GeneratedAssetFactory.Tree(visualVariant: variant);
         root.Position = position;
         root.Scale = Vector3.One * scale;
+        AddChild(root);
+    }
+
+    private void AddWildflowerPatch(Vector3 position, float scale, Random random)
+    {
+        var root = new Node3D { Name = "WildflowerPatch", Position = position };
+        var colors = new[] { "#d9c76a", "#b9657b", "#7fa8d6", "#f0e6bd" };
+        for (var i = 0; i < 5 + random.Next(5); i++)
+        {
+            var angle = (float)random.NextDouble() * Mathf.Tau;
+            var offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * ((float)random.NextDouble() * 0.7f * scale);
+            var height = (0.18f + (float)random.NextDouble() * 0.22f) * scale;
+            root.AddChild(Part(new CylinderMesh { TopRadius = 0.012f, BottomRadius = 0.018f, Height = height, RadialSegments = 5 }, offset + Vector3.Up * (height * 0.5f), "#496b36"));
+            root.AddChild(Part(new SphereMesh { Radius = 0.045f * scale, Height = 0.04f * scale, RadialSegments = 5, Rings = 3 }, offset + Vector3.Up * (height + 0.035f), colors[random.Next(colors.Length)]));
+        }
+
         AddChild(root);
     }
 
@@ -580,7 +673,8 @@ public partial class OpenWorldBuilder : Node3D
 
     private void AddInteractiveTree(RegionAnchor anchor, Vector3 position)
     {
-        var node = Resource(anchor, position, "Softwood Tree", "logs", "woodcutting", 18);
+        var node = Resource(anchor, position, SoftwoodTreeName(anchor.Id), "logs", "woodcutting", 18);
+        node.VisualVariant = TreeVisualVariant(anchor.Id);
         node.AddChild(new CollisionShape3D
         {
             Position = new Vector3(0, 1.4f, 0),
@@ -589,6 +683,23 @@ public partial class OpenWorldBuilder : Node3D
         AddTreeSiteProps(position);
         AddChild(node);
     }
+
+    private static int TreeVisualVariant(string anchorId)
+    {
+        var suffix = anchorId.Split('_').LastOrDefault();
+        return int.TryParse(suffix, out var parsed)
+            ? Mathf.PosMod(parsed - 1, 36) + 1
+            : Mathf.PosMod(StableHash(anchorId), 36) + 1;
+    }
+
+    private static string SoftwoodTreeName(string anchorId) =>
+        TreeVisualVariant(anchorId) switch
+        {
+            <= 4 => "Young Pine",
+            <= 8 => "Silver Fir",
+            <= 12 => "Cedar Softwood",
+            _ => "Softwood Tree",
+        };
 
     private void AddRock(Vector3 position, float scale)
     {
@@ -663,6 +774,9 @@ public partial class OpenWorldBuilder : Node3D
     private static MeshInstance3D Box(Vector3 size, Vector3 position, string color) =>
         Part(new BoxMesh { Size = size }, position, color);
 
+    private static MeshInstance3D Box(Vector3 size, Vector3 position, string color, Vector3 rotation) =>
+        Part(new BoxMesh { Size = size }, position, color, rotation);
+
     private void AddBattlements(Vector3 wallPosition, Vector3 wallSize, string color)
     {
         var horizontal = wallSize.X >= wallSize.Z;
@@ -689,27 +803,12 @@ public partial class OpenWorldBuilder : Node3D
         AddChild(body);
     }
 
-    private static StandardMaterial3D GroundedMaterial(string color) => new()
-    {
-        AlbedoColor = new Color(color),
-        Roughness = 0.88f,
-        Metallic = 0.0f,
-        SpecularMode = BaseMaterial3D.SpecularModeEnum.SchlickGgx,
-    };
+    private static StandardMaterial3D GroundedMaterial(string color) =>
+        ArtMaterialCatalog.Environment(color);
 
-    private static StandardMaterial3D WaterMaterial() => new()
-    {
-        AlbedoColor = new Color(0.14f, 0.48f, 0.62f, 0.74f),
-        Roughness = 0.18f,
-        Metallic = 0.0f,
-        Transparency = BaseMaterial3D.TransparencyEnum.Alpha,
-    };
+    private static StandardMaterial3D WaterMaterial() =>
+        ArtMaterialCatalog.Water(new Color(0.14f, 0.48f, 0.62f, 0.74f));
 
-    private static StandardMaterial3D RippleMaterial() => new()
-    {
-        AlbedoColor = new Color(0.78f, 0.92f, 0.96f, 0.42f),
-        Roughness = 0.24f,
-        Metallic = 0.0f,
-        Transparency = BaseMaterial3D.TransparencyEnum.Alpha,
-    };
+    private static StandardMaterial3D RippleMaterial() =>
+        ArtMaterialCatalog.Water(new Color(0.78f, 0.92f, 0.96f, 0.42f));
 }

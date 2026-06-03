@@ -8,6 +8,7 @@ public partial class ResourceNode : Interactable
 {
     [Export] public string ItemId { get; set; } = "sunleaf";
     [Export] public string SkillId { get; set; } = "foraging";
+    [Export] public int VisualVariant { get; set; }
     [Export] public int Experience { get; set; } = 15;
     [Export] public int RespawnTicks { get; set; } = 20;
 
@@ -24,7 +25,7 @@ public partial class ResourceNode : Interactable
             placeholder.Visible = false;
         }
 
-        AddChild(GeneratedAssetFactory.CreateResource(ItemId));
+        AddChild(GeneratedAssetFactory.CreateResource(ItemId, VisualVariant));
     }
 
     public override bool CanInteract(Node interactor) => !IsDepleted;

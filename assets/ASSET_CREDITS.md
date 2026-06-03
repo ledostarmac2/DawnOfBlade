@@ -30,6 +30,13 @@ guarantee. If an asset is not in this table, it should not be in the repo.
 | `assets/materials/ground.tres` | material | original | DawnOfBlade project | Project license | No | 2026-05-29 |
 | `assets/materials/player.tres` | material | original | DawnOfBlade project | Project license | No | 2026-05-29 |
 | `assets/materials/npc.tres` | material | original | DawnOfBlade project | Project license | No | 2026-05-29 |
+| `assets/runtime_textures/` | curated runtime texture subset | Derived from credited CC0 texture packs below | Multiple | CC0 | No | 2026-06-03 |
+| `textures/kenney_retro-textures-fantasy/` | texture pack | Kenney Retro Textures Fantasy | Kenney | CC0 | No | 2026-06-03 |
+| `textures/kenney_retro-fantasy-kit/` | texture/model pack | Kenney Retro Fantasy Kit | Kenney | CC0 | No | 2026-06-03 |
+| `textures/tree_pack_1.1/` | texture/model pack | Tree Pack 1.1 | Included LICENSE.txt | CC0 | No | 2026-06-03 |
+| `textures/Fantasy Props MegaKit[Standard]/` | texture/model pack | Fantasy Props MegaKit Standard Free | Quaternius | CC0 | No | 2026-06-03 |
+| `textures/Modular Character Outfits - Fantasy[Standard]/` | texture/model pack | Modular Character Outfits - Fantasy Standard Free | Quaternius | CC0 | No | 2026-06-03 |
+| `textures/Universal Base Characters[Standard]/` | texture/model pack | Universal Base Characters Standard Free | Quaternius | CC0 | No | 2026-06-03 |
 
 <!-- Template row for an imported CC0/CC-BY asset:
 | `assets/models/tree_01.glb` | model | https://kenney.nl/assets/... | Kenney | CC0 | No | YYYY-MM-DD |

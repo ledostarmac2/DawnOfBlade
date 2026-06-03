@@ -1,6 +1,6 @@
 [gd_resource type="StandardMaterial3D" format=3]
 
-; Original DawnOfBlade placeholder material: gatherable sun shard node.
+; DawnOfBlade fallback material: generated resources load texture packs directly.
 [resource]
 albedo_color = Color(0.98, 0.68, 0.16, 1)
 roughness = 0.55

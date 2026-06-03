@@ -1,6 +1,6 @@
 [gd_resource type="StandardMaterial3D" format=3]
 
-; Original DawnOfBlade placeholder material: click-to-move target marker.
+; DawnOfBlade fallback material: click-to-move target marker.
 [resource]
 albedo_color = Color(1, 0.78, 0.17, 0.72)
 roughness = 0.45

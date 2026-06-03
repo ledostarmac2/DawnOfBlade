@@ -15,11 +15,8 @@ public partial class WorldBuilding : Node3D
         Name = displayName;
         _footprint = footprint;
         _wallHeight = wallHeight;
-        _roofMaterial = new StandardMaterial3D
-        {
-            AlbedoColor = roofColor,
-            Transparency = BaseMaterial3D.TransparencyEnum.Alpha,
-        };
+        _roofMaterial = ArtMaterialCatalog.Environment(roofColor.ToHtml(), ArtMaterialKind.Roof);
+        _roofMaterial.Transparency = BaseMaterial3D.TransparencyEnum.Alpha;
 
         Build(wallColor);
     }
@@ -67,6 +64,8 @@ public partial class WorldBuilding : Node3D
         AddWindows();
         AddChimney();
         AddRoofRidge();
+        AddRoofShingles();
+        AddFoundationStones();
     }
 
     private void AddWall(Vector3 position, Vector3 size, Color color)
@@ -113,6 +112,18 @@ public partial class WorldBuilding : Node3D
             new Vector3(doorWidth * 0.62f, 2.35f, 0.12f),
             new Color("#4a2f20"));
         AddDecor(
+            new Vector3(0, 2.42f, _footprint.Y * 0.5f + 0.43f),
+            new Vector3(doorWidth * 0.76f, 0.16f, 0.18f),
+            new Color("#2f2119"));
+        AddDecor(
+            new Vector3(-doorWidth * 0.24f, 1.18f, _footprint.Y * 0.5f + 0.44f),
+            new Vector3(0.075f, 2.18f, 0.08f),
+            new Color("#2f2119"));
+        AddDecor(
+            new Vector3(doorWidth * 0.24f, 1.18f, _footprint.Y * 0.5f + 0.44f),
+            new Vector3(0.075f, 2.18f, 0.08f),
+            new Color("#2f2119"));
+        AddDecor(
             new Vector3(doorWidth * 0.22f, 1.24f, _footprint.Y * 0.5f + 0.43f),
             new Vector3(0.08f, 0.08f, 0.08f),
             new Color("#d1a445"));
@@ -131,13 +142,17 @@ public partial class WorldBuilding : Node3D
         {
             AddDecor(new Vector3(x, windowY, frontZ), new Vector3(0.72f, 0.62f, 0.08f), windowColor);
             AddDecor(new Vector3(x, windowY, frontZ + 0.05f), new Vector3(0.84f, 0.08f, 0.09f), frameColor);
+            AddDecor(new Vector3(x, windowY, frontZ + 0.07f), new Vector3(0.08f, 0.68f, 0.09f), frameColor);
             AddDecor(new Vector3(x, windowY, backZ), new Vector3(0.72f, 0.62f, 0.08f), windowColor);
+            AddDecor(new Vector3(x, windowY, backZ - 0.05f), new Vector3(0.84f, 0.08f, 0.09f), frameColor);
         }
 
         foreach (var z in WindowOffsets(_footprint.Y))
         {
             AddDecor(new Vector3(sideX, windowY, z), new Vector3(0.08f, 0.62f, 0.72f), windowColor);
             AddDecor(new Vector3(-sideX, windowY, z), new Vector3(0.08f, 0.62f, 0.72f), windowColor);
+            AddDecor(new Vector3(sideX + 0.05f, windowY, z), new Vector3(0.09f, 0.08f, 0.84f), frameColor);
+            AddDecor(new Vector3(-sideX - 0.05f, windowY, z), new Vector3(0.09f, 0.08f, 0.84f), frameColor);
         }
     }
 
@@ -157,6 +172,26 @@ public partial class WorldBuilding : Node3D
             new Vector3(0, _wallHeight + 3.1f, 0),
             new Vector3(_footprint.X + 1.7f, 0.18f, 0.24f),
             new Color("#2f2421"));
+    }
+
+    private void AddRoofShingles()
+    {
+        var color = new Color("#4a3430");
+        var zStep = Mathf.Max(1.2f, _footprint.Y / 6.0f);
+        for (var z = -_footprint.Y * 0.42f; z <= _footprint.Y * 0.42f; z += zStep)
+        {
+            AddDecor(new Vector3(0, _wallHeight + 2.16f, z), new Vector3(_footprint.X + 1.0f, 0.055f, 0.08f), color);
+        }
+    }
+
+    private void AddFoundationStones()
+    {
+        var color = new Color("#534d44");
+        var y = 0.28f;
+        AddDecor(new Vector3(0, y, _footprint.Y * 0.5f + 0.35f), new Vector3(_footprint.X + 0.5f, 0.26f, 0.18f), color);
+        AddDecor(new Vector3(0, y, -_footprint.Y * 0.5f - 0.35f), new Vector3(_footprint.X + 0.5f, 0.26f, 0.18f), color);
+        AddDecor(new Vector3(_footprint.X * 0.5f + 0.35f, y, 0), new Vector3(0.18f, 0.26f, _footprint.Y + 0.5f), color);
+        AddDecor(new Vector3(-_footprint.X * 0.5f - 0.35f, y, 0), new Vector3(0.18f, 0.26f, _footprint.Y + 0.5f), color);
     }
 
     private void AddDecor(Vector3 position, Vector3 size, Color color)
@@ -179,10 +214,6 @@ public partial class WorldBuilding : Node3D
         return new[] { -length * 0.25f, length * 0.25f };
     }
 
-    private static StandardMaterial3D WallMaterial(Color color) => new()
-    {
-        AlbedoColor = color,
-        Roughness = 0.86f,
-        Metallic = 0.0f,
-    };
+    private static StandardMaterial3D WallMaterial(Color color) =>
+        ArtMaterialCatalog.Environment(color.ToHtml());
 }

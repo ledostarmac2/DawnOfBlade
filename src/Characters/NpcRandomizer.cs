@@ -29,12 +29,21 @@ public sealed class NpcRandomizer
 
         var appearance = new Appearance
         {
+            Presentation = Pick(random, AppearanceOptions.Presentations),
             BodyType = Pick(random, AppearanceOptions.BodyTypes),
+            HeadStyle = random.Next(AppearanceOptions.ShapeStyleCount),
+            JawStyle = random.Next(AppearanceOptions.ShapeStyleCount),
+            TorsoStyle = random.Next(AppearanceOptions.ShapeStyleCount),
+            ArmStyle = random.Next(AppearanceOptions.ShapeStyleCount),
+            HandStyle = random.Next(AppearanceOptions.ShapeStyleCount),
+            LegStyle = random.Next(AppearanceOptions.ShapeStyleCount),
+            FootStyle = random.Next(AppearanceOptions.ShapeStyleCount),
             HairStyle = random.Next(AppearanceOptions.HairStyleCount),
             SkinTone = Pick(random, AppearanceOptions.SkinTones),
             HairColor = Pick(random, AppearanceOptions.HairColors),
             ShirtColor = Pick(random, AppearanceOptions.ShirtColors),
             LegColor = Pick(random, AppearanceOptions.LegColors),
+            FootColor = Pick(random, AppearanceOptions.FootColors),
         };
 
         var name = FirstNames[random.Next(FirstNames.Length)];

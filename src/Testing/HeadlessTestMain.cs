@@ -4,6 +4,7 @@ using DawnOfBlade.Engine.Ai;
 using DawnOfBlade.Engine.Progression;
 using DawnOfBlade.Engine.Spatial;
 using DawnOfBlade.Interaction;
+using DawnOfBlade.World;
 using Godot;
 
 namespace DawnOfBlade.Testing;
@@ -28,6 +29,7 @@ public partial class HeadlessTestMain : Node
             TestHostileChasesAndMovesInScene();
             TestHostileLeashesHomeInScene();
             TestPassiveNpcWandersButNeverChases();
+            TestArtTextureResourcesLoad();
         }
         catch (Exception e)
         {
@@ -163,5 +165,34 @@ public partial class HeadlessTestMain : Node
 
         npc.QueueFree();
         agent.QueueFree();
+    }
+
+    private void TestArtTextureResourcesLoad()
+    {
+        GD.Print("- selected texture packs and material resources load");
+        var texturePaths = new[]
+        {
+            "res://assets/runtime_textures/kenney_retro_textures_fantasy/floor_ground_grass.png",
+            "res://assets/runtime_textures/kenney_retro_textures_fantasy/floor_wood_planks.png",
+            "res://assets/runtime_textures/kenney_retro_textures_fantasy/floor_ground_water.png",
+            "res://assets/runtime_textures/tree_pack/tree04.png",
+            "res://assets/runtime_textures/quaternius_props/T_Trim_Props_BaseColor.png",
+            "res://assets/runtime_textures/quaternius_outfits/T_Peasant_BaseColor.png",
+            "res://assets/runtime_textures/quaternius_base_characters/T_Hair_1_BaseColor.png",
+        };
+
+        foreach (var path in texturePaths)
+        {
+            Check(System.IO.File.Exists(ProjectSettings.GlobalizePath(path)), $"texture file exists: {path.GetFile()}");
+        }
+
+        var material = ArtMaterialCatalog.Environment("#5a3a24", ArtMaterialKind.Wood);
+        Check(material.AlbedoTexture is not null, "procedural wood material has an albedo texture");
+        Check(ArtMaterialCatalog.Environment("#4f7538", ArtMaterialKind.GroundGrass).AlbedoTexture is not null, "procedural grass material has an albedo texture");
+        Check(ArtMaterialCatalog.TreeLeaves("#2f6b36", 12).AlbedoTexture is not null, "tree pack leaf variant material has an albedo texture");
+        Check(ArtMaterialCatalog.Create("#6a5acd", ArtMaterialKind.CharacterCloth).AlbedoTexture is not null, "procedural character cloth material has an albedo texture");
+        Check(ArtMaterialCatalog.Create("#3a2a1a", ArtMaterialKind.CharacterHair).AlbedoTexture is not null, "procedural character hair material has an albedo texture");
+        Check(GD.Load<StandardMaterial3D>("res://assets/materials/ground.tres") is not null, "ground fallback material resource still parses");
+        Check(GD.Load<StandardMaterial3D>("res://assets/materials/player.tres") is not null, "player fallback material resource still parses");
     }
 }

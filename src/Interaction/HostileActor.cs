@@ -2,6 +2,7 @@ using DawnOfBlade.Combat;
 using DawnOfBlade.Core;
 using DawnOfBlade.Engine.Ai;
 using DawnOfBlade.Engine.Spatial;
+using DawnOfBlade.World;
 using Godot;
 
 namespace DawnOfBlade.Interaction;
@@ -58,6 +59,16 @@ public partial class HostileActor : Interactable
 
     public override void _Ready()
     {
+        if (GetNodeOrNull<Node3D>("Humanoid") is null && GetNodeOrNull<Node3D>("GeneratedTrainingDummy") is null)
+        {
+            if (GetNodeOrNull<Node3D>("Mesh") is { } placeholder)
+            {
+                placeholder.Visible = false;
+            }
+
+            AddChild(GeneratedAssetFactory.CreateHostile("training_dummy", "#9b6b3f"));
+        }
+
         ResetStats();
     }
 

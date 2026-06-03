@@ -1,7 +1,7 @@
 [gd_resource type="StandardMaterial3D" format=3]
 
-; Original DawnOfBlade fallback material: NPC body.
+; DawnOfBlade fallback material: runtime NPCs load texture packs directly.
 [resource]
 albedo_color = Color(0.55, 0.43, 0.24, 1)
-roughness = 0.74
+roughness = 0.68
 metallic = 0.0
